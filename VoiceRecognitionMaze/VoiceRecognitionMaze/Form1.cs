@@ -52,5 +52,9 @@ namespace VoiceRecognitionMaze
             matrizTablero.RowCount = fila;  */          
         }
 
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
     }
 }
