@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Speech.Recognition;
+using System.Drawing;
 
 namespace VoiceRecognitionMaze
 {
@@ -18,7 +19,10 @@ namespace VoiceRecognitionMaze
         public Form1()
         {
             InitializeComponent();
+           
         }
+
+   
 
         private void BtnIniciar_Click(object sender, EventArgs e)
         {
@@ -44,17 +48,19 @@ namespace VoiceRecognitionMaze
             }
 
 
-            /*int columna, fila;
+            int columna, fila;
             columna = int.Parse(TxbColumnas.Text);
             fila = int.Parse(TxbFilas.Text);
 
             matrizTablero.ColumnCount = columna;
-            matrizTablero.RowCount = fila;  */          
+            matrizTablero.RowCount = fila;
+           
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
+private void Form1_Load(object sender, EventArgs e)
+{
+           
 
         }
-    }
+}
 }
