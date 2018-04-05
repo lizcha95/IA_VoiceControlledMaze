@@ -1,26 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections;
 
 
 namespace AlgortimoAEstrella
+
 {
-     class Program
+
+   
+    class Program
     {
 
-        List<int[]> Obstaculos = new List<int[]>();
+        
         static int[,] Tablero; //Cuadricula donde 0 es vacio y 1 es obstaculo
         static int m, n, a,cant_obs;
         static Boolean mov_directo = false;
         static Boolean diagonal = true;
-        static List<Nodo> listaAbierta = new List<Nodo>();
-        static List<int[]> listaCerrada = new List<int[]>();
+        //static List<Nodo> listaAbierta = new List<Nodo>();
+        //static List<int[]> listaCerrada = new List<int[]>();
 
-        static int[,] PonerRuta(List<int[]> listaCerrada, int[,] tablero)
+        //static ArrayList listaAbierta = new ArrayList();
+        //static ArrayList listaCerrada = new ArrayList();
+       
+       
+
+
+        static int[,] PonerRuta(ArrayList listaCerrada, int[,] tablero)
         {
+
+            
+
             foreach (int[] value in listaCerrada)
             {
                 tablero[value[0], value[1]] = -1;
@@ -48,12 +59,12 @@ namespace AlgortimoAEstrella
 
         }
 
-        static List<Nodo> encontrarNodosAdyacentes(Nodo nodoActual, Nodo nodoFinal, int n, int m, int[,] Tablero, float costo_diagonal)
+        static ArrayList encontrarNodosAdyacentes(Nodo nodoActual, Nodo nodoFinal, int n, int m, int[,] Tablero, float costo_diagonal)
         {
             int[] pos = new int[2];
             int[] movimiento = new int[1];
-            List<Nodo> adyacentes = new List<Nodo>();// [[x,y]]
-
+            //List<Nodo> adyacentes = new List<Nodo>();// [[x,y]]
+            ArrayList adyacentes = new ArrayList();
 
 
             Console.Write("Encontrando nodos adyacentes\n");
@@ -136,19 +147,24 @@ namespace AlgortimoAEstrella
 
         static void agregarNodoAListaAbierta(Nodo nodo)
         {
-            Int32 indice = 0;
+            int indice = 0;
             double costo = nodo.fn;
-            while ((listaAbierta.Count() > indice) &&
-            (costo < listaAbierta[indice].fn))
+
+            while (listaAbierta.Count > indice)
             {
-                indice++;
+                Nodo n = (Nodo)listaAbierta[indice];
+                if (costo < n.fn)
+                {
+                    indice++;
+                }
+                break;
             }
             listaAbierta.Insert(indice, nodo);
+
         }
 
-
-        static void encontrar_ruta(Nodo nodoActual, Nodo nodoFinal, List<Nodo> adyacentes, List<Nodo> listaAbierta, List<int[]> listaCerrada)
-        {
+            static void encontrar_ruta(Nodo nodoActual, Nodo nodoFinal, ArrayList adyacentes, ArrayList listaAbierta, ArrayList listaCerrada)
+           {
 
             
             Console.Write("Calculando fn\n");
@@ -160,7 +176,7 @@ namespace AlgortimoAEstrella
                 {
                     if (listaAbierta.Contains(nodo_abierto) == true)
                     {
-                        if(nodo_abierto.gn >= nodo_abierto.fn)
+                        if(nodo_abierto.gn >= nodoActual.gn)
                         {
                             continue;
                         }
@@ -180,13 +196,15 @@ namespace AlgortimoAEstrella
         static Boolean Algoritmo_A_Estrella(int[] pos_n, int[] pos_final, int n, int m, int a, float costo_diagonal)
         {
             Console.Write("Definiendo nodo inicial y final\n");
-      
+
+            listaAbierta.Clear();
+            listaCerrada.Clear();
+
             Nodo nodo_final = new Nodo(null, null, pos_final, 0);
             Nodo nodo_inicial = new Nodo(null, nodo_final, pos_n, 0);
 
-           // List<Nodo> listaAbierta = new List<Nodo>();
-            //List<int[]> listaCerrada = new List<int[]>();
-            List<Nodo> nodosAdyacentes = new List<Nodo>();
+            // List<Nodo> nodosAdyacentes = new List<Nodo>();
+            ArrayList nodosAdyacentes = new ArrayList();
 
             Console.Write("Estoy en el ciclo\n");
 
@@ -200,7 +218,7 @@ namespace AlgortimoAEstrella
                 encontrar_ruta(nodo_inicial, nodo_final, nodosAdyacentes, listaAbierta, listaCerrada); //Calcula el fn de cada uno de los nodos adyacentes al nodo actual
                 
 
-                Console.Write("Reviso si existe solucion\n");
+            Console.Write("Reviso si existe solucion\n");
                 if (listaAbierta.Count == 0)
                 {
                     //Console.WriteLine("No se ha encontrado una ruta");
@@ -211,8 +229,9 @@ namespace AlgortimoAEstrella
                 else
                 {
                     Console.Write("Actualizo nodo con menor fn\n");
-                    nodo_inicial = listaAbierta[0];  //Actualia el nodo actual al nodo con menor fn
+                    nodo_inicial = (Nodo)listaAbierta[0];  //Actualia el nodo actual al nodo con menor fn
                     listaAbierta.Remove(nodo_inicial); //Elimina el nodo de la lista abierta 
+                   
                 }
 
 
