@@ -211,7 +211,7 @@ namespace AlgortimoAEstrella
                 else
                 {
                     Console.Write("Actualizo nodo con menor fn\n");
-                    nodo_inicial = listaAbierta[0];  //Actualiza el nodo actual al nodo con menor fn
+                    nodo_inicial = listaAbierta[0];  //Actualia el nodo actual al nodo con menor fn
                     listaAbierta.Remove(nodo_inicial); //Elimina el nodo de la lista abierta 
                 }
 
