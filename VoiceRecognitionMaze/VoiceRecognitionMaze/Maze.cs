@@ -42,18 +42,14 @@ namespace VoiceRecognitionMaze
         int cambiarM = 0;
         int cambiarA = 0;
 
-        List<string> numerosEnLetras = new List<string> { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "zero"};
-        List<string> numerosComunes = new List<string> { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"};
+        List<string> numerosEnLetras = new List<string> { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "zero","twenty"};
+        List<string> numerosComunes = new List<string> { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0","20"};
 
         public Maze()
         {
             InitializeComponent();
         }
-
-        private void BtnIniciar_Click(object sender, EventArgs e)
-        {
-            InicializarTablero();
-        }
+        
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -61,7 +57,7 @@ namespace VoiceRecognitionMaze
 
             // Crear gramática para escucha
             comandos.Add(new string[] { "start", "clean", "up", "down", "left", "right", "done", "yes", "no", "finish", "diagonal", "option", "rows", "columns",
-                                        "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "zero", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0" });
+                                        "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "zero","twenty", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0","20" });
 
             // Palabras que pueden ser escuchadas mal, las traducimos al idioma del programa
             comandos.Add(new SemanticResultValue("begin", "start"));
@@ -174,6 +170,25 @@ namespace VoiceRecognitionMaze
                 banderaFilas = 0;
                 banderaTamanoCasilla = 1;
                 Console.WriteLine(columnas.ToString() + filas.ToString());
+                
+            }
+            else if (banderaTamanoCasilla == 1)
+            {
+                if (compararStringNumerosLetras(e.Result.Text, numerosEnLetras) != -1)
+                {
+                    tamanoCasillas = compararStringNumerosLetras(e.Result.Text, numerosEnLetras);
+                }
+                else if (compararStringNumeros(e.Result.Text, numerosComunes) != -1)
+                {
+                    tamanoCasillas = compararStringNumeros(e.Result.Text, numerosComunes);
+                }
+
+                Console.WriteLine(tamanoCasillas.ToString());
+                habla.SpeakAsync("Creating table");
+                banderaFilas = 0;
+                banderaTamanoCasilla = 0;
+                InicializarTablero();
+
             }
         }
 
@@ -202,17 +217,17 @@ namespace VoiceRecognitionMaze
             //Establecer el ancho de las columnas
             foreach (DataGridViewColumn c in matrizTablero.Columns)
             {
-                // c.Width = matrizTablero.Width / matrizTablero.Columns.Count;
-                c.Width = tamanoCasillas;
-                c.Width += matrizTablero.Width / matrizTablero.Columns.Count;
+                 c.Width = matrizTablero.Width / matrizTablero.Columns.Count;
+                //c.Width = tamanoCasillas;
+                //c.Width += matrizTablero.Width / matrizTablero.Columns.Count;
             }
 
             //Establecer el ancho de las filas
             foreach (DataGridViewRow r in matrizTablero.Rows)
             {
-                //r.Height = matrizTablero.Height / matrizTablero.Rows.Count;
-                r.Height = tamanoCasillas;
-                r.Height += matrizTablero.Height / matrizTablero.Rows.Count;
+                r.Height = matrizTablero.Height / matrizTablero.Rows.Count;
+                //r.Height = tamanoCasillas;
+                //r.Height += matrizTablero.Height / matrizTablero.Rows.Count;
             }
         }
 
@@ -341,6 +356,9 @@ namespace VoiceRecognitionMaze
                         break;
                     case "zero":
                         numeroReal = 0;
+                        break;
+                    case "twenty":
+                        numeroReal = 20;
                         break;
                     default:
                         break;
