@@ -34,7 +34,13 @@ namespace VoiceRecognitionMaze
         int filas = 0;
         int columnas = 0;
         int tamanoCasillas = 0;
+        int jugar = 0;
         int activarDiagonal = 0;
+        int decisionFinal = 0;
+        int permitirDiagonal = 0;
+        int moverAgente = 0;
+        int salida = 0;
+        int otraVez = 1;
         int posInicio = 0;
         int posFinal = 0;
         int limpiar = 0;
@@ -56,7 +62,7 @@ namespace VoiceRecognitionMaze
             Choices comandos = new Choices();
 
             // Crear gramática para escucha
-            comandos.Add(new string[] { "start", "clean", "up", "down", "left", "right", "done", "yes", "no", "finish", "diagonal", "option", "rows", "columns",
+            comandos.Add(new string[] { "start", "clean", "up", "down", "left", "right", "done", "yes", "no", "finish", "diagonal", "option", "rows", "columns", "stop",
                                         "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "zero","twenty", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0","20" });
 
             // Palabras que pueden ser escuchadas mal, las traducimos al idioma del programa
@@ -111,7 +117,6 @@ namespace VoiceRecognitionMaze
             }
             else if (comenzar == 1)
             {
-                Console.WriteLine("comenzar");
                 if (e.Result.Text == "start")
                 {
                     habla.SpeakAsync("Do you want to set the table dimensions? Say yes or no");
@@ -120,14 +125,12 @@ namespace VoiceRecognitionMaze
                 }
                 else if (e.Result.Text == "finish")
                 {
-                    Console.WriteLine("termino");
                     habla.SpeakAsync("Thanks for playing, bye bye.");
                     this.Close();
                 }
             }
             else if (dimensiones == 1)
             {
-                Console.WriteLine("cambiar dimensiones");
                 if (e.Result.Text == "yes")
                 {
                     habla.SpeakAsync("Please say the number of columns for the table");
@@ -141,7 +144,6 @@ namespace VoiceRecognitionMaze
             }
             else if (banderaColumnas == 1)
             {
-                Console.WriteLine("Poner columnas");
                 if (compararStringNumerosLetras(e.Result.Text, numerosEnLetras) != -1)
                 {
                     columnas = compararStringNumerosLetras(e.Result.Text, numerosEnLetras);
@@ -166,11 +168,9 @@ namespace VoiceRecognitionMaze
                     filas = compararStringNumeros(e.Result.Text, numerosComunes);
                 }
 
-                habla.SpeakAsync("Please say the number for the size for the table boxes");
+                habla.SpeakAsync("Please say the number for the size of the table boxes");
                 banderaFilas = 0;
                 banderaTamanoCasilla = 1;
-                Console.WriteLine(columnas.ToString() + filas.ToString());
-                
             }
             else if (banderaTamanoCasilla == 1)
             {
@@ -183,12 +183,81 @@ namespace VoiceRecognitionMaze
                     tamanoCasillas = compararStringNumeros(e.Result.Text, numerosComunes);
                 }
 
-                Console.WriteLine(tamanoCasillas.ToString());
                 habla.SpeakAsync("Creating table");
-                banderaFilas = 0;
                 banderaTamanoCasilla = 0;
                 InicializarTablero();
-
+                jugar = 1;
+            }
+            else if (jugar == 1)
+            {
+                habla.SpeakAsync("Do you want the agent to be able to cross diagonals? Say yes or no");
+                jugar = 0;
+                activarDiagonal = 1;
+            }
+            else if (activarDiagonal == 1)
+            {
+                if (e.Result.Text == "yes")
+                {
+                    habla.SpeakAsync("Diagonal feature activated");
+                    activarDiagonal = 0;
+                    permitirDiagonal = 1;
+                    habla.SpeakAsync("To play, please say up, down, left, right, left or stop for fixing the agent's position.");
+                    moverAgente = 1;
+                }
+                else if (e.Result.Text == "no")
+                {
+                    habla.SpeakAsync("Diagonal feature deactivated");
+                    habla.SpeakAsync("To play, please say up, down, left, right, left or stop for fixing the agent's position.");
+                    permitirDiagonal = 0;
+                    activarDiagonal = 0;
+                    moverAgente = 1;
+                }
+            }
+            else if (moverAgente == 1)
+            {                
+                if (e.Result.Text == "up")
+                {
+                    Console.WriteLine(e.Result.Text);
+                    // Mover agente hacia arriba. TODO: ver qué hacer cuando se encuentra con un límite del tablero
+                }
+                else if (e.Result.Text == "down")
+                {
+                    Console.WriteLine(e.Result.Text);
+                    // Mover agente hacia abajo. TODO: ver qué hacer cuando se encuentra con un límite del tablero
+                }
+                else if (e.Result.Text == "left")
+                {
+                    Console.WriteLine(e.Result.Text);
+                    // Mover agente hacia la izquierda. TODO: ver qué hacer cuando se encuentra con un límite del tablero
+                }
+                else if (e.Result.Text == "right")
+                {
+                    Console.WriteLine(e.Result.Text);
+                    // Mover agente hacia la derecha. TODO: ver qué hacer cuando se encuentra con un límite del tablero
+                }
+                else if (e.Result.Text == "stop")
+                {
+                    Console.WriteLine(e.Result.Text);
+                    habla.SpeakAsync("Do you want to see the way out of the maze? Say yes or no");
+                    salida = 1;
+                }
+                else if (salida == 1)
+                {
+                    if(e.Result.Text == "yes")
+                    {
+                        habla.SpeakAsync("The way out is outlined in the color red, what do you want to do next, say play to play again or finish to finish the game");
+                        decisionFinal = 1;
+                    }
+                    else if (e.Result.Text == "no")
+                    {
+                        habla.SpeakAsync("Thanks for playing, what do you want to do next, say play to play again or finish to finish the game");
+                        decisionFinal = 1;
+                    }
+                    else if (decisionFinal == 1)
+                    {
+                        // Ver como hacer para volver a poner al usuario a jugar, tal vez un or en la bandera de dimensiones
+                    }
+                }
             }
         }
 
@@ -229,6 +298,7 @@ namespace VoiceRecognitionMaze
                 //r.Height = tamanoCasillas;
                 //r.Height += matrizTablero.Height / matrizTablero.Rows.Count;
             }
+            jugar = 1;
         }
 
         private void BtnLimpiar_Click(object sender, EventArgs e)
