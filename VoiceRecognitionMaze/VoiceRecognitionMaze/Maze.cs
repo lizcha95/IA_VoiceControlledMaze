@@ -27,10 +27,24 @@ namespace VoiceRecognitionMaze
         // Variables para manejar el flujo del habla y qué opciones para el usuario
         int comenzar = 1;
         int terminar = 0;
+        int dimensiones = 0;
+        int banderaColumnas = 0;
+        int banderaTamanoCasilla = 0;
+        int banderaFilas = 0;
+        int filas = 0;
+        int columnas = 0;
+        int tamanoCasillas = 0;
         int activarDiagonal = 0;
         int posInicio = 0;
         int posFinal = 0;
-        
+        int limpiar = 0;
+        int cambiarN = 0;
+        int cambiarM = 0;
+        int cambiarA = 0;
+
+        List<string> numerosEnLetras = new List<string> { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "zero"};
+        List<string> numerosComunes = new List<string> { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"};
+
         public Maze()
         {
             InitializeComponent();
@@ -46,7 +60,32 @@ namespace VoiceRecognitionMaze
             Choices comandos = new Choices();
 
             // Crear gramática para escucha
-            comandos.Add(new string[] { "start", "clean", "up", "down", "left", "right", "done", "yes", "no", "finish", "again", "what", "diagonal", "option" });
+            comandos.Add(new string[] { "start", "clean", "up", "down", "left", "right", "done", "yes", "no", "finish", "diagonal", "option", "rows", "columns",
+                                        "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "zero", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0" });
+
+            // Palabras que pueden ser escuchadas mal, las traducimos al idioma del programa
+            comandos.Add(new SemanticResultValue("begin", "start"));
+            comandos.Add(new SemanticResultValue("erase", "clean"));
+            comandos.Add(new SemanticResultValue("delete", "clean"));
+            comandos.Add(new SemanticResultValue("straight", "up"));
+            comandos.Add(new SemanticResultValue("forward", "up"));
+            comandos.Add(new SemanticResultValue("back", "down"));
+            comandos.Add(new SemanticResultValue("behind", "down"));
+            comandos.Add(new SemanticResultValue("turn left", "left"));
+            comandos.Add(new SemanticResultValue("turn right", "right"));
+            comandos.Add(new SemanticResultValue("ready", "done"));
+            comandos.Add(new SemanticResultValue("check", "done"));
+            comandos.Add(new SemanticResultValue("checked", "done"));
+            comandos.Add(new SemanticResultValue("ok", "yes"));
+            comandos.Add(new SemanticResultValue("yeah", "yes"));
+            comandos.Add(new SemanticResultValue("yea", "yes"));
+            comandos.Add(new SemanticResultValue("yas", "yes"));
+            comandos.Add(new SemanticResultValue("yup", "yes"));
+            comandos.Add(new SemanticResultValue("nope", "no"));
+            comandos.Add(new SemanticResultValue("nop", "no"));
+            comandos.Add(new SemanticResultValue("none", "no"));
+            comandos.Add(new SemanticResultValue("don't", "no"));
+            comandos.Add(new SemanticResultValue("finished", "finish"));
 
             // Cargar gramática para lo que se escuche en general
             GrammarBuilder gb = new GrammarBuilder();
@@ -61,77 +100,92 @@ namespace VoiceRecognitionMaze
 
             escucha.RecognizeAsync(RecognizeMode.Multiple);
 
-            habla.SpeakAsync("Hello, I am Charles and Welcome to Voice Maze, to start the game say start, to finish the game say finish.");
+            habla.SpeakAsync("Hello, I am Charles and Welcome to Voice Maze, to start the game say start, or, to finish the game say finish.");
 
             escucha.SpeechRecognized += new EventHandler<SpeechRecognizedEventArgs>(escucha_reconocida);
         }
 
         private void escucha_reconocida(object sender, SpeechRecognizedEventArgs e)
         {
+            TxbTamano.Text = e.Result.Text;
             float confidence = e.Result.Confidence;
             if (confidence < 0.50)
             {
                 Console.WriteLine("Low confidence");
             }
-            else if (r_init == 1)
+            else if (comenzar == 1)
             {
-                Console.WriteLine("r_init");
-                if (e.Result.Text == "Iniciar")
+                Console.WriteLine("comenzar");
+                if (e.Result.Text == "start")
                 {
-                    synthesizer.SpeakAsync("Desea utilizar la configuración prestablecida para el juego, diga si o no.");
-                    r_init = 0;
-                    r_pre = 1;
+                    habla.SpeakAsync("Do you want to set the table dimensions? Say yes or no");
+                    comenzar = 0;
+                    dimensiones = 1;
                 }
-                else if (e.Result.Text == "Terminar")
+                else if (e.Result.Text == "finish")
+                {
+                    Console.WriteLine("termino");
+                    habla.SpeakAsync("Thanks for playing, bye bye.");
+                    this.Close();
+                }
+            }
+            else if (dimensiones == 1)
+            {
+                Console.WriteLine("cambiar dimensiones");
+                if (e.Result.Text == "yes")
+                {
+                    habla.SpeakAsync("Please say the number of columns for the table");
+                    dimensiones = 0;
+                    banderaColumnas = 1;
+                }
+                else if (e.Result.Text == "No")
                 {
                     this.Close();
                 }
             }
-            else if (r_pre == 1)
+            else if (banderaColumnas == 1)
             {
-                Console.WriteLine("r_pre");
-                if (e.Result.Text == "Si")
+                Console.WriteLine("Poner columnas");
+                if (compararStringNumerosLetras(e.Result.Text, numerosEnLetras) != -1)
                 {
-                    synthesizer.SpeakAsync("Iniciando el juego");
-                    r_pre = 0;
-                    r_sta = 1;
-                    initialize_board_logic();
-                    synthesizer.SpeakAsync("Mueva el punto de inicio de la partida, si lo desea ahí diga, listo");
-                    r_row = 0;
-                    r_sta = 1;
-                    Console.WriteLine("TUPI");
-                    Console.WriteLine("r_sta");
-                    initial_point = search_initial_valid_position();
-                    this.board.GetControlFromPosition(initial_point.Position_Y, initial_point.Position_X).BackColor = Color.Green;
+                    columnas = compararStringNumerosLetras(e.Result.Text, numerosEnLetras);
+                }
+                else if (compararStringNumeros(e.Result.Text, numerosComunes) != -1)
+                {
+                    columnas = compararStringNumeros(e.Result.Text, numerosComunes);
+                }
 
-                }
-                else if (e.Result.Text == "No")
+                habla.SpeakAsync("Please say the number of rows for the table");
+                banderaColumnas = 0;
+                banderaFilas = 1;
+            }
+            else if (banderaFilas == 1)
+            {
+                if (compararStringNumerosLetras(e.Result.Text, numerosEnLetras) != -1)
                 {
-                    synthesizer.SpeakAsync("Cual seria el tamaño de cada cuadro, diga solo 1 número");
-                    recognizer.LoadGrammarAsync(new DictationGrammar()); // put all together
-                    r_pre = 0;
-                    r_squ = 1;
+                    filas = compararStringNumerosLetras(e.Result.Text, numerosEnLetras);
                 }
+                else if (compararStringNumeros(e.Result.Text, numerosComunes) != -1)
+                {
+                    filas = compararStringNumeros(e.Result.Text, numerosComunes);
+                }
+
+                habla.SpeakAsync("Please say the number for the size for the table boxes");
+                banderaFilas = 0;
+                banderaTamanoCasilla = 1;
+                Console.WriteLine(columnas.ToString() + filas.ToString());
             }
         }
 
         private void InicializarTablero()
         {
-            //m = columnas
-            //n = filas
-            //a = tamaño de cada cuadro 
-
-            int m, n, a;
             double costo_diagonal;
-            m = int.Parse(TxbColumnas.Text);
-            n = int.Parse(TxbFilas.Text);
-            a = int.Parse(TxbTamano.Text);
-            matrizTablero.ColumnCount = m;
-            matrizTablero.RowCount = n;
+            matrizTablero.ColumnCount = columnas;
+            matrizTablero.RowCount = filas;
 
             int[] pos_n = { 0, 0 };
-            int[] pos_final = { m - 1, n - 1 };
-            costo_diagonal = Math.Sqrt(2) * a;
+            int[] pos_final = { columnas - 1, filas - 1 };
+            costo_diagonal = Math.Sqrt(2) * tamanoCasillas;
 
             //CrearTablero(n, m);
             //LlenarTablero(n, m, pos_n, pos_final);
@@ -149,7 +203,7 @@ namespace VoiceRecognitionMaze
             foreach (DataGridViewColumn c in matrizTablero.Columns)
             {
                 // c.Width = matrizTablero.Width / matrizTablero.Columns.Count;
-                c.Width = a;
+                c.Width = tamanoCasillas;
                 c.Width += matrizTablero.Width / matrizTablero.Columns.Count;
             }
 
@@ -157,7 +211,7 @@ namespace VoiceRecognitionMaze
             foreach (DataGridViewRow r in matrizTablero.Rows)
             {
                 //r.Height = matrizTablero.Height / matrizTablero.Rows.Count;
-                r.Height = a;
+                r.Height = tamanoCasillas;
                 r.Height += matrizTablero.Height / matrizTablero.Rows.Count;
             }
         }
@@ -247,6 +301,59 @@ namespace VoiceRecognitionMaze
                     GuardarObstaculos(fila, columna, 1);
                 }
             }
+        }
+
+        private int compararStringNumerosLetras(String entradaAComparar, List<string> ListaAComparar)
+        {
+            bool contenido = ListaAComparar.Contains(entradaAComparar, StringComparer.OrdinalIgnoreCase);
+            int numeroReal = -1;
+
+            if (contenido)
+            {
+                switch (entradaAComparar)
+                {
+                    case "one":
+                        numeroReal = 1;
+                        break;
+                    case "two":
+                        numeroReal = 2;
+                        break;
+                    case "three":
+                        numeroReal = 3;
+                        break;
+                    case "four":
+                        numeroReal = 4;
+                        break;
+                    case "five":
+                        numeroReal = 5;
+                        break;
+                    case "six":
+                        numeroReal = 6;
+                        break;
+                    case "seven":
+                        numeroReal = 7;
+                        break;
+                    case "eight":
+                        numeroReal = 8;
+                        break;
+                    case "nine":
+                        numeroReal = 9;
+                        break;
+                    case "zero":
+                        numeroReal = 0;
+                        break;
+                    default:
+                        break;
+                }
+                return numeroReal;
+            }
+            return numeroReal;
+        }
+
+        private int compararStringNumeros(String entradaAComparar, List<string> ListaAComparar)
+        {
+            bool contains = ListaAComparar.Contains(entradaAComparar, StringComparer.OrdinalIgnoreCase);
+            return contains ? Int32.Parse(entradaAComparar) : -1;
         }
     }
 }
