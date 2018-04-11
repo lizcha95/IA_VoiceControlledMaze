@@ -493,7 +493,7 @@ namespace AlgortimoAEstrella
 
             if (Ruta == null)
             {
-                Console.Write("No hay solucion\n");
+                Console.Write("No hay solucion, no se encontró una ruta\n");
             }
             else
             {
