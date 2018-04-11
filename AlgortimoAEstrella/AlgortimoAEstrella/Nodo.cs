@@ -17,7 +17,7 @@ namespace AlgortimoAEstrella
         public double gn;
         public int movimiento;
         public int[] posicion = new int[2];
-        
+
 
         public Nodo(Nodo NodoPadre, int[] Posicion, double costoDirecto, double costoTotal, int Movimiento)
         {
@@ -27,7 +27,7 @@ namespace AlgortimoAEstrella
             fn = costoTotal;
             gn = costoDirecto;
             movimiento = Movimiento;
-           
+
 
 
         }
@@ -39,11 +39,16 @@ namespace AlgortimoAEstrella
 
         }
 
+        public Boolean esIgual(Nodo nodo)
+        {
+            return (posicion[0] == nodo.posicion[0] && posicion[1] == nodo.posicion[1]);
+        }
+
     }
 
 }
-        
 
-       
+
+
 
 
