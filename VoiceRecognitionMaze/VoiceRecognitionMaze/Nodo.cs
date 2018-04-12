@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 using System.Collections;
 
 
+
 namespace VoiceRecognitionMaze
 {
-    class Nodo
+
+    public class Nodo
     {
         public Nodo nodoPadre;
         public double fn;
@@ -16,7 +18,8 @@ namespace VoiceRecognitionMaze
         public int movimiento;
         public int[] posicion = new int[2];
 
-        public Nodo(Nodo NodoPadre,int[] Posicion, double costoDirecto, double costoTotal,int Movimiento)
+
+        public Nodo(Nodo NodoPadre, int[] Posicion, double costoDirecto, double costoTotal, int Movimiento)
         {
 
             nodoPadre = NodoPadre;
@@ -25,17 +28,27 @@ namespace VoiceRecognitionMaze
             gn = costoDirecto;
             movimiento = Movimiento;
 
-           
+
+
         }
 
-        public Nodo(int[] Posicion , int Movimiento)
+        public Nodo(int[] Posicion, int Movimiento)
         {
             posicion = Posicion;
             movimiento = Movimiento;
 
         }
 
-    }
+        public Boolean esIgual(Nodo nodo)
+        {
+            return (posicion[0] == nodo.posicion[0] && posicion[1] == nodo.posicion[1]);
+        }
 
     }
+
+}
+
+
+
+
 
