@@ -19,10 +19,18 @@ namespace VoiceRecognitionMaze
         SpeechRecognitionEngine escucha = new SpeechRecognitionEngine();
         SpeechSynthesizer habla = new SpeechSynthesizer();
 
-        public List<int[]> Tablero = new List<int[]>(); //Cuadricula donde 0 es vacio y 1 es obstaculo
-        public List<int[]> Obstaculos = new List<int[]>();  
-       
-        public Boolean diagonal; //Si se activa la opción para diagonales
+        public int[,] Tablero; //Cuadricula donde 0 es vacio y 1 es obstaculo
+        public double costo_diagonal;
+        public Boolean diagonal;
+
+        
+        public List<Nodo> listaAbierta = new List<Nodo>();
+        public List<int[]> listaCerrada = new List<int[]>();
+        public List<int[]> Ruta = new List<int[]>();
+        public List<Nodo> nodosAdyacentes = new List<Nodo>();
+
+        int[] pos_inicio = new int[3];
+        int[] pos_final = new int[3];
 
         // Variables para manejar el flujo del habla y qué opciones para el usuario
         int comenzar = 1;
@@ -31,9 +39,9 @@ namespace VoiceRecognitionMaze
         int banderaColumnas = 0;
         int banderaTamanoCasilla = 0;
         int banderaFilas = 0;
-        int filas = 0;
-        int columnas = 0;
-        int tamanoCasillas = 0;
+        int filas = 40;
+        int columnas = 40;
+        int tamanoCasillas = 15;
         int jugar = 0;
         int activarDiagonal = 0;
         int decisionFinal = 0;
@@ -54,6 +62,8 @@ namespace VoiceRecognitionMaze
         public Maze()
         {
             InitializeComponent();
+            InicializarTablero();
+            CrearRuta();
         }
         
 
@@ -90,7 +100,7 @@ namespace VoiceRecognitionMaze
             comandos.Add(new SemanticResultValue("finished", "finish"));
 
             // Cargar gramática para lo que se escuche en general
-            GrammarBuilder gb = new GrammarBuilder();
+           /* GrammarBuilder gb = new GrammarBuilder();
             gb.Culture = new System.Globalization.CultureInfo("en-US"); // Se pone el idioma en inglés
             gb.Append(comandos);
             Grammar maze = new Grammar(gb);
@@ -104,10 +114,10 @@ namespace VoiceRecognitionMaze
 
             habla.SpeakAsync("Hello, I am Charles and Welcome to Voice Maze, to start the game say start, or, to finish the game say finish.");
 
-            escucha.SpeechRecognized += new EventHandler<SpeechRecognizedEventArgs>(escucha_reconocida);
+            escucha.SpeechRecognized += new EventHandler<SpeechRecognizedEventArgs>(escucha_reconocida);*/
         }
 
-        private void escucha_reconocida(object sender, SpeechRecognizedEventArgs e)
+        /*private void escucha_reconocida(object sender, SpeechRecognizedEventArgs e)
         {
             TxbTamano.Text = e.Result.Text;
             float confidence = e.Result.Confidence;
@@ -185,7 +195,7 @@ namespace VoiceRecognitionMaze
 
                 habla.SpeakAsync("Creating table");
                 banderaTamanoCasilla = 0;
-                InicializarTablero();
+                
                 jugar = 1;
             }
             else if (jugar == 1)
@@ -259,47 +269,8 @@ namespace VoiceRecognitionMaze
                     }
                 }
             }
-        }
+        }*/
 
-        private void InicializarTablero()
-        {
-            double costo_diagonal;
-            matrizTablero.ColumnCount = columnas;
-            matrizTablero.RowCount = filas;
-
-            int[] pos_n = { 0, 0 };
-            int[] pos_final = { columnas - 1, filas - 1 };
-            costo_diagonal = Math.Sqrt(2) * tamanoCasillas;
-
-            //CrearTablero(n, m);
-            //LlenarTablero(n, m, pos_n, pos_final);
-            //cargarDatos(pos_n,pos_final);
-            //formatoCelda(pos_n,pos_final);
-
-            //Nodo nodo_n = new Nodo(null, pos_n, 0, 0, 0); //Posicion de inicio que se elija para el agente
-            //Nodo nodo_final = new Nodo(null, pos_final, 0, 0, 0); //Posicion final que se elija para el agente
-
-            //Color tablero
-            matrizTablero.BackgroundColor = Color.White;
-            matrizTablero.DefaultCellStyle.BackColor = Color.White;
-
-            //Establecer el ancho de las columnas
-            foreach (DataGridViewColumn c in matrizTablero.Columns)
-            {
-                 c.Width = matrizTablero.Width / matrizTablero.Columns.Count;
-                //c.Width = tamanoCasillas;
-                //c.Width += matrizTablero.Width / matrizTablero.Columns.Count;
-            }
-
-            //Establecer el ancho de las filas
-            foreach (DataGridViewRow r in matrizTablero.Rows)
-            {
-                r.Height = matrizTablero.Height / matrizTablero.Rows.Count;
-                //r.Height = tamanoCasillas;
-                //r.Height += matrizTablero.Height / matrizTablero.Rows.Count;
-            }
-            jugar = 1;
-        }
 
         private void BtnLimpiar_Click(object sender, EventArgs e)
         {
@@ -307,87 +278,161 @@ namespace VoiceRecognitionMaze
             matrizTablero.Columns.Clear();
             matrizTablero.Refresh();
         }
-        
-        private void LlenarTablero(int n, int m,int[] pos_inicio, int[] pos_final)
+
+       /* private void formatoCelda(int [] pos_n, int[] pos_final)
+         {
+             if(Tablero[pos_n[0]][pos_n[1]] == 2)
+             {
+                 DataGridViewCell celda = matrizTablero[pos_n[0], pos_n[1]];
+                 celda.Style.BackColor = Color.Green;
+                 celda.ReadOnly = false;
+                 celda.Style.SelectionBackColor = Color.Green;
+             }
+             if (Tablero[pos_final[0]][pos_final[1]] == 3)
+             {
+                 DataGridViewCell celda = matrizTablero[pos_final[0], pos_final[1]];
+                 celda.Style.BackColor = Color.Red;
+                 celda.ReadOnly = false;
+                 celda.Style.SelectionBackColor = Color.Red;
+             }
+         }*/
+
+ //---------------------------------------------Inicializar Tablero------------------------------------------------
+        private void InicializarTablero()
         {
-            int i = 0;
-            int j = 0;
-            while(i < n)
+            matrizTablero.RowCount = filas; //m
+            matrizTablero.ColumnCount = columnas; //n
+
+            Tablero = new int[columnas, filas];
+
+            //Inicializar tablero con 0's y marcar inicio y fin
+            llenarArreglo(Tablero);
+
+            //Marcar en el Tablero en codigo el inicio y fin
+            Tablero[2, 2] = 2;
+            Tablero[columnas - 2, filas - 2] = 3;
+
+            //Coordenadas de la posicion de inicio y fin
+            pos_inicio[0] = 2;
+            pos_inicio[1] = 2;
+
+            pos_final[0] = columnas-2; //columna
+            pos_final[1] = filas-2;//fila
+
+
+            costo_diagonal = Math.Sqrt(2) * tamanoCasillas;
+            diagonal = true;
+
+            //Sacar posiciones disponibles donde puedo poner obstaculos
+            List<int[]> disponibles = new List<int[]>();
+            disponibles = ObtenerPosicionesDisponibles(Tablero, filas, columnas);
+            PonerObstaculos(Tablero, disponibles, (columnas * filas) / 3);
+
+            //Pintar Tablero
+            matrizTablero.BackgroundColor = Color.White;
+            matrizTablero.DefaultCellStyle.BackColor = Color.White;
+
+            //Pintar nodo inicial
+            DataGridViewCell InicioAgente = matrizTablero[pos_inicio[0], pos_inicio[1]];
+            InicioAgente.Style.BackColor = Color.Green;
+            InicioAgente.ReadOnly = false;
+            InicioAgente.Style.SelectionBackColor = Color.Green;
+
+            for (int i = 0; i < columnas; i++)
             {
-                while (j < m)
+                for (int j = 0; j < filas; j++)
                 {
-                    Tablero[i][j] = 0;
-                    j += 1;
+
+                    if (Tablero[i, j] == 1)
+                    {
+                        //Pintar obstaculos
+                        DataGridViewCell obstaculo = matrizTablero[i,j];
+                        obstaculo.Style.BackColor = Color.Black;
+                        obstaculo.ReadOnly = false;
+                        obstaculo.Style.SelectionBackColor = Color.Black;
+                    }
+
+                    if (Tablero[i, j] == 3)
+                    {
+                        //Pintar nodo final
+                        DataGridViewCell PuntoLlegada = matrizTablero[pos_final[0], pos_final[1]];
+                        PuntoLlegada.Style.BackColor = Color.Red;
+                        PuntoLlegada.ReadOnly = false;
+                        PuntoLlegada.Style.SelectionBackColor = Color.Red;
+                        jugar = 1;
+                    }
+
                 }
-                i += 1;
-                j = 0;
-            }
-        }
 
-        private void CrearTablero(int n, int m)
-        {
-            int[] filas = new int[m];
-            for(int i =0; i< n; i++)
+            }        
+            //Establecer tamaño de cada cuadro
+            foreach (DataGridViewColumn c in matrizTablero.Columns)
             {
-                Tablero.Add(filas);
+                c.Width = tamanoCasillas;
             }
-        }
 
-        private void GuardarObstaculos(int x, int y, int identificador)
-        {
-            int[] marca_obstaculo = new int[3];
-            marca_obstaculo[0] = x;
-            marca_obstaculo[1] = y;
-            marca_obstaculo[2] = identificador;
-            Obstaculos.Add(marca_obstaculo);
-           // cargarDatos();
-        }
-
-        private void cargarDatos(int [] pos_n, int [] pos_final)
-        {
-            Tablero[pos_n[0]][pos_n[1]] = 2;
-            Tablero[pos_final[0]][pos_final[1]] = 3;
-        }
-
-        private void formatoCelda(int [] pos_n, int[] pos_final)
-        {
-            if(Tablero[pos_n[0]][pos_n[1]] == 2)
+            foreach (DataGridViewRow r in matrizTablero.Rows)
             {
-                DataGridViewCell celda = matrizTablero[pos_n[0], pos_n[1]];
-                celda.Style.BackColor = Color.Green;
-                celda.ReadOnly = false;
-                celda.Style.SelectionBackColor = Color.Green;
+                r.Height = tamanoCasillas;  
             }
-            if (Tablero[pos_final[0]][pos_final[1]] == 3)
-            {
-                DataGridViewCell celda = matrizTablero[pos_final[0], pos_final[1]];
-                celda.Style.BackColor = Color.Red;
-                celda.ReadOnly = false;
-                celda.Style.SelectionBackColor = Color.Red;
-            }
+            jugar = 1;
         }
 
-        private void matrizTablero_CellClick(object sender, DataGridViewCellEventArgs e)
+    public void CrearRuta()
         {
-            foreach (DataGridViewCell celda in matrizTablero.SelectedCells)
+            Ruta = Algoritmo_A_Estrella(pos_inicio, pos_final, costo_diagonal, diagonal, Tablero);
+
+            if (Ruta == null)
             {
-                celda.Style.BackColor = Color.Black;
-                celda.ReadOnly = false;
-                celda.Style.SelectionBackColor = Color.Black;
-
-                /*string msg = String.Format("Row: {0}, Column: {1}",celda.RowIndex,
-                celda.ColumnIndex);
-                MessageBox.Show(msg, "Current Cell");*/
-
-                if(celda.Style.BackColor == Color.Black)
+                System.Console.WriteLine("No hay solucion");
+            }
+            else
+            {
+                PonerRuta(Ruta);
+                for (int i = 0; i < Tablero.GetLength(0); i++)
                 {
-                    int fila = celda.RowIndex;
-                    int columna = celda.ColumnIndex;
-                    GuardarObstaculos(fila, columna, 1);
+                    for (int j = 0; j < Tablero.GetLength(1); j++)
+                    {
+                        if (Tablero[i, j] == 4)
+                        {
+                            DataGridViewCell camino = matrizTablero[i, j];
+                            camino.Style.BackColor = Color.Blue;
+                            camino.ReadOnly = false;
+                            camino.Style.SelectionBackColor = Color.Blue;
+
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+
                 }
             }
         }
+//------------------------------------------Limpiar la ruta-----------------------------
+        public void LimpiarRuta()
+        {
+            for (int i = 0; i < Tablero.GetLength(0); i++)
+            {
+                for (int j = 0; j < Tablero.GetLength(1); j++)
+                {
+                    if (Tablero[i, j] == 4)
+                    {
+                        Tablero[i, j] = 0;
+                        DataGridViewCell camino = matrizTablero[i, j];
+                        camino.Style.BackColor = Color.White;
+                        camino.ReadOnly = false;
+                        camino.Style.SelectionBackColor = Color.White;
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
 
+            }
+        }
         private int compararStringNumerosLetras(String entradaAComparar, List<string> ListaAComparar)
         {
             bool contenido = ListaAComparar.Contains(entradaAComparar, StringComparer.OrdinalIgnoreCase);
@@ -427,9 +472,7 @@ namespace VoiceRecognitionMaze
                     case "zero":
                         numeroReal = 0;
                         break;
-                    case "twenty":
-                        numeroReal = 20;
-                        break;
+                    
                     default:
                         break;
                 }
@@ -443,5 +486,425 @@ namespace VoiceRecognitionMaze
             bool contains = ListaAComparar.Contains(entradaAComparar, StringComparer.OrdinalIgnoreCase);
             return contains ? Int32.Parse(entradaAComparar) : -1;
         }
+
+        private void matrizTablero_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        //----------------------------------------Métodos para imprimir------------------------------------------------------------
+
+        public void imprimir_ListaCerrada(List<int[]> cerrada)
+        {
+            foreach (int[] value in cerrada)
+            {
+                Console.Write("[" + value[0] + "," + value[1] + "]" + " ");
+                Console.WriteLine();
+            }
+        }
+
+
+        public void imprimir_ListaAbierta(List<Nodo> abierta)
+        {
+            foreach (Nodo value in abierta)
+            {
+                Console.Write("[" + value.posicion[0] + "," + value.posicion[1] + "]" + " ");
+                Console.WriteLine();
+            }
+        }
+
+        public void imprimir_Adyacentes(List<Nodo> adyacentes)
+        {
+            foreach (Nodo value in adyacentes)
+            {
+                Console.Write("[" + value.posicion[0] + "," + value.posicion[1] + "]" + " ");
+                Console.WriteLine();
+            }
+        }
+
+        public void imprimir_solucion(int[,] tablero)
+        {
+            Console.Write("Tablero con ruta\n");
+            Console.WriteLine();
+
+            for (int f = 0; f < tablero.GetLength(0); f++)
+            {
+                for (int c = 0; c < tablero.GetLength(1); c++)
+                {
+                    Console.Write(tablero[f, c] + " ");
+                }
+                Console.WriteLine();
+
+            }
+        }
+
+        public void Imprimir_Tablero_Obstaculos(int[,] tablero)
+        {
+            Console.Write("Tablero con obstaculos\n");
+
+            for (int f = 0; f < tablero.GetLength(0); f++)
+            {
+                for (int c = 0; c < tablero.GetLength(1); c++)
+                {
+                    Console.Write(tablero[f, c] + " ");
+                }
+                Console.WriteLine();
+            }
+        }
+
+
+        //----------------------------------------------------Métodos para modificar el tablero----------------------------------------------------------------------
+
+
+        //Marca la ruta en el tablero de acuerdo al mejor camino obtenido
+        public int[,] PonerRuta(List<int[]> ruta)
+        {
+            foreach (int[] value in ruta)
+            {
+
+                if (Tablero[value[0], value[1]] == 2)
+                {
+                    continue;
+                }
+                if (Tablero[value[0], value[1]] == 3)
+                {
+                    continue;
+                }
+                Tablero[value[0], value[1]] = 4;
+
+            }
+            return Tablero;
+
+
+        }
+
+        //LLena el arreglo con 0's
+        public int[,] llenarArreglo(int[,] tablero)
+        {
+            for (int f = 0; f < tablero.GetLength(0); f++)
+            {
+                for (int c = 0; c < tablero.GetLength(1); c++)
+                {
+
+                    tablero[f, c] = 0;
+                }
+            }
+            return tablero;
+        }
+
+        //Obtiene las posiciones disponibles en el tablero para poner obstaculos
+        public List<int[]> ObtenerPosicionesDisponibles(int[,] tablero, int filas, int columnas)
+        {
+
+            List<int[]> posDisponibles = new List<int[]>();
+
+            posDisponibles.Clear();
+
+            for (int i = 0; i < columnas ; i++)
+            {
+                for (int j = 0; j < filas; j++)
+                {
+                    int[] posiciones = new int[3];
+
+                    if (tablero[i, j] != 0)
+                    {
+
+                    }
+                    else
+                    {
+                        posiciones[0] = i;
+                        posiciones[1] = j;
+
+                        posDisponibles.Add(posiciones);
+
+
+                        /*Console.Write("Lo que tiene el arreglo en el momento\n");
+                        foreach (int[] value in posDisponibles)
+                        {
+                            
+                            Console.Write("[" + value[0] + "," + value[1] + "]" + " ");
+                            Console.WriteLine();
+                        }*/
+
+
+                    }
+
+                }
+
+            }
+            return posDisponibles;
+        }
+
+        //Determina si un valor en el tablero ya está ocupado
+        public Boolean valorOcupado(List<int[]> posOcupadas, List<int[]> pos_disponibles, int pos)
+        {
+            foreach (int[] value in posOcupadas)
+            {
+                if (value[0] == pos_disponibles[pos][0] && value[1] == pos_disponibles[pos][1])
+                {
+                    return true;
+                }
+                continue;
+
+            }
+            return false;
+        }
+
+        //Pone los obstaculos en el tablero en las posiciones disponibles
+        public int[,] PonerObstaculos(int[,] tablero, List<int[]> pos_disponibles, int cant_obstaculos)
+        {
+            int i = 0;
+            int x = 0;
+            int y = 0;
+            Boolean estado;
+
+            List<int[]> posOcupadas = new List<int[]>();
+            Random random = new Random();
+
+            while (i < cant_obstaculos)
+            {
+                estado = true;
+
+                while (estado)
+                {
+
+                    //Console.Write("Posicion random en el ciclo \n");
+                    int pos = random.Next(0, pos_disponibles.Count());
+                    //Console.Write(pos);
+                    //Console.WriteLine();
+
+                    if (valorOcupado(posOcupadas, pos_disponibles, pos) == true)
+                    {
+
+
+                        //Console.Write("Existe elemento en la lista ocupada \n");
+
+
+                        /*Console.Write("Pos disponibles \n");
+                        Console.Write(pos_disponibles[pos][0]);
+                        Console.WriteLine();
+                        Console.Write(pos_disponibles[pos][1]);
+                        Console.WriteLine();*/
+                        estado = true;
+                    }
+                    else
+                    {
+                        int[] ocupadas = new int[3];
+
+                        //Console.Write("Posicion x\n");
+                        x = pos_disponibles[pos][0];
+                        //Console.Write(x);
+                        //Console.WriteLine();
+                        //Console.Write("Posicion y\n");
+                        y = pos_disponibles[pos][1];
+                        //Console.Write(y);
+                        //Console.WriteLine();
+
+                        ocupadas[0] = x;
+                        ocupadas[1] = y;
+
+                        tablero[x, y] = 1;
+                        posOcupadas.Add(ocupadas);
+
+
+                        /*Console.Write("Posiciones ocupadas\n");
+                        foreach (int[] value in posOcupadas)
+                        {
+
+                            Console.Write("[" + value[0] + "," + value[1] + "]" + " ");
+                            Console.WriteLine();
+                        }*/
+
+                        estado = false;
+                    }
+
+                }
+                i += 1;
+            }
+            return tablero;
+        }
+
+        //-------------------------------------------------Algoritmo de Búsqueda A Estrella-------------------------------------------------------------
+
+        //Encuentra los nodos adyacentes del nodo actual
+        public List<Nodo> encontrarNodosAdyacentes(Nodo nodoActual, int[,] Tablero, Boolean estado_diagonal)
+        {
+            List<Nodo> adyacentes = new List<Nodo>();
+            int x = nodoActual.posicion[0];
+            int y = nodoActual.posicion[1];
+
+            //Console.Write("Encontrando nodos adyacentes\n");
+            if (x - 1 >= 0 && Tablero[x - 1, y] != 1)
+            {
+                int[] posIz = new int[2];
+                posIz[0] = x - 1;
+                posIz[1] = y;
+
+                Nodo nodo = new Nodo(posIz, 0);  //Crea un nodo sólo con la posicion y el movimiento
+                adyacentes.Add(nodo);
+            }
+
+            if (x + 1 < columnas && Tablero[x + 1, y] != 1)
+            {
+                int[] posDer = new int[2];
+                posDer[0] = x + 1;
+                posDer[1] = y;
+                Nodo nodo = new Nodo(posDer, 0);
+                adyacentes.Add(nodo);
+            }
+
+            if (y - 1 >= 0 && Tablero[x, y - 1] != 1)
+            {
+                int[] posArriba = new int[2];
+                posArriba[0] = x;
+                posArriba[1] = y - 1;
+                Nodo nodo = new Nodo(posArriba, 0);
+                adyacentes.Add(nodo);
+            }
+
+            if (y + 1 < filas && Tablero[x, y + 1] != 1)
+            {
+                int[] posAbajo = new int[2];
+                posAbajo[0] = x;
+                posAbajo[1] = y + 1;
+                Nodo nodo = new Nodo(posAbajo, 0);
+                adyacentes.Add(nodo);
+            }
+
+            //Revisa diagonales
+            if (estado_diagonal)
+            {
+                if (x - 1 >= 0 && y - 1 >= 0 && Tablero[x - 1, y - 1] != 1)
+                {
+                    int[] ArribaIzq = new int[2];
+                    ArribaIzq[0] = x - 1;
+                    ArribaIzq[1] = y - 1;
+                    Nodo nodo = new Nodo(ArribaIzq, 1);
+                    adyacentes.Add(nodo);
+                }
+
+                if (x + 1 < columnas && y - 1 >= 0 && Tablero[x + 1, y - 1] != 1)
+                {
+                    int[] ArribaDer = new int[2];
+                    ArribaDer[0] = x + 1;
+                    ArribaDer[1] = y - 1;
+                    Nodo nodo = new Nodo(ArribaDer, 1);
+                    adyacentes.Add(nodo);
+                }
+
+                if (x - 1 >= 0 && y + 1 < filas && Tablero[x - 1, y + 1] != 1)
+                {
+                    int[] AbajoIzq = new int[2];
+                    AbajoIzq[0] = x - 1;
+                    AbajoIzq[1] = y + 1;
+                    Nodo nodo = new Nodo(AbajoIzq, 1);
+                    adyacentes.Add(nodo);
+                }
+
+                if (x + 1 < columnas && y + 1 < filas && Tablero[x + 1, y + 1] != 1)
+                {
+                    int[] AbajoDer = new int[2];
+                    AbajoDer[0] = x + 1;
+                    AbajoDer[1] = y + 1;
+                    Nodo nodo = new Nodo(AbajoDer, 1);
+                    adyacentes.Add(nodo);
+                }
+            }
+            return adyacentes;
+        }
+
+        //Agregar un nodo a la lista abierta de forma ordenada
+        public void agregarNodoAListaAbierta(Nodo nodo)
+        {
+            Int32 indice = 0;
+            double costo = nodo.fn;
+            while ((listaAbierta.Count() > indice) &&
+            (costo < listaAbierta[indice].fn))
+            {
+                indice++;
+            }
+            listaAbierta.Insert(indice, nodo);
+        }
+
+        //Calcula la heuristica de cada uno de los nodos adyacentes
+        public void calcular_fn(Nodo nodoActual, Nodo nodoFinal, List<Nodo> adyacentes, List<Nodo> listaAbierta, List<int[]> listaCerrada, double costoDiagonal)
+        {
+            double fn;
+            double gn;
+            Nodo Nodo_Adyacente;
+
+            foreach (Nodo nodo_abierto in adyacentes)
+            {
+
+                if (!listaCerrada.Contains(nodo_abierto.posicion))
+                {
+                    if (nodo_abierto.movimiento == 0) // Si el movimiento es directo
+                    {
+                        gn = nodoActual.gn + tamanoCasillas;
+                    }
+                    else
+                    {
+                        gn = nodoActual.gn + costoDiagonal; //Movimiento en diagonal
+                    }
+
+
+                    fn = (Math.Abs(nodo_abierto.posicion[0] - nodoFinal.posicion[0]) + Math.Abs(nodo_abierto.posicion[1] - nodoFinal.posicion[1])) * tamanoCasillas + gn;
+                    Nodo_Adyacente = new Nodo(nodoActual, nodo_abierto.posicion, gn, fn, nodo_abierto.movimiento);//Se crea el nodo adyacente con el nodo padre, gn y fn calculados
+                    agregarNodoAListaAbierta(Nodo_Adyacente);//Agrega todos los hijos del nodo actual.
+
+
+                }
+
+            }
+
+        }
+
+        public List<int[]> Algoritmo_A_Estrella(int[] pos_n, int[] pos_final, double costo, Boolean diagonal, int[,] Tablero)
+        {
+            Nodo nodo_n = new Nodo(null, pos_n, 0, 0, 0); //Posicion de inicio que se elija para el agente
+            Nodo nodo_final = new Nodo(null, pos_final, 0, 0, 0); //Posicion final que se elija para el agente
+
+            listaAbierta.Clear();
+            listaCerrada.Clear();
+            nodosAdyacentes.Clear();
+
+            agregarNodoAListaAbierta(nodo_n);
+
+            while (listaAbierta.Count() > 0)
+            {
+                Nodo nodoActual = listaAbierta[listaAbierta.Count() - 1];
+                if (nodoActual.posicion[0] == nodo_final.posicion[0] && nodoActual.posicion[1] == nodo_final.posicion[1])
+                {
+                    List<int[]> mejorCamino = new List<int[]>();
+                    while (nodoActual != null)
+                    {
+                        mejorCamino.Insert(0, nodoActual.posicion);
+                        nodoActual = nodoActual.nodoPadre;
+                    }
+                    return mejorCamino;
+                }
+                listaAbierta.Remove(nodoActual);
+
+                nodosAdyacentes = encontrarNodosAdyacentes(nodoActual, Tablero, diagonal); //Encuentra los nodos adyacentes del nodo actual
+                calcular_fn(nodoActual, nodo_final, nodosAdyacentes, listaAbierta, listaCerrada, costo); //Calcula el fn de cada uno de los nodos adyacentes al nodo actual
+                listaCerrada.Add(nodoActual.posicion);
+            }
+
+            return null;
+        }
+
+        //Refrescar la pantalla
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            Invalidate();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            LimpiarRuta();
+        }
+   
+       
     }
 }

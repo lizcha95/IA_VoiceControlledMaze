@@ -131,9 +131,9 @@ namespace AlgortimoAEstrella
 
             posDisponibles.Clear();
 
-            for (int i = 0; i < n; i++)
+            for (int i = 0; i < m; i++)
             {
-                for (int j = 0; j < m; j++)
+                for (int j = 0; j < n; j++)
                 {
                     int[] posiciones = new int[3];
 
@@ -487,7 +487,7 @@ namespace AlgortimoAEstrella
             Console.WriteLine();
 
 
-            Console.Write("Ejecutando algoritmo estrella\n");
+            /*Console.Write("Ejecutando algoritmo estrella\n");
             Console.WriteLine();
             Ruta = Algoritmo_A_Estrella(pos_n, pos_final, costo_diagonal,diagonal,Tablero);
 
