@@ -126,6 +126,7 @@
     <Compile Include="Maze.Designer.cs">
       <DependentUpon>Maze.cs</DependentUpon>
     </Compile>
+    <Compile Include="Movimiento.cs" />
     <Compile Include="Nodo.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

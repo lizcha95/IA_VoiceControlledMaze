@@ -39,9 +39,10 @@ namespace VoiceRecognitionMaze
         int banderaColumnas = 0;
         int banderaTamanoCasilla = 0;
         int banderaFilas = 0;
-        int filas = 40;
-        int columnas = 40;
-        int tamanoCasillas = 15;
+        int mostrarRuta = 0;
+        int filas = 0;
+        int columnas = 0;
+        int tamanoCasillas = 0;
         int jugar = 0;
         int activarDiagonal = 0;
         int decisionFinal = 0;
@@ -56,14 +57,26 @@ namespace VoiceRecognitionMaze
         int cambiarM = 0;
         int cambiarA = 0;
 
-        List<string> numerosEnLetras = new List<string> { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "zero","twenty"};
-        List<string> numerosComunes = new List<string> { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0","20"};
+        List<string> numerosEnLetras = new List<string> { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "zero","ten","eleven",
+            "twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen","twenty","twenty one","twenty two","twenty three",
+        "twenty four", "twenty five","twenty six","twenty seven", "twenty eight", "twenty nine","thirty","thirty one","thirty two","thirty three",
+        "thirty four", "thirty five", "thirty six", "thirty seven","thirty eight", "thirty nine","forty","forty one", "forty two","forty three",
+        "forty five", "forty six", "forty seven","forty eight", "forty nine", "fifty","fifty one", "fifty two", "fifty three", "fifty four", "fifty five",
+        "fifty six", "fifty seven", "fifty eight", "fifty nine","sixty","sixty one","sixty two","sixty three","sixty four","sixty five","sixty six",
+        "sixty seven","sixty eight","sixty nine","seventy","seventy one","seventy two","seventy three","seventy four","seventy five","seventy six","seventy seven",
+        "seventy eight", "seventy nine","eighty","eighty one", "eighty two","eighty three","eighty four","eighty five","eighty six","eighty seven","eighty eight",
+        "eighty nine","ninety","ninety one","ninety two","ninety three","ninety four","ninety five","ninety six", "ninety seven","ninety eight","ninety nine",
+         "hundred"};
+        List<string> numerosComunes = new List<string> { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0","10","11","12","13","14","15","16","17","18","19","20",
+        "21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51",
+        "52","53","54","55","56","57","58","59","60","61","62","63","64","65","66","67","68","69","70","71","72","73","74","75","76","77","78","79","80","81","82",
+        "83","84","85","86","87","88","89","90","91","92","93","94","95","96","97","98","99","100"};
 
         public Maze()
         {
             InitializeComponent();
-            InicializarTablero();
-            CrearRuta();
+            //InicializarTablero();
+            //CrearRuta();
         }
         
 
@@ -72,8 +85,20 @@ namespace VoiceRecognitionMaze
             Choices comandos = new Choices();
 
             // Crear gramática para escucha
-            comandos.Add(new string[] { "start", "clean", "up", "down", "left", "right", "done", "yes", "no", "finish", "diagonal", "option", "rows", "columns", "stop",
-                                        "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "zero","twenty", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0","20" });
+            comandos.Add(new string[] { "start", "clean", "up", "down", "left", "right", "done", "yes", "no", "finish", "diagonal", "option", "rows", "columns", "stop","show route",
+                                       "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "zero","ten","eleven",
+            "twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen","twenty","twenty one","twenty two","twenty three",
+        "twenty four", "twenty five","twenty six","twenty seven", "twenty eight", "twenty nine","thirty","thirty one","thirty two","thirty three",
+        "thirty four", "thirty five", "thirty six", "thirty seven","thirty eight", "thirty nine","forty","forty one", "forty two","forty three",
+        "forty five", "forty six", "forty seven","forty eight", "forty nine", "fifty","fifty one", "fifty two", "fifty three", "fifty four", "fifty five",
+        "fifty six", "fifty seven", "fifty eight", "fifty nine","sixty","sixty one","sixty two","sixty three","sixty four","sixty five","sixty six",
+        "sixty seven","sixty eight","sixty nine","seventy","seventy one","seventy two","seventy three","seventy four","seventy five","seventy six","seventy seven",
+        "seventy eight", "seventy nine","eighty","eighty one", "eighty two","eighty three","eighty four","eighty five","eighty six","eighty seven","eighty eight",
+        "eighty nine","ninety","ninety one","ninety two","ninety three","ninety four","ninety five","ninety six", "ninety seven","ninety eight","ninety nine",
+         "hundred","1", "2", "3", "4", "5", "6", "7", "8", "9", "0","10","11","12","13","14","15","16","17","18","19","20",
+        "21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51",
+        "52","53","54","55","56","57","58","59","60","61","62","63","64","65","66","67","68","69","70","71","72","73","74","75","76","77","78","79","80","81","82",
+        "83","84","85","86","87","88","89","90","91","92","93","94","95","96","97","98","99","100"});
 
             // Palabras que pueden ser escuchadas mal, las traducimos al idioma del programa
             comandos.Add(new SemanticResultValue("begin", "start"));
@@ -100,7 +125,7 @@ namespace VoiceRecognitionMaze
             comandos.Add(new SemanticResultValue("finished", "finish"));
 
             // Cargar gramática para lo que se escuche en general
-           /* GrammarBuilder gb = new GrammarBuilder();
+            GrammarBuilder gb = new GrammarBuilder();
             gb.Culture = new System.Globalization.CultureInfo("en-US"); // Se pone el idioma en inglés
             gb.Append(comandos);
             Grammar maze = new Grammar(gb);
@@ -114,12 +139,12 @@ namespace VoiceRecognitionMaze
 
             habla.SpeakAsync("Hello, I am Charles and Welcome to Voice Maze, to start the game say start, or, to finish the game say finish.");
 
-            escucha.SpeechRecognized += new EventHandler<SpeechRecognizedEventArgs>(escucha_reconocida);*/
+            escucha.SpeechRecognized += new EventHandler<SpeechRecognizedEventArgs>(escucha_reconocida);
         }
 
-        /*private void escucha_reconocida(object sender, SpeechRecognizedEventArgs e)
+        private void escucha_reconocida(object sender, SpeechRecognizedEventArgs e)
         {
-            TxbTamano.Text = e.Result.Text;
+           //TxbTamano.Text = e.Result.Text;
             float confidence = e.Result.Confidence;
             if (confidence < 0.50)
             {
@@ -192,37 +217,56 @@ namespace VoiceRecognitionMaze
                 {
                     tamanoCasillas = compararStringNumeros(e.Result.Text, numerosComunes);
                 }
-
-                habla.SpeakAsync("Creating table");
-                banderaTamanoCasilla = 0;
                 
-                jugar = 1;
+                habla.SpeakAsync("Creating table");
+                InicializarTablero();
+
+                habla.SpeakAsync("Do you want the agent to be able to cross diagonals? Say yes or no");
+                banderaTamanoCasilla = 0;
+                activarDiagonal = 1;
+
             }
-            else if (jugar == 1)
+            /*else if (jugar == 1)
             {
                 habla.SpeakAsync("Do you want the agent to be able to cross diagonals? Say yes or no");
                 jugar = 0;
                 activarDiagonal = 1;
-            }
+            }*/
             else if (activarDiagonal == 1)
             {
                 if (e.Result.Text == "yes")
                 {
-                    habla.SpeakAsync("Diagonal feature activated");
+                    habla.SpeakAsync("Diagonal feature activated"); 
+                    diagonal = true;
+                    habla.SpeakAsync("Say show route to see the way out of the maze.");
+                    //moverAgente = 1;
                     activarDiagonal = 0;
-                    permitirDiagonal = 1;
-                    habla.SpeakAsync("To play, please say up, down, left, right, left or stop for fixing the agent's position.");
-                    moverAgente = 1;
+                    //permitirDiagonal = 1;
+                    mostrarRuta = 1;
                 }
                 else if (e.Result.Text == "no")
                 {
                     habla.SpeakAsync("Diagonal feature deactivated");
-                    habla.SpeakAsync("To play, please say up, down, left, right, left or stop for fixing the agent's position.");
-                    permitirDiagonal = 0;
+                    //habla.SpeakAsync("To play, please say up, down, left, right, left or stop for fixing the agent's position.");
+                    diagonal = false;
+                    //moverAgente = 1;
+
+                    habla.SpeakAsync("Say show route to see the way out of the maze.");
+                    //permitirDiagonal = 0;
                     activarDiagonal = 0;
-                    moverAgente = 1;
+                    mostrarRuta = 1;
                 }
             }
+            else if(mostrarRuta == 1)
+            {
+                if (e.Result.Text == "show route")
+                {
+                    habla.SpeakAsync("Showing the shortest path");
+                    CrearRuta();
+                    mostrarRuta = 0;
+                }
+            }
+
             else if (moverAgente == 1)
             {                
                 if (e.Result.Text == "up")
@@ -269,39 +313,17 @@ namespace VoiceRecognitionMaze
                     }
                 }
             }
-        }*/
-
-
-        private void BtnLimpiar_Click(object sender, EventArgs e)
-        {
-            matrizTablero.Rows.Clear();
-            matrizTablero.Columns.Clear();
-            matrizTablero.Refresh();
         }
-
-       /* private void formatoCelda(int [] pos_n, int[] pos_final)
-         {
-             if(Tablero[pos_n[0]][pos_n[1]] == 2)
-             {
-                 DataGridViewCell celda = matrizTablero[pos_n[0], pos_n[1]];
-                 celda.Style.BackColor = Color.Green;
-                 celda.ReadOnly = false;
-                 celda.Style.SelectionBackColor = Color.Green;
-             }
-             if (Tablero[pos_final[0]][pos_final[1]] == 3)
-             {
-                 DataGridViewCell celda = matrizTablero[pos_final[0], pos_final[1]];
-                 celda.Style.BackColor = Color.Red;
-                 celda.ReadOnly = false;
-                 celda.Style.SelectionBackColor = Color.Red;
-             }
-         }*/
 
  //---------------------------------------------Inicializar Tablero------------------------------------------------
         private void InicializarTablero()
         {
             matrizTablero.RowCount = filas; //m
             matrizTablero.ColumnCount = columnas; //n
+
+            Movimiento mov = new Movimiento();
+            mov.MoverAbajo();
+           
 
             Tablero = new int[columnas, filas];
 
@@ -321,7 +343,7 @@ namespace VoiceRecognitionMaze
 
 
             costo_diagonal = Math.Sqrt(2) * tamanoCasillas;
-            diagonal = true;
+           
 
             //Sacar posiciones disponibles donde puedo poner obstaculos
             List<int[]> disponibles = new List<int[]>();
@@ -332,17 +354,19 @@ namespace VoiceRecognitionMaze
             matrizTablero.BackgroundColor = Color.White;
             matrizTablero.DefaultCellStyle.BackColor = Color.White;
 
-            //Pintar nodo inicial
-            DataGridViewCell InicioAgente = matrizTablero[pos_inicio[0], pos_inicio[1]];
-            InicioAgente.Style.BackColor = Color.Green;
-            InicioAgente.ReadOnly = false;
-            InicioAgente.Style.SelectionBackColor = Color.Green;
-
             for (int i = 0; i < columnas; i++)
             {
                 for (int j = 0; j < filas; j++)
                 {
+                    if(Tablero[i,j] == 2)
+                    {
+                        //Pintar nodo inicial
+                        DataGridViewCell InicioAgente = matrizTablero[pos_inicio[0], pos_inicio[1]];
+                        InicioAgente.Style.BackColor = Color.LawnGreen;
+                        InicioAgente.ReadOnly = false;
+                        InicioAgente.Style.SelectionBackColor = Color.LawnGreen;
 
+                    }
                     if (Tablero[i, j] == 1)
                     {
                         //Pintar obstaculos
@@ -375,16 +399,16 @@ namespace VoiceRecognitionMaze
             {
                 r.Height = tamanoCasillas;  
             }
-            jugar = 1;
+           
         }
 
-    public void CrearRuta()
+      public void CrearRuta()
         {
             Ruta = Algoritmo_A_Estrella(pos_inicio, pos_final, costo_diagonal, diagonal, Tablero);
 
             if (Ruta == null)
             {
-                System.Console.WriteLine("No hay solucion");
+                habla.SpeakAsync("There is not a solution");
             }
             else
             {
@@ -433,6 +457,7 @@ namespace VoiceRecognitionMaze
 
             }
         }
+
         private int compararStringNumerosLetras(String entradaAComparar, List<string> ListaAComparar)
         {
             bool contenido = ListaAComparar.Contains(entradaAComparar, StringComparer.OrdinalIgnoreCase);
@@ -472,7 +497,280 @@ namespace VoiceRecognitionMaze
                     case "zero":
                         numeroReal = 0;
                         break;
-                    
+                    case "ten":
+                        numeroReal = 10;
+                        break;
+                    case "eleven":
+                        numeroReal = 11;
+                        break;
+                    case "twelve":
+                        numeroReal = 12;
+                        break;
+                    case "thirteen":
+                        numeroReal = 13;
+                        break;
+                    case "fourteen":
+                        numeroReal = 14;
+                        break;
+                    case "fifteen":
+                        numeroReal = 15;
+                        break;
+                    case "sixteen":
+                        numeroReal = 16;
+                        break;
+                    case "seventeen":
+                        numeroReal = 17;
+                        break;
+                    case "eighteen":
+                        numeroReal = 18;
+                        break;
+                    case "nineteen":
+                        numeroReal = 19;
+                        break;
+                    case "twenty":
+                        numeroReal = 20;
+                        break;
+                    case "twenty one":
+                        numeroReal = 21;
+                        break;
+                    case "twenty two":
+                        numeroReal = 22;
+                        break;
+                    case "twenty three":
+                        numeroReal = 23;
+                        break;
+                    case "twenty four":
+                        numeroReal = 24;
+                        break;
+                    case "twenty five":
+                        numeroReal = 25;
+                        break;
+                    case "twenty six":
+                        numeroReal = 26;
+                        break;
+                    case "twenty seven":
+                        numeroReal = 27;
+                        break;
+                    case "twenty eight":
+                        numeroReal = 28;
+                        break;
+                    case "twenty nine":
+                        numeroReal = 29;
+                        break;
+                    case "thirty":
+                        numeroReal = 30;
+                        break;
+                    case "thirty one":
+                        numeroReal = 31;
+                        break;
+                    case "thirty two":
+                        numeroReal = 32;
+                        break;
+                    case "thirty three":
+                        numeroReal = 33;
+                        break;
+                    case "thirty four":
+                        numeroReal = 34;
+                        break;
+                    case "thirty five":
+                        numeroReal = 35;
+                        break;
+                    case "thirty six":
+                        numeroReal = 36;
+                        break;
+                    case "thirty seven":
+                        numeroReal = 37;
+                        break;
+                    case "thirty eight":
+                        numeroReal = 38;
+                        break;
+                    case "thirty nine":
+                        numeroReal = 39;
+                        break;
+                    case "forty":
+                        numeroReal = 40;
+                        break;
+                    case "forty one":
+                        numeroReal = 41;
+                        break;
+                    case "forty two":
+                        numeroReal = 42;
+                        break;
+                    case "forty three":
+                        numeroReal = 43;
+                        break;
+                    case "forty four":
+                        numeroReal = 44;
+                        break;
+                    case "forty five":
+                        numeroReal = 45;
+                        break;
+                    case "forty six":
+                        numeroReal = 46;
+                        break;
+                    case "forty seven":
+                        numeroReal = 47;
+                        break;
+                    case "forty eight":
+                        numeroReal = 48;
+                        break;
+                    case "forty nine":
+                        numeroReal = 49;
+                        break;
+                    case "fifty":
+                        numeroReal = 50;
+                        break;
+                    case "fifty one":
+                        numeroReal = 51;
+                        break;
+                    case "fifty two":
+                        numeroReal = 52;
+                        break;
+                    case "fifty three":
+                        numeroReal = 53;
+                        break;
+                    case "fifty four":
+                        numeroReal = 54;
+                        break;
+                    case "fifty five":
+                        numeroReal = 55;
+                        break;
+                    case "fifty six":
+                        numeroReal = 56;
+                        break;
+                    case "fifty seven":
+                        numeroReal = 57;
+                        break;
+                    case "fifty eight":
+                        numeroReal = 58;
+                        break;
+                    case "fifty nine":
+                        numeroReal = 59;
+                        break;
+                    case "sixty":
+                        numeroReal = 60;
+                        break;
+                    case "sixty one":
+                        numeroReal = 61;
+                        break;
+                    case "sixty two":
+                        numeroReal = 62;
+                        break;
+                    case "sixty three":
+                        numeroReal = 63;
+                        break;
+                    case "sixty four":
+                        numeroReal = 64;
+                        break;
+                    case "sixty five":
+                        numeroReal = 65;
+                        break;
+                    case "sixty six":
+                        numeroReal = 66;
+                        break;
+                    case "sixty seven":
+                        numeroReal = 67;
+                        break;
+                    case "sixty eight":
+                        numeroReal = 68;
+                        break;
+                    case "sixty nine":
+                        numeroReal = 69;
+                        break;
+                    case "seventy":
+                        numeroReal = 70;
+                        break;
+                    case "seventy one":
+                        numeroReal = 71;
+                        break;
+                    case "seventy two":
+                        numeroReal = 72;
+                        break;
+                    case "seventy three":
+                        numeroReal = 73;
+                        break;
+                    case "seventy four":
+                        numeroReal = 74;
+                        break;
+                    case "seventy five":
+                        numeroReal = 75;
+                        break;
+                    case "seventy six":
+                        numeroReal = 76;
+                        break;
+                    case "seventy seven":
+                        numeroReal = 77;
+                        break;
+                    case "seventy eight":
+                        numeroReal = 78;
+                        break;
+                    case "seventy nine":
+                        numeroReal = 79;
+                        break;
+                    case "eighty":
+                        numeroReal = 80;
+                        break;
+                    case "eighty one":
+                        numeroReal = 81;
+                        break;
+                    case "eighty two":
+                        numeroReal = 82;
+                        break;
+                    case "eighty three":
+                        numeroReal = 83;
+                        break;
+                    case "eighty four":
+                        numeroReal = 84;
+                        break;
+                    case "eighty five":
+                        numeroReal = 85;
+                        break;
+                    case "eighty six":
+                        numeroReal = 86;
+                        break;
+                    case "eighty seven":
+                        numeroReal = 87;
+                        break;
+                    case "eighty eight":
+                        numeroReal = 88;
+                        break;
+                    case "eighty nine":
+                        numeroReal = 89;
+                        break;
+                    case "ninety":
+                        numeroReal = 90;
+                        break;
+                    case "ninety one":
+                        numeroReal = 91;
+                        break;
+                    case "ninety two":
+                        numeroReal = 92;
+                        break;
+                    case "ninety three":
+                        numeroReal = 93;
+                        break;
+                    case "ninety four":
+                        numeroReal = 94;
+                        break;
+                    case "ninety five":
+                        numeroReal = 95;
+                        break;
+                    case "ninety six":
+                        numeroReal = 96;
+                        break;
+                    case "ninety seven":
+                        numeroReal = 97;
+                        break;
+                    case "ninety eight":
+                        numeroReal = 98;
+                        break;
+                    case "ninety nine":
+                        numeroReal = 99;
+                        break;
+                    case "hundred":
+                        numeroReal = 100;
+                        break;
+
                     default:
                         break;
                 }
@@ -904,7 +1202,8 @@ namespace VoiceRecognitionMaze
         {
             LimpiarRuta();
         }
-   
+
        
     }
 }
+
