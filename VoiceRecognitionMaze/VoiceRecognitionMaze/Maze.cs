@@ -291,15 +291,18 @@ namespace VoiceRecognitionMaze
             llenarArreglo(Tablero);
 
             //Marcar en el Tablero en codigo el inicio y fin
-            Tablero[2, 2] = 2;
-            Tablero[columnas - 2, filas - 2] = 3;
+            Console.WriteLine(filas);
+            Console.WriteLine(columnas);
+            Console.WriteLine(tamanoCasillas);
+            Tablero[0, 0] = 2;
+            Tablero[columnas-1, filas-1] = 3;
 
             //Coordenadas de la posicion de inicio y fin
-            pos_inicio[0] = 2;
-            pos_inicio[1] = 2;
+            pos_inicio[0] = 0;
+            pos_inicio[1] = 0;
 
-            pos_final[0] = columnas-2; //columna
-            pos_final[1] = filas-2;//fila
+            pos_final[0] = columnas-1; //columna
+            pos_final[1] = filas-1;//fila
 
             costo_diagonal = Math.Sqrt(2) * tamanoCasillas;           
 
