@@ -439,22 +439,185 @@ namespace VoiceRecognitionMaze
 
         public void MoverAbajo()
         {
+            int filaActualAgente;
+            int filaNuevaAgente;
 
+            for (int i = 0; i < columnas; i++)
+            {
+                for (int j = 0; j < filas; j++)
+                {
+                    if (Tablero[i, j] == 2)
+                    {
+                        if (j != filas)
+                        {
+                            filaActualAgente = j;
+                            filaNuevaAgente = j + 1;
+
+                            if ((Tablero[i, filaNuevaAgente]) != 1)
+                            {
+                                DataGridViewCell agenteActual = matrizTablero[i, filaActualAgente];
+                                agenteActual.Style.BackColor = Color.White;
+                                agenteActual.ReadOnly = false;
+                                agenteActual.Style.SelectionBackColor = Color.White;
+
+                                DataGridViewCell agenteNuevo = matrizTablero[i, filaNuevaAgente];
+                                agenteNuevo.Style.BackColor = Color.LawnGreen;
+                                agenteNuevo.ReadOnly = false;
+                                agenteNuevo.Style.SelectionBackColor = Color.LawnGreen;
+
+                                Tablero[i, filaActualAgente] = 0;
+                                Tablero[i, filaNuevaAgente] = 2;
+                            }
+
+                            Console.WriteLine("Movimiento inválido");
+                        }
+
+                        else
+                        {
+                            Console.WriteLine("Movimiento inválido");
+                        }
+
+                    }
+                }
+            }
         }
 
         public void MoverIzq()
         {
+            int columnaActualAgente;
+            int columnaNuevaAgente;
 
+            for (int i = 0; i < columnas; i++)
+            {
+                for (int j = 0; j < filas; j++)
+                {
+                    if (Tablero[i, j] == 2)
+                    {
+                        if (i != 0)
+                        {
+                            columnaActualAgente = i;
+                            columnaNuevaAgente = i - 1;
+
+                            if ((Tablero[columnaNuevaAgente, j]) != 1)
+                            {
+                                DataGridViewCell agenteActual = matrizTablero[columnaActualAgente, j];
+                                agenteActual.Style.BackColor = Color.White;
+                                agenteActual.ReadOnly = false;
+                                agenteActual.Style.SelectionBackColor = Color.White;
+
+                                DataGridViewCell agenteNuevo = matrizTablero[columnaNuevaAgente, j];
+                                agenteNuevo.Style.BackColor = Color.LawnGreen;
+                                agenteNuevo.ReadOnly = false;
+                                agenteNuevo.Style.SelectionBackColor = Color.LawnGreen;
+
+                                Tablero[columnaActualAgente, j] = 0;
+                                Tablero[columnaNuevaAgente, j] = 2;
+                            }
+
+                            Console.WriteLine("Movimiento inválido");
+                        }
+
+                        else
+                        {
+                            Console.WriteLine("Movimiento inválido");
+                        }
+
+                    }
+                }
+            }
         }
 
         public void MoverDer()
         {
+            int columnaActualAgente;
+            int columnaNuevaAgente;
 
+            for (int i = 0; i < columnas; i++)
+            {
+                for (int j = 0; j < filas; j++)
+                {
+                    if (Tablero[i, j] == 2)
+                    {
+                        if (i != columnas)
+                        {
+                            columnaActualAgente = i;
+                            columnaNuevaAgente = i + 1;
+
+                            if ((Tablero[columnaNuevaAgente, j]) != 1)
+                            {
+                                DataGridViewCell agenteActual = matrizTablero[columnaActualAgente, j];
+                                agenteActual.Style.BackColor = Color.White;
+                                agenteActual.ReadOnly = false;
+                                agenteActual.Style.SelectionBackColor = Color.White;
+
+                                DataGridViewCell agenteNuevo = matrizTablero[columnaNuevaAgente, j];
+                                agenteNuevo.Style.BackColor = Color.LawnGreen;
+                                agenteNuevo.ReadOnly = false;
+                                agenteNuevo.Style.SelectionBackColor = Color.LawnGreen;
+
+                                Tablero[columnaActualAgente, j] = 0;
+                                Tablero[columnaNuevaAgente, j] = 2;
+                            }
+
+                            Console.WriteLine("Movimiento inválido");
+                        }
+
+                        else
+                        {
+                            Console.WriteLine("Movimiento inválido");
+                        }
+
+                    }
+                }
+            }
         }
 
         public void MoverDiagonalNorEste()
         {
+            /*int filaActualAgente;
+            int filaNuevaAgente;
 
+            int columnaActualAgente;
+            int columnaNuevaAgente;
+
+            for (int i = 0; i < columnas; i++)
+            {
+                for (int j = 0; j < filas; j++)
+                {
+                    if (Tablero[i, j] == 2)
+                    {
+                        if (i != 0 || )
+                        {
+                            columnaActualAgente = i;
+                            columnaNuevaAgente = i + 1;
+
+                            if ((Tablero[columnaNuevaAgente, j]) != 1)
+                            {
+                                DataGridViewCell agenteActual = matrizTablero[columnaActualAgente, j];
+                                agenteActual.Style.BackColor = Color.White;
+                                agenteActual.ReadOnly = false;
+                                agenteActual.Style.SelectionBackColor = Color.White;
+
+                                DataGridViewCell agenteNuevo = matrizTablero[columnaNuevaAgente, j];
+                                agenteNuevo.Style.BackColor = Color.LawnGreen;
+                                agenteNuevo.ReadOnly = false;
+                                agenteNuevo.Style.SelectionBackColor = Color.LawnGreen;
+
+                                Tablero[columnaActualAgente, j] = 0;
+                                Tablero[columnaNuevaAgente, j] = 2;
+                            }
+
+                            Console.WriteLine("Movimiento inválido");
+                        }
+
+                        else
+                        {
+                            Console.WriteLine("Movimiento inválido");
+                        }
+
+                    }
+                }
+            }*/
         }
 
         public void MoverDiagonalSurEste()
