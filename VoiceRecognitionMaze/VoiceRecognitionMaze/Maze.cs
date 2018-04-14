@@ -34,28 +34,18 @@ namespace VoiceRecognitionMaze
 
         // Variables para manejar el flujo del habla y qué opciones para el usuario
         int comenzar = 1;
-        int terminar = 0;
         int dimensiones = 0;
         int banderaColumnas = 0;
         int banderaTamanoCasilla = 0;
         int banderaFilas = 0;
-        int mostrarRuta = 0;
         int filas = 0;
         int columnas = 0;
         int tamanoCasillas = 0;
-        int jugar = 0;
         int activarDiagonal = 0;
         int decisionFinal = 0;
-        int permitirDiagonal = 0;
         int moverAgente = 0;
         int salida = 0;
-        int otraVez = 1;
-        int posInicio = 0;
-        int posFinal = 0;
-        int limpiar = 0;
-        int cambiarN = 0;
-        int cambiarM = 0;
-        int cambiarA = 0;
+        int jugar = 0;
 
         List<string> numerosEnLetras = new List<string> { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "zero","ten","eleven",
             "twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen","twenty","twenty one","twenty two","twenty three",
@@ -66,7 +56,7 @@ namespace VoiceRecognitionMaze
         "sixty seven","sixty eight","sixty nine","seventy","seventy one","seventy two","seventy three","seventy four","seventy five","seventy six","seventy seven",
         "seventy eight", "seventy nine","eighty","eighty one", "eighty two","eighty three","eighty four","eighty five","eighty six","eighty seven","eighty eight",
         "eighty nine","ninety","ninety one","ninety two","ninety three","ninety four","ninety five","ninety six", "ninety seven","ninety eight","ninety nine",
-         "hundred"};
+         "hundred", "one hundred"};
         List<string> numerosComunes = new List<string> { "1", "2", "3", "4", "5", "6", "7", "8", "9", "0","10","11","12","13","14","15","16","17","18","19","20",
         "21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51",
         "52","53","54","55","56","57","58","59","60","61","62","63","64","65","66","67","68","69","70","71","72","73","74","75","76","77","78","79","80","81","82",
@@ -77,8 +67,7 @@ namespace VoiceRecognitionMaze
             InitializeComponent();
             //InicializarTablero();
             //CrearRuta();
-        }
-        
+        }        
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -86,43 +75,18 @@ namespace VoiceRecognitionMaze
 
             // Crear gramática para escucha
             comandos.Add(new string[] { "start", "clean", "up", "down", "left", "right", "done", "yes", "no", "finish", "diagonal", "option", "rows", "columns", "stop","show route",
-                                       "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "zero","ten","eleven",
-            "twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen","twenty","twenty one","twenty two","twenty three",
-        "twenty four", "twenty five","twenty six","twenty seven", "twenty eight", "twenty nine","thirty","thirty one","thirty two","thirty three",
-        "thirty four", "thirty five", "thirty six", "thirty seven","thirty eight", "thirty nine","forty","forty one", "forty two","forty three",
-        "forty five", "forty six", "forty seven","forty eight", "forty nine", "fifty","fifty one", "fifty two", "fifty three", "fifty four", "fifty five",
-        "fifty six", "fifty seven", "fifty eight", "fifty nine","sixty","sixty one","sixty two","sixty three","sixty four","sixty five","sixty six",
-        "sixty seven","sixty eight","sixty nine","seventy","seventy one","seventy two","seventy three","seventy four","seventy five","seventy six","seventy seven",
-        "seventy eight", "seventy nine","eighty","eighty one", "eighty two","eighty three","eighty four","eighty five","eighty six","eighty seven","eighty eight",
-        "eighty nine","ninety","ninety one","ninety two","ninety three","ninety four","ninety five","ninety six", "ninety seven","ninety eight","ninety nine",
-         "hundred","1", "2", "3", "4", "5", "6", "7", "8", "9", "0","10","11","12","13","14","15","16","17","18","19","20",
-        "21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51",
-        "52","53","54","55","56","57","58","59","60","61","62","63","64","65","66","67","68","69","70","71","72","73","74","75","76","77","78","79","80","81","82",
-        "83","84","85","86","87","88","89","90","91","92","93","94","95","96","97","98","99","100"});
-
-            // Palabras que pueden ser escuchadas mal, las traducimos al idioma del programa
-            comandos.Add(new SemanticResultValue("begin", "start"));
-            comandos.Add(new SemanticResultValue("erase", "clean"));
-            comandos.Add(new SemanticResultValue("delete", "clean"));
-            comandos.Add(new SemanticResultValue("straight", "up"));
-            comandos.Add(new SemanticResultValue("forward", "up"));
-            comandos.Add(new SemanticResultValue("back", "down"));
-            comandos.Add(new SemanticResultValue("behind", "down"));
-            comandos.Add(new SemanticResultValue("turn left", "left"));
-            comandos.Add(new SemanticResultValue("turn right", "right"));
-            comandos.Add(new SemanticResultValue("ready", "done"));
-            comandos.Add(new SemanticResultValue("check", "done"));
-            comandos.Add(new SemanticResultValue("checked", "done"));
-            comandos.Add(new SemanticResultValue("ok", "yes"));
-            comandos.Add(new SemanticResultValue("yeah", "yes"));
-            comandos.Add(new SemanticResultValue("yea", "yes"));
-            comandos.Add(new SemanticResultValue("yas", "yes"));
-            comandos.Add(new SemanticResultValue("yup", "yes"));
-            comandos.Add(new SemanticResultValue("nope", "no"));
-            comandos.Add(new SemanticResultValue("nop", "no"));
-            comandos.Add(new SemanticResultValue("none", "no"));
-            comandos.Add(new SemanticResultValue("don't", "no"));
-            comandos.Add(new SemanticResultValue("finished", "finish"));
+                                         "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "zero","ten","eleven","twelve","thirteen","fourteen","fifteen","sixteen",
+                                         "seventeen","eighteen","nineteen","twenty","twenty one","twenty two","twenty three", "twenty four", "twenty five","twenty six","twenty seven",
+                                         "twenty eight", "twenty nine","thirty","thirty one","thirty two","thirty three", "thirty four", "thirty five", "thirty six", "thirty seven","thirty eight",
+                                         "thirty nine","forty","forty one", "forty two","forty three", "forty five", "forty six", "forty seven","forty eight", "forty nine", "fifty","fifty one",
+                                         "fifty two", "fifty three", "fifty four", "fifty five", "fifty six", "fifty seven", "fifty eight", "fifty nine","sixty","sixty one","sixty two","sixty three",
+                                         "sixty four","sixty five","sixty six", "sixty seven","sixty eight","sixty nine","seventy","seventy one","seventy two","seventy three","seventy four","seventy five",
+                                         "seventy six","seventy seven", "seventy eight", "seventy nine","eighty","eighty one", "eighty two","eighty three","eighty four","eighty five","eighty six","eighty seven",
+                                         "eighty eight", "eighty nine","ninety","ninety one","ninety two","ninety three","ninety four","ninety five","ninety six", "ninety seven","ninety eight","ninety nine",
+                                         "hundred", "one hundred", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0","10","11","12","13","14","15","16","17","18","19","20", "21","22","23","24","25","26","27",
+                                         "28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59","60",
+                                         "61","62","63","64","65","66","67","68","69","70","71","72","73","74","75","76","77","78","79","80","81","82","83","84","85","86","87","88","89","90","91","92","93",
+                                         "94","95","96","97","98","99","100"});
 
             // Cargar gramática para lo que se escuche en general
             GrammarBuilder gb = new GrammarBuilder();
@@ -144,17 +108,18 @@ namespace VoiceRecognitionMaze
 
         private void escucha_reconocida(object sender, SpeechRecognizedEventArgs e)
         {
-           //TxbTamano.Text = e.Result.Text;
             float confidence = e.Result.Confidence;
+
             if (confidence < 0.50)
             {
                 Console.WriteLine("Low confidence");
             }
+
             else if (comenzar == 1)
             {
                 if (e.Result.Text == "start")
                 {
-                    habla.SpeakAsync("Do you want to set the table dimensions? Say yes or no");
+                    habla.SpeakAsync("Do you want to set the table dimensions, say yes or no");
                     comenzar = 0;
                     dimensiones = 1;
                 }
@@ -164,6 +129,7 @@ namespace VoiceRecognitionMaze
                     this.Close();
                 }
             }
+
             else if (dimensiones == 1)
             {
                 if (e.Result.Text == "yes")
@@ -177,6 +143,7 @@ namespace VoiceRecognitionMaze
                     this.Close();
                 }
             }
+
             else if (banderaColumnas == 1)
             {
                 if (compararStringNumerosLetras(e.Result.Text, numerosEnLetras) != -1)
@@ -192,6 +159,7 @@ namespace VoiceRecognitionMaze
                 banderaColumnas = 0;
                 banderaFilas = 1;
             }
+
             else if (banderaFilas == 1)
             {
                 if (compararStringNumerosLetras(e.Result.Text, numerosEnLetras) != -1)
@@ -207,6 +175,7 @@ namespace VoiceRecognitionMaze
                 banderaFilas = 0;
                 banderaTamanoCasilla = 1;
             }
+
             else if (banderaTamanoCasilla == 1)
             {
                 if (compararStringNumerosLetras(e.Result.Text, numerosEnLetras) != -1)
@@ -217,101 +186,96 @@ namespace VoiceRecognitionMaze
                 {
                     tamanoCasillas = compararStringNumeros(e.Result.Text, numerosComunes);
                 }
-                
+
                 habla.SpeakAsync("Creating table");
                 InicializarTablero();
 
-                habla.SpeakAsync("Do you want the agent to be able to cross diagonals? Say yes or no");
+                habla.SpeakAsync("Do you want the agent to be able to cross diagonals, say yes or no");
                 banderaTamanoCasilla = 0;
                 activarDiagonal = 1;
 
             }
-            /*else if (jugar == 1)
-            {
-                habla.SpeakAsync("Do you want the agent to be able to cross diagonals? Say yes or no");
-                jugar = 0;
-                activarDiagonal = 1;
-            }*/
+
             else if (activarDiagonal == 1)
             {
                 if (e.Result.Text == "yes")
                 {
-                    habla.SpeakAsync("Diagonal feature activated"); 
+                    habla.SpeakAsync("Diagonal feature activated");
                     diagonal = true;
-                    habla.SpeakAsync("Say show route to see the way out of the maze.");
-                    //moverAgente = 1;
+                    moverAgente = 1;
                     activarDiagonal = 0;
-                    //permitirDiagonal = 1;
-                    mostrarRuta = 1;
+                    habla.SpeakAsync("To play, please say up, down, left, right or stop for fixing the agent's position.");
                 }
+
                 else if (e.Result.Text == "no")
                 {
                     habla.SpeakAsync("Diagonal feature deactivated");
-                    //habla.SpeakAsync("To play, please say up, down, left, right, left or stop for fixing the agent's position.");
                     diagonal = false;
-                    //moverAgente = 1;
-
-                    habla.SpeakAsync("Say show route to see the way out of the maze.");
-                    //permitirDiagonal = 0;
+                    moverAgente = 1;
                     activarDiagonal = 0;
-                    mostrarRuta = 1;
-                }
-            }
-            else if(mostrarRuta == 1)
-            {
-                if (e.Result.Text == "show route")
-                {
-                    habla.SpeakAsync("Showing the shortest path");
-                    CrearRuta();
-                    mostrarRuta = 0;
+                    habla.SpeakAsync("To play, please say up, down, left, right or stop for fixing the agent's position.");
                 }
             }
 
             else if (moverAgente == 1)
-            {                
+            {
                 if (e.Result.Text == "up")
                 {
-                    Console.WriteLine(e.Result.Text);
-                    // Mover agente hacia arriba. TODO: ver qué hacer cuando se encuentra con un límite del tablero
+                    //MoverArriba(tablero, posicionActualX, posicionActualY, tamanoCasilla);
                 }
                 else if (e.Result.Text == "down")
                 {
-                    Console.WriteLine(e.Result.Text);
-                    // Mover agente hacia abajo. TODO: ver qué hacer cuando se encuentra con un límite del tablero
+                    MoverAbajo();
                 }
                 else if (e.Result.Text == "left")
                 {
-                    Console.WriteLine(e.Result.Text);
-                    // Mover agente hacia la izquierda. TODO: ver qué hacer cuando se encuentra con un límite del tablero
+                    MoverIzq();
                 }
                 else if (e.Result.Text == "right")
                 {
-                    Console.WriteLine(e.Result.Text);
-                    // Mover agente hacia la derecha. TODO: ver qué hacer cuando se encuentra con un límite del tablero
+                    MoverDer();
                 }
                 else if (e.Result.Text == "stop")
                 {
                     Console.WriteLine(e.Result.Text);
-                    habla.SpeakAsync("Do you want to see the way out of the maze? Say yes or no");
+                    habla.SpeakAsync("Do you want to see the way out of the maze, say yes or no");
+                    moverAgente = 0;
                     salida = 1;
                 }
-                else if (salida == 1)
+            }
+
+            else if (salida == 1)
+            {
+                if (e.Result.Text == "yes")
                 {
-                    if(e.Result.Text == "yes")
-                    {
-                        habla.SpeakAsync("The way out is outlined in the color red, what do you want to do next, say play to play again or finish to finish the game");
-                        decisionFinal = 1;
-                    }
-                    else if (e.Result.Text == "no")
-                    {
-                        habla.SpeakAsync("Thanks for playing, what do you want to do next, say play to play again or finish to finish the game");
-                        decisionFinal = 1;
-                    }
-                    else if (decisionFinal == 1)
-                    {
-                        // Ver como hacer para volver a poner al usuario a jugar, tal vez un or en la bandera de dimensiones
-                    }
+                    habla.SpeakAsync("Showing the shortest path");
+                    CrearRuta();
+                    habla.SpeakAsync("The way out is outlined in the color blue, what do you want to do next, say play to play again or finish to finish the game");
+                    salida = 0;
+                    decisionFinal = 1;
                 }
+                else if (e.Result.Text == "no")
+                {
+
+                    habla.SpeakAsync("Thanks for playing, what do you want to do next, say play to play again or finish to finish the game");
+                    salida = 0;
+                    decisionFinal = 1;
+                }
+            }
+            else if (decisionFinal == 1)
+            {
+                if(e.Result.Text == "play")
+                {
+                    decisionFinal = 0;
+                    dimensiones = 1;
+
+                }
+                else if(e.Result.Text == "finish")
+                {
+                    habla.SpeakAsync("Thanks for playing, bye");
+                    this.Close();
+                }
+                // Ver como hacer para volver a poner al usuario a jugar, tal vez un or en la bandera de dimensiones
             }
         }
 
@@ -319,11 +283,7 @@ namespace VoiceRecognitionMaze
         private void InicializarTablero()
         {
             matrizTablero.RowCount = filas; //m
-            matrizTablero.ColumnCount = columnas; //n
-
-            Movimiento mov = new Movimiento();
-            mov.MoverAbajo();
-           
+            matrizTablero.ColumnCount = columnas; //n           
 
             Tablero = new int[columnas, filas];
 
@@ -341,9 +301,7 @@ namespace VoiceRecognitionMaze
             pos_final[0] = columnas-2; //columna
             pos_final[1] = filas-2;//fila
 
-
-            costo_diagonal = Math.Sqrt(2) * tamanoCasillas;
-           
+            costo_diagonal = Math.Sqrt(2) * tamanoCasillas;           
 
             //Sacar posiciones disponibles donde puedo poner obstaculos
             List<int[]> disponibles = new List<int[]>();
@@ -365,7 +323,6 @@ namespace VoiceRecognitionMaze
                         InicioAgente.Style.BackColor = Color.LawnGreen;
                         InicioAgente.ReadOnly = false;
                         InicioAgente.Style.SelectionBackColor = Color.LawnGreen;
-
                     }
                     if (Tablero[i, j] == 1)
                     {
@@ -423,18 +380,58 @@ namespace VoiceRecognitionMaze
                             camino.Style.BackColor = Color.Blue;
                             camino.ReadOnly = false;
                             camino.Style.SelectionBackColor = Color.Blue;
-
                         }
                         else
                         {
                             continue;
                         }
                     }
-
                 }
             }
         }
-//------------------------------------------Limpiar la ruta-----------------------------
+
+        //------------------------------------------ Movimientos del Agente -----------------------------
+
+        public void MoverArriba(int[] tablero, int posicionActualX, int posicionActualY, int tamanoCasilla)
+        {
+        }
+
+        public void MoverAbajo()
+        {
+
+        }
+
+        public void MoverIzq()
+        {
+
+        }
+
+        public void MoverDer()
+        {
+
+        }
+
+        public void MoverDiagonalNorEste()
+        {
+
+        }
+
+        public void MoverDiagonalSurEste()
+        {
+
+        }
+
+        public void MoverDiagonalNorOeste()
+        {
+
+        }
+
+        public void MoverDiagonalSurOeste()
+        {
+
+        }
+
+        //------------------------------------------Limpiar la ruta-----------------------------
         public void LimpiarRuta()
         {
             for (int i = 0; i < Tablero.GetLength(0); i++)
