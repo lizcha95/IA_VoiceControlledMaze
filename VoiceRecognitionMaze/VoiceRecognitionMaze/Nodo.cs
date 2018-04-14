@@ -21,22 +21,17 @@ namespace VoiceRecognitionMaze
 
         public Nodo(Nodo NodoPadre, int[] Posicion, double costoDirecto, double costoTotal, int Movimiento)
         {
-
             nodoPadre = NodoPadre;
             posicion = Posicion;
             fn = costoTotal;
             gn = costoDirecto;
             movimiento = Movimiento;
-
-
-
         }
 
         public Nodo(int[] Posicion, int Movimiento)
         {
             posicion = Posicion;
             movimiento = Movimiento;
-
         }
 
         public Boolean esIgual(Nodo nodo)

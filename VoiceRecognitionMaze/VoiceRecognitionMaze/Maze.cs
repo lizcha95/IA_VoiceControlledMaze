@@ -221,7 +221,7 @@ namespace VoiceRecognitionMaze
             {
                 if (e.Result.Text == "up")
                 {
-                    //MoverArriba(tablero, posicionActualX, posicionActualY, tamanoCasilla);
+                    MoverArriba();
                 }
                 else if (e.Result.Text == "down")
                 {
@@ -392,8 +392,49 @@ namespace VoiceRecognitionMaze
 
         //------------------------------------------ Movimientos del Agente -----------------------------
 
-        public void MoverArriba(int[] tablero, int posicionActualX, int posicionActualY, int tamanoCasilla)
+        public void MoverArriba()
         {
+            int filaActualAgente;
+            int filaNuevaAgente;
+
+            for (int i = 0; i < columnas; i++)
+            {
+                for (int j = 0; j < filas; j++)
+                {
+                    if (Tablero[i, j] == 2)
+                    {
+                        if(j != 0)
+                        {
+                            filaActualAgente = j;
+                            filaNuevaAgente = j - 1;
+
+                            if((Tablero[i, filaNuevaAgente]) != 1)
+                            {
+                                DataGridViewCell agenteActual = matrizTablero[i, filaActualAgente];
+                                agenteActual.Style.BackColor = Color.White;
+                                agenteActual.ReadOnly = false;
+                                agenteActual.Style.SelectionBackColor = Color.White;
+
+                                DataGridViewCell agenteNuevo = matrizTablero[i, filaNuevaAgente];
+                                agenteNuevo.Style.BackColor = Color.LawnGreen;
+                                agenteNuevo.ReadOnly = false;
+                                agenteNuevo.Style.SelectionBackColor = Color.LawnGreen;
+
+                                Tablero[i, filaActualAgente] = 0;
+                                Tablero[i, filaNuevaAgente] = 2;
+                            }
+
+                            Console.WriteLine("Movimiento inválido");
+                        }
+
+                        else
+                        {
+                            Console.WriteLine("Movimiento inválido");
+                        }
+
+                    }
+                }
+            }
         }
 
         public void MoverAbajo()
@@ -430,7 +471,7 @@ namespace VoiceRecognitionMaze
         {
 
         }
-
+    
         //------------------------------------------Limpiar la ruta-----------------------------
         public void LimpiarRuta()
         {
