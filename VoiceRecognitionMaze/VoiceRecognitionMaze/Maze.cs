@@ -49,7 +49,7 @@ namespace VoiceRecognitionMaze
         int moverAgenteInicio = 0;
         int moverAgenteFinal = 0;
         int banderaNodoFinal = 0;
-
+        int noCero = 0;
 
         List<string> numerosEnLetras = new List<string> { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "zero","ten","eleven",
             "twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen","twenty","twenty one","twenty two","twenty three",
@@ -79,7 +79,7 @@ namespace VoiceRecognitionMaze
 
             // Crear gramática para escucha
             comandos.Add(new string[] { "start", "clean", "up", "down", "left", "right", "done", "yes", "no", "finish", "diagonal", "option", "rows", "columns", "stop","show route","northeast","northwest",
-                                         "southeast","one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "zero","ten","eleven","twelve","thirteen","fourteen","fifteen","sixteen",
+                                         "southeast", "southwest","one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "zero","ten","eleven","twelve","thirteen","fourteen","fifteen","sixteen",
                                          "seventeen","eighteen","nineteen","twenty","twenty one","twenty two","twenty three", "twenty four", "twenty five","twenty six","twenty seven",
                                          "twenty eight", "twenty nine","thirty","thirty one","thirty two","thirty three", "thirty four", "thirty five", "thirty six", "thirty seven","thirty eight",
                                          "thirty nine","forty","forty one", "forty two","forty three", "forty five", "forty six", "forty seven","forty eight", "forty nine", "fifty","fifty one",
@@ -136,11 +136,12 @@ namespace VoiceRecognitionMaze
 
             else if (dimensiones == 1)
             {
-                if (e.Result.Text == "yes")
+                if (e.Result.Text == "yes" || noCero == 1)
                 {
                     habla.SpeakAsync("Please say the number of columns for the table");
                     dimensiones = 0;
                     banderaColumnas = 1;
+                    noCero = 0;
                 }
                 else if (e.Result.Text == "No")
                 {
@@ -152,32 +153,108 @@ namespace VoiceRecognitionMaze
             {
                 if (compararStringNumerosLetras(e.Result.Text, numerosEnLetras) != -1)
                 {
-                    columnas = compararStringNumerosLetras(e.Result.Text, numerosEnLetras);
-                }
-                else if (compararStringNumeros(e.Result.Text, numerosComunes) != -1)
-                {
-                    columnas = compararStringNumeros(e.Result.Text, numerosComunes);
+                    if(compararStringNumerosLetras(e.Result.Text, numerosEnLetras) == 0)
+                    {
+                        habla.SpeakAsync("Columns number cannot be zero");
+                        banderaColumnas = 0;
+                        dimensiones = 1;
+                        noCero = 1;
+                    }
+                    else if(compararStringNumerosLetras(e.Result.Text, numerosEnLetras) < 2)
+                    {
+                        habla.SpeakAsync("Columns must be greater than two, so the agent can move");
+                        banderaColumnas = 0;
+                        dimensiones = 1;
+                        noCero = 1;
+                    }
+                    else
+                    {
+                        columnas = compararStringNumerosLetras(e.Result.Text, numerosEnLetras);
+                    }
+                    
                 }
 
-                habla.SpeakAsync("Please say the number of rows for the table");
-                banderaColumnas = 0;
-                banderaFilas = 1;
+                else if (compararStringNumeros(e.Result.Text, numerosComunes) != -1)
+                {
+                    if (compararStringNumeros(e.Result.Text, numerosComunes) == 0)
+                    {
+                        habla.SpeakAsync("Columns number cannot be zero");
+                    }
+                    else if (compararStringNumeros(e.Result.Text, numerosComunes) < 2)
+                    {
+                        habla.SpeakAsync("Columns must be greater than two, so the agent can move");
+                        banderaColumnas = 0;
+                        dimensiones = 1;
+                        noCero = 1;
+                    }
+                    else
+                    {
+                        columnas = compararStringNumeros(e.Result.Text, numerosComunes);
+                    }
+                    
+                }
+                else
+                {
+                    habla.SpeakAsync("Please say the number of rows for the table");
+                    banderaColumnas = 0;
+                    banderaFilas = 1;
+                }
             }
 
             else if (banderaFilas == 1)
             {
                 if (compararStringNumerosLetras(e.Result.Text, numerosEnLetras) != -1)
                 {
-                    filas = compararStringNumerosLetras(e.Result.Text, numerosEnLetras);
-                }
-                else if (compararStringNumeros(e.Result.Text, numerosComunes) != -1)
-                {
-                    filas = compararStringNumeros(e.Result.Text, numerosComunes);
+                    if (compararStringNumerosLetras(e.Result.Text, numerosEnLetras) == 0)
+                    {
+                        habla.SpeakAsync("Rows number cannot be zero");
+                        banderaFilas = 0;
+                        dimensiones = 1;
+                        noCero = 1;
+                    }
+                    else if (compararStringNumerosLetras(e.Result.Text, numerosEnLetras) < 2)
+                    {
+                        habla.SpeakAsync("Rows must be greater than two, so the agent can move");
+                        banderaFilas = 0;
+                        dimensiones = 1;
+                        noCero = 1;
+                    }
+                    else
+                    {
+                        filas = compararStringNumerosLetras(e.Result.Text, numerosEnLetras);
+                    }
+
                 }
 
-                habla.SpeakAsync("Please say the number for the size of the table boxes");
-                banderaFilas = 0;
-                banderaTamanoCasilla = 1;
+                else if (compararStringNumeros(e.Result.Text, numerosEnLetras) != -1)
+                {
+                    if (compararStringNumeros(e.Result.Text, numerosEnLetras) == 0)
+                    {
+                        habla.SpeakAsync("Rows number cannot be zero");
+                        banderaFilas = 0;
+                        dimensiones = 1;
+                        noCero = 1;
+                    }
+                    else if (compararStringNumeros(e.Result.Text, numerosEnLetras) < 2)
+                    {
+                        habla.SpeakAsync("Rows must be greater than two, so the agent can move");
+                        banderaFilas = 0;
+                        dimensiones = 1;
+                        noCero = 1;
+                    }
+                    else
+                    {
+                        filas = compararStringNumeros(e.Result.Text, numerosEnLetras);
+                    }
+
+                }
+                else
+                {
+                    habla.SpeakAsync("Please say the number for the size of the table boxes");
+                    banderaFilas = 0;
+                    banderaTamanoCasilla = 1;
+                }
+                
             }
 
             else if (banderaTamanoCasilla == 1)
@@ -273,7 +350,10 @@ namespace VoiceRecognitionMaze
                 {
                     MoverDiagonalSurEste();
                 }
-
+                else if (e.Result.Text == "southwest")
+                {
+                    MoverDiagonalSurOeste();
+                }
                 else if (e.Result.Text == "stop")
                 {
                     Console.WriteLine(e.Result.Text);
@@ -849,7 +929,56 @@ namespace VoiceRecognitionMaze
 
         public void MoverDiagonalSurOeste()
         {
+            int filaActualAgente;
+            int filaNuevaAgente;
+            int columnaActualAgente;
+            int columnaNuevaAgente;
 
+            //pos_inicio[1] = filas (coordenada y)
+            //pos_inicio[0] = columnas (coordenada x)
+            if (pos_inicio[0] != columnas - 1 && pos_inicio[1] != filas - 1)
+            {
+                filaActualAgente = pos_inicio[1];
+                columnaActualAgente = pos_inicio[0];
+
+                filaNuevaAgente = pos_inicio[1] + 1;
+                columnaNuevaAgente = pos_inicio[0] - 1;
+
+                if ((Tablero[columnaNuevaAgente, filaNuevaAgente]) != 1 && (Tablero[columnaNuevaAgente, filaNuevaAgente]) != 3)
+                {
+                    DataGridViewCell agenteActual = matrizTablero[columnaActualAgente, filaActualAgente];
+                    agenteActual.Style.BackColor = Color.White;
+                    agenteActual.ReadOnly = false;
+                    agenteActual.Style.SelectionBackColor = Color.White;
+
+                    DataGridViewCell agenteNuevo = matrizTablero[columnaNuevaAgente, filaNuevaAgente];
+                    agenteNuevo.Style.BackColor = Color.LawnGreen;
+                    agenteNuevo.ReadOnly = false;
+                    agenteNuevo.Style.SelectionBackColor = Color.LawnGreen;
+
+                    Tablero[columnaActualAgente, filaActualAgente] = 0;
+                    Tablero[columnaNuevaAgente, filaNuevaAgente] = 2;
+
+                    pos_inicio[0] = columnaNuevaAgente;
+                    pos_inicio[1] = filaNuevaAgente;
+
+                    Console.WriteLine("Movimiento diagonal SurEste: Posicion actual");
+                    Console.WriteLine(matrizTablero[columnaActualAgente, filaActualAgente]);
+
+                    Console.WriteLine("Movimiento diagonal SurEste: Posicion nueva");
+                    Console.WriteLine(matrizTablero[columnaNuevaAgente, filaNuevaAgente]);
+                }
+                else
+                {
+                    Console.WriteLine("Movimiento diagonal SurEste");
+                    Console.WriteLine("Movimiento invalido");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Movimiento diagonal SurEste");
+                Console.WriteLine("Movimiento invalido");
+            }
         }
 
        // -----------------------------------------------Mover nodo final-----------------------------------
