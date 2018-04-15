@@ -75,7 +75,7 @@ namespace VoiceRecognitionMaze
 
             // Crear gramática para escucha
             comandos.Add(new string[] { "start", "clean", "up", "down", "left", "right", "done", "yes", "no", "finish", "diagonal", "option", "rows", "columns", "stop","show route","northeast","northwest",
-                                         "southeast","one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "zero","ten","eleven","twelve","thirteen","fourteen","fifteen","sixteen",
+                                         "southeast", "southwest","one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "zero","ten","eleven","twelve","thirteen","fourteen","fifteen","sixteen",
                                          "seventeen","eighteen","nineteen","twenty","twenty one","twenty two","twenty three", "twenty four", "twenty five","twenty six","twenty seven",
                                          "twenty eight", "twenty nine","thirty","thirty one","thirty two","thirty three", "thirty four", "thirty five", "thirty six", "thirty seven","thirty eight",
                                          "thirty nine","forty","forty one", "forty two","forty three", "forty five", "forty six", "forty seven","forty eight", "forty nine", "fifty","fifty one",
@@ -246,6 +246,10 @@ namespace VoiceRecognitionMaze
                 else if (e.Result.Text == "southeast")
                 {
                     MoverDiagonalSurEste();
+                }
+                else if (e.Result.Text == "southwest")
+                {
+                    MoverDiagonalSurOeste();
                 }
                 else if (e.Result.Text == "stop")
                 {
@@ -762,7 +766,56 @@ namespace VoiceRecognitionMaze
 
         public void MoverDiagonalSurOeste()
         {
+            int filaActualAgente;
+            int filaNuevaAgente;
+            int columnaActualAgente;
+            int columnaNuevaAgente;
 
+            //pos_inicio[1] = filas (coordenada y)
+            //pos_inicio[0] = columnas (coordenada x)
+            if (pos_inicio[0] != columnas - 1 && pos_inicio[1] != filas - 1)
+            {
+                filaActualAgente = pos_inicio[1];
+                columnaActualAgente = pos_inicio[0];
+
+                filaNuevaAgente = pos_inicio[1] + 1;
+                columnaNuevaAgente = pos_inicio[0] - 1;
+
+                if ((Tablero[columnaNuevaAgente, filaNuevaAgente]) != 1 && (Tablero[columnaNuevaAgente, filaNuevaAgente]) != 3)
+                {
+                    DataGridViewCell agenteActual = matrizTablero[columnaActualAgente, filaActualAgente];
+                    agenteActual.Style.BackColor = Color.White;
+                    agenteActual.ReadOnly = false;
+                    agenteActual.Style.SelectionBackColor = Color.White;
+
+                    DataGridViewCell agenteNuevo = matrizTablero[columnaNuevaAgente, filaNuevaAgente];
+                    agenteNuevo.Style.BackColor = Color.LawnGreen;
+                    agenteNuevo.ReadOnly = false;
+                    agenteNuevo.Style.SelectionBackColor = Color.LawnGreen;
+
+                    Tablero[columnaActualAgente, filaActualAgente] = 0;
+                    Tablero[columnaNuevaAgente, filaNuevaAgente] = 2;
+
+                    pos_inicio[0] = columnaNuevaAgente;
+                    pos_inicio[1] = filaNuevaAgente;
+
+                    Console.WriteLine("Movimiento diagonal SurEste: Posicion actual");
+                    Console.WriteLine(matrizTablero[columnaActualAgente, filaActualAgente]);
+
+                    Console.WriteLine("Movimiento diagonal SurEste: Posicion nueva");
+                    Console.WriteLine(matrizTablero[columnaNuevaAgente, filaNuevaAgente]);
+                }
+                else
+                {
+                    Console.WriteLine("Movimiento diagonal SurEste");
+                    Console.WriteLine("Movimiento invalido");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Movimiento diagonal SurEste");
+                Console.WriteLine("Movimiento invalido");
+            }
         }
     
         //------------------------------------------Limpiar la ruta-----------------------------
