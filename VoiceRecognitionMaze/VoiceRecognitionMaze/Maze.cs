@@ -630,12 +630,14 @@ namespace VoiceRecognitionMaze
                 {
                     Console.WriteLine("Movimiento arriba");
                     Console.WriteLine("Movimiento invalido");
+                    habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end");
                 }
             }
             else
             {
                 Console.WriteLine("Movimiento arriba");
                 Console.WriteLine("Movimiento invalido");
+                habla.SpeakAsync("Invalid move, cannot move past the limit");
             }
         }
 
@@ -672,12 +674,14 @@ namespace VoiceRecognitionMaze
                 {
                     Console.WriteLine("Movimiento abajo");
                     Console.WriteLine("Movimiento invalido");
+                    habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end");
                 }
             }
             else
             {
                 Console.WriteLine("Movimiento abajo");
                 Console.WriteLine("Movimiento invalido");
+                habla.SpeakAsync("Invalid move, cannot move past the limit");
             }
         }
 
@@ -721,12 +725,14 @@ namespace VoiceRecognitionMaze
                 {
                     Console.WriteLine("Movimiento Izquierda");
                     Console.WriteLine("Movimiento invalido");
+                    habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end");
                 }
             }
             else
             {
                 Console.WriteLine("Movimiento Izquierda");
                 Console.WriteLine("Movimiento invalido");
+                habla.SpeakAsync("Invalid move, cannot move past the limit");
             }
 
         }
@@ -770,12 +776,14 @@ namespace VoiceRecognitionMaze
                 {
                     Console.WriteLine("Movimiento derecha");
                     Console.WriteLine("Movimiento invalido");
+                    habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end");
                 }
             }
             else
             {
                 Console.WriteLine("Movimiento derecha");
                 Console.WriteLine("Movimiento invalido");
+                habla.SpeakAsync("Invalid move, cannot move past the limit");
             }
 
         }
@@ -825,12 +833,14 @@ namespace VoiceRecognitionMaze
                 {
                     Console.WriteLine("Movimiento diagonal NorEste");
                     Console.WriteLine("Movimiento invalido");
+                    habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end");
                 }
             }
             else
             {
                 Console.WriteLine("Movimiento diagonal NorEste");
                 Console.WriteLine("Movimiento invalido");
+                habla.SpeakAsync("Invalid move, cannot move past the limit");
             }
         }
 
@@ -879,12 +889,14 @@ namespace VoiceRecognitionMaze
                 {
                     Console.WriteLine("Movimiento diagonal NorOeste");
                     Console.WriteLine("Movimiento invalido");
+                    habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end");
                 }
             }
             else
             {
                 Console.WriteLine("Movimiento diagonal NorOeste");
                 Console.WriteLine("Movimiento invalido");
+                habla.SpeakAsync("Invalid move, cannot move past the limit");
             }
 
 
@@ -934,12 +946,14 @@ namespace VoiceRecognitionMaze
                 {
                     Console.WriteLine("Movimiento diagonal SurEste");
                     Console.WriteLine("Movimiento invalido");
+                    habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end");
                 }
             }
             else
             {
                 Console.WriteLine("Movimiento diagonal SurEste");
                 Console.WriteLine("Movimiento invalido");
+                habla.SpeakAsync("Invalid move, cannot move past the limit");
             }
 
 
@@ -990,12 +1004,14 @@ namespace VoiceRecognitionMaze
                 {
                     Console.WriteLine("Movimiento diagonal SurOEste");
                     Console.WriteLine("Movimiento invalido");
+                    habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end");
                 }
             }
             else
             {
                 Console.WriteLine("Movimiento diagonal SurOEste");
                 Console.WriteLine("Movimiento invalido");
+                habla.SpeakAsync("Invalid move, cannot move past the limit");
             }
         }
 
