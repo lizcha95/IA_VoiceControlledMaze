@@ -34,6 +34,7 @@
             this.matrizTablero = new System.Windows.Forms.DataGridView();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.button1 = new System.Windows.Forms.Button();
+            this.palabras = new System.Windows.Forms.TextBox();
             ((System.ComponentModel.ISupportInitialize)(this.matrizTablero)).BeginInit();
             this.SuspendLayout();
             // 
@@ -86,6 +87,13 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // palabras
+            // 
+            this.palabras.Location = new System.Drawing.Point(18, 653);
+            this.palabras.Name = "palabras";
+            this.palabras.Size = new System.Drawing.Size(100, 26);
+            this.palabras.TabIndex = 11;
+            // 
             // Maze
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -93,6 +101,7 @@
             this.AutoScroll = true;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(869, 730);
+            this.Controls.Add(this.palabras);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.matrizTablero);
             this.MaximizeBox = false;
@@ -102,6 +111,7 @@
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.matrizTablero)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -111,6 +121,7 @@
         private System.Windows.Forms.DataGridView matrizTablero;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.TextBox palabras;
     }
 }
 
