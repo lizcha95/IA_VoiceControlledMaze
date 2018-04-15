@@ -134,7 +134,7 @@ namespace VoiceRecognitionMaze
                     this.Close();
                 }
             }
-            /*
+            
 
             else if (dimensiones == 1)
             {
@@ -270,67 +270,9 @@ namespace VoiceRecognitionMaze
                     }
                 }
             }
-*/
+
           
-            else if (dimensiones == 1)
-            {
-                if (e.Result.Text == "yes")
-                {
-                    habla.SpeakAsync("Please say the number of columns for the table");
-                    dimensiones = 0;
-                    banderaColumnas = 1;
-                }
-                else if (e.Result.Text == "No")
-                {
-                    this.Close();
-                }
-            }
-            else if (banderaColumnas == 1)
-            {
-                if (compararStringNumerosLetras(e.Result.Text, numerosEnLetras) != -1)
-                {
-                    columnas = compararStringNumerosLetras(e.Result.Text, numerosEnLetras);
-                }
-                else if (compararStringNumeros(e.Result.Text, numerosComunes) != -1)
-                {
-                    columnas = compararStringNumeros(e.Result.Text, numerosComunes);
-                }
-
-                habla.SpeakAsync("Please say the number of rows for the table");
-                banderaColumnas = 0;
-                banderaFilas = 1;
-            }
-            else if (banderaFilas == 1)
-            {
-                if (compararStringNumerosLetras(e.Result.Text, numerosEnLetras) != -1)
-                {
-                    filas = compararStringNumerosLetras(e.Result.Text, numerosEnLetras);
-                }
-                else if (compararStringNumeros(e.Result.Text, numerosComunes) != -1)
-                {
-                    filas = compararStringNumeros(e.Result.Text, numerosComunes);
-                }
-
-                habla.SpeakAsync("Please say the number for the size of the table boxes");
-                banderaFilas = 0;
-                banderaTamanoCasilla = 1;
-            }
-            else if (banderaTamanoCasilla == 1)
-            {
-                if (compararStringNumerosLetras(e.Result.Text, numerosEnLetras) != -1)
-                {
-                    tamanoCasillas = compararStringNumerosLetras(e.Result.Text, numerosEnLetras);
-                }
-                else if (compararStringNumeros(e.Result.Text, numerosComunes) != -1)
-                {
-                    tamanoCasillas = compararStringNumeros(e.Result.Text, numerosComunes);
-                }
-
-                habla.SpeakAsync("Creating table");
-                banderaTamanoCasilla = 0;
-                InicializarTablero();
-               // jugar = 1;
-            }
+          
             else if (activarDiagonal == 1)
             {
                 if (e.Result.Text == "yes")
