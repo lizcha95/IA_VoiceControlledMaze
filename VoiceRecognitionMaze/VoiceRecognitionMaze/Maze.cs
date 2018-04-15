@@ -407,6 +407,10 @@ namespace VoiceRecognitionMaze
                 {
                     MoverDiagonalSurEsteNodoFinal();
                 }
+                else if (e.Result.Text == "southwest")
+                {
+                    MoverDiagonalSurOesteNodoFinal();
+                }
                 else if (e.Result.Text == "stop")
                 {
                     Console.WriteLine(e.Result.Text);
