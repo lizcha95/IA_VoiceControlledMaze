@@ -136,12 +136,11 @@ namespace VoiceRecognitionMaze
 
             else if (dimensiones == 1)
             {
-                if (e.Result.Text == "yes" || noCero == 1)
+                if (e.Result.Text == "yes")
                 {
-                    habla.SpeakAsync("Please say the number of columns for the table");
                     dimensiones = 0;
                     banderaColumnas = 1;
-                    noCero = 0;
+                    habla.SpeakAsync("Please say the number of columns for the table");
                 }
                 else if (e.Result.Text == "No")
                 {
@@ -151,130 +150,123 @@ namespace VoiceRecognitionMaze
 
             else if (banderaColumnas == 1)
             {
+                palabras.Text = e.Result.Text;
                 if (compararStringNumerosLetras(e.Result.Text, numerosEnLetras) != -1)
                 {
-                    if(compararStringNumerosLetras(e.Result.Text, numerosEnLetras) == 0)
+                    if(compararStringNumerosLetras(e.Result.Text, numerosEnLetras) <= 1)
                     {
-                        habla.SpeakAsync("Columns number cannot be zero");
-                        banderaColumnas = 0;
-                        dimensiones = 1;
-                        noCero = 1;
-                    }
-                    else if(compararStringNumerosLetras(e.Result.Text, numerosEnLetras) < 2)
-                    {
-                        habla.SpeakAsync("Columns must be greater than two, so the agent can move");
-                        banderaColumnas = 0;
-                        dimensiones = 1;
-                        noCero = 1;
+                        habla.SpeakAsync("Columns number must be greater than two, say a number again");
                     }
                     else
                     {
                         columnas = compararStringNumerosLetras(e.Result.Text, numerosEnLetras);
+                        banderaColumnas = 0;
+                        banderaFilas = 1;
+                        habla.SpeakAsync("Please say the number of rows for the table");
                     }
                     
                 }
 
                 else if (compararStringNumeros(e.Result.Text, numerosComunes) != -1)
                 {
-                    if (compararStringNumeros(e.Result.Text, numerosComunes) == 0)
+                    if (compararStringNumeros(e.Result.Text, numerosComunes) <= 1)
                     {
-                        habla.SpeakAsync("Columns number cannot be zero");
-                    }
-                    else if (compararStringNumeros(e.Result.Text, numerosComunes) < 2)
-                    {
-                        habla.SpeakAsync("Columns must be greater than two, so the agent can move");
-                        banderaColumnas = 0;
-                        dimensiones = 1;
-                        noCero = 1;
+                        habla.SpeakAsync("Columns number must be greater than two, say a number again");
                     }
                     else
                     {
                         columnas = compararStringNumeros(e.Result.Text, numerosComunes);
+                        banderaColumnas = 0;
+                        banderaFilas = 1;
+                        habla.SpeakAsync("Please say the number of rows for the table");
+
                     }
-                    
-                }
-                else
-                {
-                    habla.SpeakAsync("Please say the number of rows for the table");
-                    banderaColumnas = 0;
-                    banderaFilas = 1;
                 }
             }
 
             else if (banderaFilas == 1)
             {
+                palabras.Text = e.Result.Text;
                 if (compararStringNumerosLetras(e.Result.Text, numerosEnLetras) != -1)
                 {
-                    if (compararStringNumerosLetras(e.Result.Text, numerosEnLetras) == 0)
+                    if (compararStringNumerosLetras(e.Result.Text, numerosEnLetras) <= 1)
                     {
-                        habla.SpeakAsync("Rows number cannot be zero");
-                        banderaFilas = 0;
-                        dimensiones = 1;
-                        noCero = 1;
-                    }
-                    else if (compararStringNumerosLetras(e.Result.Text, numerosEnLetras) < 2)
-                    {
-                        habla.SpeakAsync("Rows must be greater than two, so the agent can move");
-                        banderaFilas = 0;
-                        dimensiones = 1;
-                        noCero = 1;
+                        habla.SpeakAsync("Rows number must be greater than two, say a number again");
                     }
                     else
                     {
                         filas = compararStringNumerosLetras(e.Result.Text, numerosEnLetras);
+                        banderaFilas = 0;
+                        banderaTamanoCasilla = 1;
+                        habla.SpeakAsync("Please say the number for the size of the squares");
                     }
 
                 }
 
-                else if (compararStringNumeros(e.Result.Text, numerosEnLetras) != -1)
+                else if (compararStringNumeros(e.Result.Text, numerosComunes) != -1)
                 {
-                    if (compararStringNumeros(e.Result.Text, numerosEnLetras) == 0)
+                    if (compararStringNumeros(e.Result.Text, numerosComunes) <= 1)
                     {
-                        habla.SpeakAsync("Rows number cannot be zero");
-                        banderaFilas = 0;
-                        dimensiones = 1;
-                        noCero = 1;
-                    }
-                    else if (compararStringNumeros(e.Result.Text, numerosEnLetras) < 2)
-                    {
-                        habla.SpeakAsync("Rows must be greater than two, so the agent can move");
-                        banderaFilas = 0;
-                        dimensiones = 1;
-                        noCero = 1;
+                        habla.SpeakAsync("Rows number must be greater than two, say a number again");
                     }
                     else
                     {
-                        filas = compararStringNumeros(e.Result.Text, numerosEnLetras);
+                        filas = compararStringNumeros(e.Result.Text, numerosComunes);
+                        banderaFilas = 0;
+                        banderaTamanoCasilla = 1;
+                        habla.SpeakAsync("Please say the number for the size of the squares");
                     }
 
-                }
-                else
-                {
-                    habla.SpeakAsync("Please say the number for the size of the table boxes");
-                    banderaFilas = 0;
-                    banderaTamanoCasilla = 1;
-                }
-                
+                }                
             }
 
             else if (banderaTamanoCasilla == 1)
             {
+                palabras.Text = e.Result.Text;
                 if (compararStringNumerosLetras(e.Result.Text, numerosEnLetras) != -1)
                 {
-                    tamanoCasillas = compararStringNumerosLetras(e.Result.Text, numerosEnLetras);
+                    if (compararStringNumerosLetras(e.Result.Text, numerosEnLetras) <= 9)
+                    {
+                        habla.SpeakAsync("Box size must be greater than or equals to ten, say a number again");
+                    }
+                    else if (compararStringNumerosLetras(e.Result.Text, numerosEnLetras) >= 51)
+                    {
+                        habla.SpeakAsync("Box size must be less than or equals to fifty, say a number again");
+                    }
+                    else
+                    {
+                        tamanoCasillas = compararStringNumerosLetras(e.Result.Text, numerosEnLetras);
+                        banderaTamanoCasilla = 0;
+                        habla.SpeakAsync("Creating table");
+                        InicializarTablero();
+
+                        habla.SpeakAsync("Do you want the agent to be able to cross diagonals, say yes or no");
+                        activarDiagonal = 1;
+                    }
+
                 }
-                else if (compararStringNumeros(e.Result.Text, numerosComunes) != -1)
+
+                if (compararStringNumeros(e.Result.Text, numerosComunes) != -1)
                 {
-                    tamanoCasillas = compararStringNumeros(e.Result.Text, numerosComunes);
+                    if (compararStringNumeros(e.Result.Text, numerosComunes) <= 9)
+                    {
+                        habla.SpeakAsync("Box size must be greater than or equals to ten, say a number again");
+                    }
+                    else if (compararStringNumeros(e.Result.Text, numerosComunes) >= 51)
+                    {
+                        habla.SpeakAsync("Box size must be less than or equals to fifty, say a number again");
+                    }
+                    else
+                    {
+                        tamanoCasillas = compararStringNumeros(e.Result.Text, numerosComunes);
+                        banderaTamanoCasilla = 0;
+                        habla.SpeakAsync("Creating table");
+                        InicializarTablero();
+
+                        habla.SpeakAsync("Do you want the agent to be able to cross diagonals, say yes or no");
+                        activarDiagonal = 1;
+                    }
                 }
-
-                habla.SpeakAsync("Creating table");
-                InicializarTablero();
-
-                habla.SpeakAsync("Do you want the agent to be able to cross diagonals, say yes or no");
-                banderaTamanoCasilla = 0;
-                activarDiagonal = 1;
-
             }
 
             else if (activarDiagonal == 1)
