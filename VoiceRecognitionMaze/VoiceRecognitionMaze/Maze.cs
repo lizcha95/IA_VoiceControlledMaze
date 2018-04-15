@@ -22,6 +22,7 @@ namespace VoiceRecognitionMaze
         public int[,] Tablero; //Cuadricula donde 0 es vacio y 1 es obstaculo
         public double costo_diagonal;
         public Boolean diagonal;
+        public Boolean buscar;
 
 
         public List<Nodo> listaAbierta = new List<Nodo>();
@@ -133,6 +134,7 @@ namespace VoiceRecognitionMaze
                     this.Close();
                 }
             }
+            /*
 
             else if (dimensiones == 1)
             {
@@ -276,7 +278,67 @@ namespace VoiceRecognitionMaze
                 activarDiagonal = 1;
 
             }
+*/
+          
+            else if (dimensiones == 1)
+            {
+                if (e.Result.Text == "yes")
+                {
+                    habla.SpeakAsync("Please say the number of columns for the table");
+                    dimensiones = 0;
+                    banderaColumnas = 1;
+                }
+                else if (e.Result.Text == "No")
+                {
+                    this.Close();
+                }
+            }
+            else if (banderaColumnas == 1)
+            {
+                if (compararStringNumerosLetras(e.Result.Text, numerosEnLetras) != -1)
+                {
+                    columnas = compararStringNumerosLetras(e.Result.Text, numerosEnLetras);
+                }
+                else if (compararStringNumeros(e.Result.Text, numerosComunes) != -1)
+                {
+                    columnas = compararStringNumeros(e.Result.Text, numerosComunes);
+                }
 
+                habla.SpeakAsync("Please say the number of rows for the table");
+                banderaColumnas = 0;
+                banderaFilas = 1;
+            }
+            else if (banderaFilas == 1)
+            {
+                if (compararStringNumerosLetras(e.Result.Text, numerosEnLetras) != -1)
+                {
+                    filas = compararStringNumerosLetras(e.Result.Text, numerosEnLetras);
+                }
+                else if (compararStringNumeros(e.Result.Text, numerosComunes) != -1)
+                {
+                    filas = compararStringNumeros(e.Result.Text, numerosComunes);
+                }
+
+                habla.SpeakAsync("Please say the number for the size of the table boxes");
+                banderaFilas = 0;
+                banderaTamanoCasilla = 1;
+            }
+            else if (banderaTamanoCasilla == 1)
+            {
+                if (compararStringNumerosLetras(e.Result.Text, numerosEnLetras) != -1)
+                {
+                    tamanoCasillas = compararStringNumerosLetras(e.Result.Text, numerosEnLetras);
+                }
+                else if (compararStringNumeros(e.Result.Text, numerosComunes) != -1)
+                {
+                    tamanoCasillas = compararStringNumeros(e.Result.Text, numerosComunes);
+                }
+
+                habla.SpeakAsync("Creating table");
+                banderaTamanoCasilla = 0;
+                InicializarTablero();
+               // jugar = 1;
+            }
             else if (activarDiagonal == 1)
             {
                 if (e.Result.Text == "yes")
@@ -307,7 +369,7 @@ namespace VoiceRecognitionMaze
                     moverAgenteInicio = 1;
                     moverAgente = 0;
 
-                    habla.SpeakAsync("To play, please say up, down, left, right, northwest, southest, northeast or stop for fixing the agent's position.");
+                    habla.SpeakAsync("To play, please say up, down, left, right, northwest, southest, southwest, northeast or stop for fixing the agent's position.");
                 }
 
                 else if (e.Result.Text == "no")
@@ -369,7 +431,7 @@ namespace VoiceRecognitionMaze
             {
                 if (e.Result.Text == "yes")
                 {
-                    habla.SpeakAsync("To play, please say up, down, left, right, northwest, southest, northeast or stop for fixing the end of the route");
+                    habla.SpeakAsync("To play, please say up, down, left, right, northwest, southest, northeast, southwest or stop for fixing the end of the route");
                     banderaNodoFinal = 0;
                     moverAgenteFinal = 1;
 
@@ -479,16 +541,34 @@ namespace VoiceRecognitionMaze
             Console.WriteLine(filas);
             Console.WriteLine(columnas);
             Console.WriteLine(tamanoCasillas);
-            Tablero[0, 0] = 2;
-            Tablero[columnas - 1, filas - 1] = 3;
 
-            //Coordenadas de la posicion de inicio y fin
-            pos_inicio[0] = 0;
-            pos_inicio[1] = 0;
+            buscar = true;
 
-            pos_final[0] = columnas - 1; //columna
-            pos_final[1] = filas - 1;//fila
+            Random random = new Random();
+            int filaInicio = random.Next(0, filas);
+            int columnaInicio = random.Next(0, columnas);
 
+            Tablero[columnaInicio, filaInicio] = 2;
+            pos_inicio[0] = columnaInicio;
+            pos_inicio[1] = filaInicio;
+
+            while (buscar)
+            {
+                int filaFinal = random.Next(0, filas);
+                int columnaFinal = random.Next(0, columnas);
+
+                if (Tablero[columnaFinal, filaFinal] == 2)
+                {
+                    buscar = true;
+                }
+                else
+                {
+                    Tablero[columnaFinal, filaFinal] = 3;
+                    pos_final[0] = columnaFinal; //columna
+                    pos_final[1] = filaFinal;//fila
+                    buscar = false;
+                }
+            }
             costo_diagonal = Math.Sqrt(2) * tamanoCasillas;
 
             //Sacar posiciones disponibles donde puedo poner obstaculos
