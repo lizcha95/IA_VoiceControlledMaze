@@ -22,6 +22,7 @@ namespace VoiceRecognitionMaze
         public int[,] Tablero; //Cuadricula donde 0 es vacio y 1 es obstaculo
         public double costo_diagonal;
         public Boolean diagonal;
+        public Boolean buscar;
 
 
         public List<Nodo> listaAbierta = new List<Nodo>();
@@ -133,6 +134,7 @@ namespace VoiceRecognitionMaze
                     this.Close();
                 }
             }
+            
 
             else if (dimensiones == 1)
             {
@@ -269,6 +271,8 @@ namespace VoiceRecognitionMaze
                 }
             }
 
+          
+          
             else if (activarDiagonal == 1)
             {
                 if (e.Result.Text == "yes")
@@ -299,7 +303,7 @@ namespace VoiceRecognitionMaze
                     moverAgenteInicio = 1;
                     moverAgente = 0;
 
-                    habla.SpeakAsync("To play, please say up, down, left, right, northwest, southest, northeast or stop for fixing the agent's position.");
+                    habla.SpeakAsync("To play, please say up, down, left, right, northwest, southest, southwest, northeast or stop for fixing the agent's position.");
                 }
 
                 else if (e.Result.Text == "no")
@@ -361,7 +365,7 @@ namespace VoiceRecognitionMaze
             {
                 if (e.Result.Text == "yes")
                 {
-                    habla.SpeakAsync("To play, please say up, down, left, right, northwest, southest, northeast or stop for fixing the end of the route");
+                    habla.SpeakAsync("To play, please say up, down, left, right, northwest, southest, northeast, southwest or stop for fixing the end of the route");
                     banderaNodoFinal = 0;
                     moverAgenteFinal = 1;
 
@@ -471,16 +475,34 @@ namespace VoiceRecognitionMaze
             Console.WriteLine(filas);
             Console.WriteLine(columnas);
             Console.WriteLine(tamanoCasillas);
-            Tablero[0, 0] = 2;
-            Tablero[columnas - 1, filas - 1] = 3;
 
-            //Coordenadas de la posicion de inicio y fin
-            pos_inicio[0] = 0;
-            pos_inicio[1] = 0;
+            buscar = true;
 
-            pos_final[0] = columnas - 1; //columna
-            pos_final[1] = filas - 1;//fila
+            Random random = new Random();
+            int filaInicio = random.Next(0, filas);
+            int columnaInicio = random.Next(0, columnas);
 
+            Tablero[columnaInicio, filaInicio] = 2;
+            pos_inicio[0] = columnaInicio;
+            pos_inicio[1] = filaInicio;
+
+            while (buscar)
+            {
+                int filaFinal = random.Next(0, filas);
+                int columnaFinal = random.Next(0, columnas);
+
+                if (Tablero[columnaFinal, filaFinal] == 2)
+                {
+                    buscar = true;
+                }
+                else
+                {
+                    Tablero[columnaFinal, filaFinal] = 3;
+                    pos_final[0] = columnaFinal; //columna
+                    pos_final[1] = filaFinal;//fila
+                    buscar = false;
+                }
+            }
             costo_diagonal = Math.Sqrt(2) * tamanoCasillas;
 
             //Sacar posiciones disponibles donde puedo poner obstaculos
