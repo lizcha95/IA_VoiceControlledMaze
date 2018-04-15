@@ -962,21 +962,21 @@ namespace VoiceRecognitionMaze
                     pos_inicio[0] = columnaNuevaAgente;
                     pos_inicio[1] = filaNuevaAgente;
 
-                    Console.WriteLine("Movimiento diagonal SurEste: Posicion actual");
+                    Console.WriteLine("Movimiento diagonal SurOEste: Posicion actual");
                     Console.WriteLine(matrizTablero[columnaActualAgente, filaActualAgente]);
 
-                    Console.WriteLine("Movimiento diagonal SurEste: Posicion nueva");
+                    Console.WriteLine("Movimiento diagonal SurOEste: Posicion nueva");
                     Console.WriteLine(matrizTablero[columnaNuevaAgente, filaNuevaAgente]);
                 }
                 else
                 {
-                    Console.WriteLine("Movimiento diagonal SurEste");
+                    Console.WriteLine("Movimiento diagonal SurOEste");
                     Console.WriteLine("Movimiento invalido");
                 }
             }
             else
             {
-                Console.WriteLine("Movimiento diagonal SurEste");
+                Console.WriteLine("Movimiento diagonal SurOEste");
                 Console.WriteLine("Movimiento invalido");
             }
         }
@@ -1008,7 +1008,7 @@ namespace VoiceRecognitionMaze
                     agenteNuevo.Style.SelectionBackColor = Color.Red;
 
                     Tablero[pos_final[0], filaActualAgente] = 0;
-                    Tablero[pos_final[0], filaNuevaAgente] = 2;
+                    Tablero[pos_final[0], filaNuevaAgente] = 3;
 
                     pos_final[1] = filaNuevaAgente;
 
@@ -1051,7 +1051,7 @@ namespace VoiceRecognitionMaze
                     agenteNuevo.Style.SelectionBackColor = Color.Red;
 
                     Tablero[pos_final[0], filaActualAgente] = 0;
-                    Tablero[pos_final[0], filaNuevaAgente] = 2;
+                    Tablero[pos_final[0], filaNuevaAgente] = 3;
 
                     pos_final[1] = filaNuevaAgente;
                 }
@@ -1094,7 +1094,7 @@ namespace VoiceRecognitionMaze
                     agenteNuevo.Style.SelectionBackColor = Color.Red;
 
                     Tablero[columnaActualAgente, pos_final[1]] = 0;
-                    Tablero[columnaNuevaAgente, pos_final[1]] = 2;
+                    Tablero[columnaNuevaAgente, pos_final[1]] = 3;
 
                     pos_final[0] = columnaNuevaAgente;
 
@@ -1143,7 +1143,7 @@ namespace VoiceRecognitionMaze
                     agenteNuevo.Style.SelectionBackColor = Color.Red;
 
                     Tablero[columnaActualAgente, pos_final[1]] = 0;
-                    Tablero[columnaNuevaAgente, pos_final[1]] = 2;
+                    Tablero[columnaNuevaAgente, pos_final[1]] = 3;
 
                     pos_final[0] = columnaNuevaAgente;
 
@@ -1197,7 +1197,7 @@ namespace VoiceRecognitionMaze
                     agenteNuevo.Style.SelectionBackColor = Color.Red;
 
                     Tablero[columnaActualAgente, filaActualAgente] = 0;
-                    Tablero[columnaNuevaAgente, filaNuevaAgente] = 2;
+                    Tablero[columnaNuevaAgente, filaNuevaAgente] = 3;
 
                     pos_final[0] = columnaNuevaAgente;
                     pos_final[1] = filaNuevaAgente;
@@ -1251,7 +1251,7 @@ namespace VoiceRecognitionMaze
                     agenteNuevo.Style.SelectionBackColor = Color.Red;
 
                     Tablero[columnaActualAgente, filaActualAgente] = 0;
-                    Tablero[columnaNuevaAgente, filaNuevaAgente] = 2;
+                    Tablero[columnaNuevaAgente, filaNuevaAgente] = 3;
 
                     pos_final[0] = columnaNuevaAgente;
                     pos_final[1] = filaNuevaAgente;
@@ -1306,7 +1306,7 @@ namespace VoiceRecognitionMaze
                     agenteNuevo.Style.SelectionBackColor = Color.Red;
 
                     Tablero[columnaActualAgente, filaActualAgente] = 0;
-                    Tablero[columnaNuevaAgente, filaNuevaAgente] = 2;
+                    Tablero[columnaNuevaAgente, filaNuevaAgente] = 3;
 
                     pos_final[0] = columnaNuevaAgente;
                     pos_final[1] = filaNuevaAgente;
@@ -1328,8 +1328,60 @@ namespace VoiceRecognitionMaze
                 Console.WriteLine("Movimiento diagonal SurEste Final");
                 Console.WriteLine("Movimiento invalido");
             }
+        }
 
+        public void MoverDiagonalSurOesteNodoFinal()
+        {
+            int filaActualAgente;
+            int filaNuevaAgente;
+            int columnaActualAgente;
+            int columnaNuevaAgente;
 
+            //pos_inicio[1] = filas (coordenada y)
+            //pos_inicio[0] = columnas (coordenada x)
+            if (pos_final[0] != columnas - 1 && pos_final[1] != filas - 1)
+            {
+                filaActualAgente = pos_final[1];
+                columnaActualAgente = pos_final[0];
+
+                filaNuevaAgente = pos_final[1] + 1;
+                columnaNuevaAgente = pos_final[0] - 1;
+
+                if ((Tablero[columnaNuevaAgente, filaNuevaAgente]) != 1 && (Tablero[columnaNuevaAgente, filaNuevaAgente]) != 2)
+                {
+                    DataGridViewCell agenteActual = matrizTablero[columnaActualAgente, filaActualAgente];
+                    agenteActual.Style.BackColor = Color.White;
+                    agenteActual.ReadOnly = false;
+                    agenteActual.Style.SelectionBackColor = Color.White;
+
+                    DataGridViewCell agenteNuevo = matrizTablero[columnaNuevaAgente, filaNuevaAgente];
+                    agenteNuevo.Style.BackColor = Color.Red;
+                    agenteNuevo.ReadOnly = false;
+                    agenteNuevo.Style.SelectionBackColor = Color.Red;
+
+                    Tablero[columnaActualAgente, filaActualAgente] = 0;
+                    Tablero[columnaNuevaAgente, filaNuevaAgente] = 3;
+
+                    pos_final[0] = columnaNuevaAgente;
+                    pos_final[1] = filaNuevaAgente;
+
+                    Console.WriteLine("Movimiento diagonal SurOEste: Posicion actual");
+                    Console.WriteLine(matrizTablero[columnaActualAgente, filaActualAgente]);
+
+                    Console.WriteLine("Movimiento diagonal SurOEste: Posicion nueva");
+                    Console.WriteLine(matrizTablero[columnaNuevaAgente, filaNuevaAgente]);
+                }
+                else
+                {
+                    Console.WriteLine("Movimiento diagonal SurOEste");
+                    Console.WriteLine("Movimiento invalido");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Movimiento diagonal SurOEste");
+                Console.WriteLine("Movimiento invalido");
+            }
         }
 
         //------------------------------------------Limpiar la ruta-----------------------------
