@@ -46,6 +46,7 @@ namespace VoiceRecognitionMaze
         int moverAgente = 0;
         int salida = 0;
         int jugar = 0;
+        int noCero = 0;
 
         List<string> numerosEnLetras = new List<string> { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "zero","ten","eleven",
             "twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen","twenty","twenty one","twenty two","twenty three",
@@ -132,11 +133,12 @@ namespace VoiceRecognitionMaze
 
             else if (dimensiones == 1)
             {
-                if (e.Result.Text == "yes")
+                if (e.Result.Text == "yes" || noCero == 1)
                 {
                     habla.SpeakAsync("Please say the number of columns for the table");
                     dimensiones = 0;
                     banderaColumnas = 1;
+                    noCero = 0;
                 }
                 else if (e.Result.Text == "No")
                 {
@@ -148,32 +150,108 @@ namespace VoiceRecognitionMaze
             {
                 if (compararStringNumerosLetras(e.Result.Text, numerosEnLetras) != -1)
                 {
-                    columnas = compararStringNumerosLetras(e.Result.Text, numerosEnLetras);
-                }
-                else if (compararStringNumeros(e.Result.Text, numerosComunes) != -1)
-                {
-                    columnas = compararStringNumeros(e.Result.Text, numerosComunes);
+                    if(compararStringNumerosLetras(e.Result.Text, numerosEnLetras) == 0)
+                    {
+                        habla.SpeakAsync("Columns number cannot be zero");
+                        banderaColumnas = 0;
+                        dimensiones = 1;
+                        noCero = 1;
+                    }
+                    else if(compararStringNumerosLetras(e.Result.Text, numerosEnLetras) < 2)
+                    {
+                        habla.SpeakAsync("Columns must be greater than two, so the agent can move");
+                        banderaColumnas = 0;
+                        dimensiones = 1;
+                        noCero = 1;
+                    }
+                    else
+                    {
+                        columnas = compararStringNumerosLetras(e.Result.Text, numerosEnLetras);
+                    }
+                    
                 }
 
-                habla.SpeakAsync("Please say the number of rows for the table");
-                banderaColumnas = 0;
-                banderaFilas = 1;
+                else if (compararStringNumeros(e.Result.Text, numerosComunes) != -1)
+                {
+                    if (compararStringNumeros(e.Result.Text, numerosComunes) == 0)
+                    {
+                        habla.SpeakAsync("Columns number cannot be zero");
+                    }
+                    else if (compararStringNumeros(e.Result.Text, numerosComunes) < 2)
+                    {
+                        habla.SpeakAsync("Columns must be greater than two, so the agent can move");
+                        banderaColumnas = 0;
+                        dimensiones = 1;
+                        noCero = 1;
+                    }
+                    else
+                    {
+                        columnas = compararStringNumeros(e.Result.Text, numerosComunes);
+                    }
+                    
+                }
+                else
+                {
+                    habla.SpeakAsync("Please say the number of rows for the table");
+                    banderaColumnas = 0;
+                    banderaFilas = 1;
+                }
             }
 
             else if (banderaFilas == 1)
             {
                 if (compararStringNumerosLetras(e.Result.Text, numerosEnLetras) != -1)
                 {
-                    filas = compararStringNumerosLetras(e.Result.Text, numerosEnLetras);
-                }
-                else if (compararStringNumeros(e.Result.Text, numerosComunes) != -1)
-                {
-                    filas = compararStringNumeros(e.Result.Text, numerosComunes);
+                    if (compararStringNumerosLetras(e.Result.Text, numerosEnLetras) == 0)
+                    {
+                        habla.SpeakAsync("Rows number cannot be zero");
+                        banderaFilas = 0;
+                        dimensiones = 1;
+                        noCero = 1;
+                    }
+                    else if (compararStringNumerosLetras(e.Result.Text, numerosEnLetras) < 2)
+                    {
+                        habla.SpeakAsync("Rows must be greater than two, so the agent can move");
+                        banderaFilas = 0;
+                        dimensiones = 1;
+                        noCero = 1;
+                    }
+                    else
+                    {
+                        filas = compararStringNumerosLetras(e.Result.Text, numerosEnLetras);
+                    }
+
                 }
 
-                habla.SpeakAsync("Please say the number for the size of the table boxes");
-                banderaFilas = 0;
-                banderaTamanoCasilla = 1;
+                else if (compararStringNumeros(e.Result.Text, numerosEnLetras) != -1)
+                {
+                    if (compararStringNumeros(e.Result.Text, numerosEnLetras) == 0)
+                    {
+                        habla.SpeakAsync("Rows number cannot be zero");
+                        banderaFilas = 0;
+                        dimensiones = 1;
+                        noCero = 1;
+                    }
+                    else if (compararStringNumeros(e.Result.Text, numerosEnLetras) < 2)
+                    {
+                        habla.SpeakAsync("Rows must be greater than two, so the agent can move");
+                        banderaFilas = 0;
+                        dimensiones = 1;
+                        noCero = 1;
+                    }
+                    else
+                    {
+                        filas = compararStringNumeros(e.Result.Text, numerosEnLetras);
+                    }
+
+                }
+                else
+                {
+                    habla.SpeakAsync("Please say the number for the size of the table boxes");
+                    banderaFilas = 0;
+                    banderaTamanoCasilla = 1;
+                }
+                
             }
 
             else if (banderaTamanoCasilla == 1)
