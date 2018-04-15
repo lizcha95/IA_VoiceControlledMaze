@@ -395,48 +395,48 @@ namespace VoiceRecognitionMaze
 
         //------------------------------------------ Movimientos del Agente -----------------------------
 
+     
         public void MoverArriba()
         {
             int filaActualAgente;
             int filaNuevaAgente;
 
-            for (int i = 0; i < columnas; i++)
+            //Si estoy en la fila 0 no me puedo mover hacia arriba
+            //pos_inicio[1] = filas (coordenada y)
+            //pos_inicio[0] = columnas (coordenada x)
+            if (pos_inicio[1] != 0)
             {
-                for (int j = 0; j < filas; j++)
+                filaActualAgente = pos_inicio[1];
+                filaNuevaAgente = pos_inicio[1] - 1;
+
+                if ((Tablero[pos_inicio[0], filaNuevaAgente]) != 1 && (Tablero[pos_inicio[0], filaNuevaAgente] != 3))
                 {
-                    if (Tablero[i, j] == 2)
-                    {
-                        if(j != 0)
-                        {
-                            filaActualAgente = j;
-                            filaNuevaAgente = j - 1;
+                    DataGridViewCell agenteActual = matrizTablero[pos_inicio[0], filaActualAgente];
+                    agenteActual.Style.BackColor = Color.White;
+                    agenteActual.ReadOnly = false;
+                    agenteActual.Style.SelectionBackColor = Color.White;
 
-                            if((Tablero[i, filaNuevaAgente]) != 1)
-                            {
-                                DataGridViewCell agenteActual = matrizTablero[i, filaActualAgente];
-                                agenteActual.Style.BackColor = Color.White;
-                                agenteActual.ReadOnly = false;
-                                agenteActual.Style.SelectionBackColor = Color.White;
+                    DataGridViewCell agenteNuevo = matrizTablero[pos_inicio[0], filaNuevaAgente];
+                    agenteNuevo.Style.BackColor = Color.LawnGreen;
+                    agenteNuevo.ReadOnly = false;
+                    agenteNuevo.Style.SelectionBackColor = Color.LawnGreen;
 
-                                DataGridViewCell agenteNuevo = matrizTablero[i, filaNuevaAgente];
-                                agenteNuevo.Style.BackColor = Color.LawnGreen;
-                                agenteNuevo.ReadOnly = false;
-                                agenteNuevo.Style.SelectionBackColor = Color.LawnGreen;
+                    Tablero[pos_inicio[0], filaActualAgente] = 0;
+                    Tablero[pos_inicio[0], filaNuevaAgente] = 2;
 
-                                Tablero[i, filaActualAgente] = 0;
-                                Tablero[i, filaNuevaAgente] = 2;
-                            }
+                    pos_inicio[1] = filaNuevaAgente;
 
-                            Console.WriteLine("Movimiento inválido");
-                        }
-
-                        else
-                        {
-                            Console.WriteLine("Movimiento inválido");
-                        }
-
-                    }
                 }
+                else
+                {
+                    Console.WriteLine("Movimiento arriba");
+                    Console.WriteLine("Movimiento invalido");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Movimiento arriba");
+                Console.WriteLine("Movimiento invalido");
             }
         }
 
@@ -444,44 +444,43 @@ namespace VoiceRecognitionMaze
         {
             int filaActualAgente;
             int filaNuevaAgente;
+            //pos_inicio[1] = filas (coordenada y)
+            //pos_inicio[0] = columnas (coordenada x)
 
-            for (int i = 0; i < columnas; i++)
+            if (pos_inicio[1] != filas - 1)  //Si la cantidad de filas ya es mayor se salió del tablero
             {
-                for (int j = 0; j < filas; j++)
+                filaActualAgente = pos_inicio[1];
+                filaNuevaAgente = pos_inicio[1] + 1;
+
+                if ((Tablero[pos_inicio[0], filaNuevaAgente]) != 1 && (Tablero[pos_inicio[0], filaNuevaAgente]) != 3)
                 {
-                    if (Tablero[i, j] == 2)
-                    {
-                        if (j != filas)
-                        {
-                            filaActualAgente = j;
-                            filaNuevaAgente = j + 1;
+                    DataGridViewCell agenteActual = matrizTablero[pos_inicio[0], filaActualAgente];
+                    agenteActual.Style.BackColor = Color.White;
+                    agenteActual.ReadOnly = false;
+                    agenteActual.Style.SelectionBackColor = Color.White;
 
-                            if ((Tablero[i, filaNuevaAgente]) != 1)
-                            {
-                                DataGridViewCell agenteActual = matrizTablero[i, filaActualAgente];
-                                agenteActual.Style.BackColor = Color.White;
-                                agenteActual.ReadOnly = false;
-                                agenteActual.Style.SelectionBackColor = Color.White;
+                    DataGridViewCell agenteNuevo = matrizTablero[pos_inicio[0], filaNuevaAgente];
+                    agenteNuevo.Style.BackColor = Color.LawnGreen;
+                    agenteNuevo.ReadOnly = false;
+                    agenteNuevo.Style.SelectionBackColor = Color.LawnGreen;
 
-                                DataGridViewCell agenteNuevo = matrizTablero[i, filaNuevaAgente];
-                                agenteNuevo.Style.BackColor = Color.LawnGreen;
-                                agenteNuevo.ReadOnly = false;
-                                agenteNuevo.Style.SelectionBackColor = Color.LawnGreen;
+                    Tablero[pos_inicio[0], filaActualAgente] = 0;
+                    Tablero[pos_inicio[0], filaNuevaAgente] = 2;
 
-                                Tablero[i, filaActualAgente] = 0;
-                                Tablero[i, filaNuevaAgente] = 2;
-                            }
+                    pos_inicio[1] = filaNuevaAgente;
+                   
 
-                            Console.WriteLine("Movimiento inválido");
-                        }
-
-                        else
-                        {
-                            Console.WriteLine("Movimiento inválido");
-                        }
-
-                    }
                 }
+                else
+                {
+                    Console.WriteLine("Movimiento abajo");
+                    Console.WriteLine("Movimiento invalido");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Movimiento abajo");
+                Console.WriteLine("Movimiento invalido");
             }
         }
 
@@ -490,44 +489,49 @@ namespace VoiceRecognitionMaze
             int columnaActualAgente;
             int columnaNuevaAgente;
 
-            for (int i = 0; i < columnas; i++)
+            //pos_inicio[1] = filas (coordenada y)
+            //pos_inicio[0] = columnas (coordenada x)
+
+            if (pos_inicio[0] != 0)
             {
-                for (int j = 0; j < filas; j++)
+                columnaActualAgente = pos_inicio[0];
+                columnaNuevaAgente = pos_inicio[0] - 1;
+
+                if ((Tablero[columnaNuevaAgente, pos_inicio[1]]) != 1 && (Tablero[columnaNuevaAgente, pos_inicio[1]]) != 3)
                 {
-                    if (Tablero[i, j] == 2)
-                    {
-                        if (i != 0)
-                        {
-                            columnaActualAgente = i;
-                            columnaNuevaAgente = i - 1;
+                    DataGridViewCell agenteActual = matrizTablero[columnaActualAgente, pos_inicio[1]];
+                    agenteActual.Style.BackColor = Color.White;
+                    agenteActual.ReadOnly = false;
+                    agenteActual.Style.SelectionBackColor = Color.White;
 
-                            if ((Tablero[columnaNuevaAgente, j]) != 1)
-                            {
-                                DataGridViewCell agenteActual = matrizTablero[columnaActualAgente, j];
-                                agenteActual.Style.BackColor = Color.White;
-                                agenteActual.ReadOnly = false;
-                                agenteActual.Style.SelectionBackColor = Color.White;
+                    DataGridViewCell agenteNuevo = matrizTablero[columnaNuevaAgente, pos_inicio[1]];
+                    agenteNuevo.Style.BackColor = Color.LawnGreen;
+                    agenteNuevo.ReadOnly = false;
+                    agenteNuevo.Style.SelectionBackColor = Color.LawnGreen;
 
-                                DataGridViewCell agenteNuevo = matrizTablero[columnaNuevaAgente, j];
-                                agenteNuevo.Style.BackColor = Color.LawnGreen;
-                                agenteNuevo.ReadOnly = false;
-                                agenteNuevo.Style.SelectionBackColor = Color.LawnGreen;
+                    Tablero[columnaActualAgente, pos_inicio[1]] = 0;
+                    Tablero[columnaNuevaAgente, pos_inicio[1]] = 2;
 
-                                Tablero[columnaActualAgente, j] = 0;
-                                Tablero[columnaNuevaAgente, j] = 2;
-                            }
+                    pos_inicio[0] = columnaNuevaAgente;
 
-                            Console.WriteLine("Movimiento inválido");
-                        }
+                    Console.WriteLine("Movimiento izquierda: Posicion actual");
+                    Console.WriteLine(matrizTablero[columnaActualAgente, pos_inicio[1]]);
 
-                        else
-                        {
-                            Console.WriteLine("Movimiento inválido");
-                        }
-
-                    }
+                    Console.WriteLine("Movimiento izquierda:: Posicion nueva");
+                    Console.WriteLine(matrizTablero[columnaNuevaAgente, pos_inicio[1]]);
+                }
+                else
+                {
+                    Console.WriteLine("Movimiento Izquierda");
+                    Console.WriteLine("Movimiento invalido");
                 }
             }
+            else
+            {
+                Console.WriteLine("Movimiento Izquierda");
+                Console.WriteLine("Movimiento invalido");
+            }
+
         }
 
         public void MoverDer()
@@ -535,44 +539,48 @@ namespace VoiceRecognitionMaze
             int columnaActualAgente;
             int columnaNuevaAgente;
 
-            for (int i = 0; i < columnas; i++)
+            //pos_inicio[1] = filas (coordenada y)
+            //pos_inicio[0] = columnas (coordenada x)
+            if (pos_inicio[0] != columnas - 1) // Si estoy en el borde ya no me puedo mover hacia la derecha
             {
-                for (int j = 0; j < filas; j++)
+                columnaActualAgente = pos_inicio[0];
+                columnaNuevaAgente = pos_inicio[0] + 1;
+
+                if ((Tablero[columnaNuevaAgente, pos_inicio[1]]) != 1 && (Tablero[columnaNuevaAgente, pos_inicio[1]]) != 3)
                 {
-                    if (Tablero[i, j] == 2)
-                    {
-                        if (i != columnas)
-                        {
-                            columnaActualAgente = i;
-                            columnaNuevaAgente = i + 1;
+                    DataGridViewCell agenteActual = matrizTablero[columnaActualAgente, pos_inicio[1]];
+                    agenteActual.Style.BackColor = Color.White;
+                    agenteActual.ReadOnly = false;
+                    agenteActual.Style.SelectionBackColor = Color.White;
 
-                            if ((Tablero[columnaNuevaAgente, j]) != 1)
-                            {
-                                DataGridViewCell agenteActual = matrizTablero[columnaActualAgente, j];
-                                agenteActual.Style.BackColor = Color.White;
-                                agenteActual.ReadOnly = false;
-                                agenteActual.Style.SelectionBackColor = Color.White;
+                    DataGridViewCell agenteNuevo = matrizTablero[columnaNuevaAgente, pos_inicio[1]];
+                    agenteNuevo.Style.BackColor = Color.LawnGreen;
+                    agenteNuevo.ReadOnly = false;
+                    agenteNuevo.Style.SelectionBackColor = Color.LawnGreen;
 
-                                DataGridViewCell agenteNuevo = matrizTablero[columnaNuevaAgente, j];
-                                agenteNuevo.Style.BackColor = Color.LawnGreen;
-                                agenteNuevo.ReadOnly = false;
-                                agenteNuevo.Style.SelectionBackColor = Color.LawnGreen;
+                    Tablero[columnaActualAgente, pos_inicio[1]] = 0;
+                    Tablero[columnaNuevaAgente, pos_inicio[1]] = 2;
 
-                                Tablero[columnaActualAgente, j] = 0;
-                                Tablero[columnaNuevaAgente, j] = 2;
-                            }
+                    pos_inicio[0] = columnaNuevaAgente;
 
-                            Console.WriteLine("Movimiento inválido");
-                        }
+                    Console.WriteLine("Movimiento derecha: Posicion actual");
+                    Console.WriteLine(matrizTablero[columnaActualAgente, pos_inicio[1]]);
 
-                        else
-                        {
-                            Console.WriteLine("Movimiento inválido");
-                        }
-
-                    }
+                    Console.WriteLine("Movimiento derecha: Posicion nueva");
+                    Console.WriteLine(matrizTablero[columnaNuevaAgente, pos_inicio[1]]);
+                }
+                else
+                {
+                    Console.WriteLine("Movimiento derecha");
+                    Console.WriteLine("Movimiento invalido");
                 }
             }
+            else
+            {
+                Console.WriteLine("Movimiento derecha");
+                Console.WriteLine("Movimiento invalido");
+            }
+
         }
 
         public void MoverDiagonalNorEste()
