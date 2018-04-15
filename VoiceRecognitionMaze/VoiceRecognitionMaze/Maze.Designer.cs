@@ -61,13 +61,11 @@
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.ControlLightLight;
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.matrizTablero.DefaultCellStyle = dataGridViewCellStyle1;
-            this.matrizTablero.Location = new System.Drawing.Point(138, 14);
-            this.matrizTablero.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.matrizTablero.Location = new System.Drawing.Point(92, 9);
             this.matrizTablero.Name = "matrizTablero";
             this.matrizTablero.ReadOnly = true;
             this.matrizTablero.RowHeadersVisible = false;
-            this.matrizTablero.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.matrizTablero.Size = new System.Drawing.Size(718, 702);
+            this.matrizTablero.Size = new System.Drawing.Size(939, 577);
             this.matrizTablero.TabIndex = 9;
             // 
             // timer1
@@ -78,10 +76,9 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(18, 185);
-            this.button1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.button1.Location = new System.Drawing.Point(12, 120);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(112, 35);
+            this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 10;
             this.button1.Text = "Limpiar";
             this.button1.UseVisualStyleBackColor = true;
@@ -89,21 +86,23 @@
             // 
             // palabras
             // 
-            this.palabras.Location = new System.Drawing.Point(18, 653);
+            this.palabras.Location = new System.Drawing.Point(12, 424);
+            this.palabras.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.palabras.Name = "palabras";
-            this.palabras.Size = new System.Drawing.Size(100, 26);
+            this.palabras.Size = new System.Drawing.Size(68, 20);
             this.palabras.TabIndex = 11;
             // 
             // Maze
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(869, 730);
+            this.ClientSize = new System.Drawing.Size(1034, 590);
             this.Controls.Add(this.palabras);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.matrizTablero);
+            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.MaximizeBox = false;
             this.Name = "Maze";
             this.ShowIcon = false;
