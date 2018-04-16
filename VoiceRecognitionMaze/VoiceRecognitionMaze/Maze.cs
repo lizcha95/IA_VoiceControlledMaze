@@ -51,6 +51,7 @@ namespace VoiceRecognitionMaze
         int moverAgenteInicio = 0;
         int moverAgenteFinal = 0;
         int banderaNodoFinal = 0;
+        int continuarJugando = 0;
 
         List<string> numerosEnLetras = new List<string> { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "zero","ten","eleven",
             "twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen","twenty","twenty one","twenty two","twenty three",
@@ -80,7 +81,7 @@ namespace VoiceRecognitionMaze
 
             // Crear gramática para escucha
             comandos.Add(new string[] { "start", "clean", "up", "down", "left", "right", "done", "yes", "no", "finish", "diagonal", "option", "rows", "columns","play", "stop","show route","northeast","northwest",
-                                         "southeast", "southwest","one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "zero","ten","eleven","twelve","thirteen","fourteen","fifteen","sixteen",
+                                         "southeast", "southwest","continue","one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "zero","ten","eleven","twelve","thirteen","fourteen","fifteen","sixteen",
                                          "seventeen","eighteen","nineteen","twenty","twenty one","twenty two","twenty three", "twenty four", "twenty five","twenty six","twenty seven",
                                          "twenty eight", "twenty nine","thirty","thirty one","thirty two","thirty three", "thirty four", "thirty five", "thirty six", "thirty seven","thirty eight",
                                          "thirty nine","forty","forty one", "forty two","forty three", "forty five", "forty six", "forty seven","forty eight", "forty nine", "fifty","fifty one",
@@ -433,24 +434,22 @@ namespace VoiceRecognitionMaze
                     if(A_Estrella == true)
                     {
                         habla.SpeakAsync("Showing the shortest path");
-                        habla.SpeakAsync("The way out is outlined in the color blue, what do you want to do next, say play to play again or finish to finish the game");
+                        habla.SpeakAsync("The way out is outlined in the color blue, what do you want to do next, say play to play again, continue to stay in the current maze or finish to finish the game");
                         salida = 0;
                         decisionFinal = 1;
-
                     }
-                    else
+                    else if(A_Estrella == false)
                     {
-                        habla.SpeakAsync("There is not a solution");
+                        habla.SpeakAsync("There is not a solution, what do you want to do next, say play to play again, continue to stay in the current maze or finish to finish the game");
                         salida = 0;
                         decisionFinal = 1;
-
                     }
                 }  
                 
                 else if (e.Result.Text == "no")
                 {
 
-                    habla.SpeakAsync("Thanks for playing, what do you want to do next, say play to play again or finish to finish the game");
+                    habla.SpeakAsync("Thanks for playing, what do you want to do next, say play to play again, continue to stay in the current maze or finish to finish the game");
                     salida = 0;
                     decisionFinal = 1;
                 }
@@ -463,12 +462,25 @@ namespace VoiceRecognitionMaze
                     volverAComenzar();
                     comenzar = 1;
                 }
+                else if(e.Result.Text == "continue")
+                {
+                    habla.SpeakAsync("Cleaning the current outlined route");
+                    LimpiarRuta();
+                    decisionFinal = 0;
+                    habla.SpeakAsync("Do you want to move the start of the agent again, say yes or no");
+                    continuarJugando = 1;
+                }
                 else if (e.Result.Text == "finish")
                 {
                     habla.SpeakAsync("Thanks for playing, bye");
                     this.Close();
                 }
-                // Ver como hacer para volver a poner al usuario a jugar, tal vez un or en la bandera de dimensiones
+            }
+            else if (continuarJugando == 1)
+            {
+                continuarJugando = 0;
+                moverAgente = 1;
+
             }
         }
 
