@@ -17,6 +17,7 @@ namespace AlgortimoAEstrella
         static int m, n, a, cant_obs;
         static double costo_diagonal;
         static Boolean diagonal;
+        static Boolean buscar;
 
         static List<Nodo> listaAbierta = new List<Nodo>();
         static List<int[]> listaCerrada = new List<int[]>();
@@ -303,10 +304,11 @@ namespace AlgortimoAEstrella
                 Nodo nodo = new Nodo(posAbajo, 0);
                 adyacentes.Add(nodo);
             }
-
+            
             //Revisa diagonales
             if (estado_diagonal)
             {
+                
                 if (x - 1 >= 0 && y - 1 >= 0 && Tablero[x - 1, y - 1] != 1)
                 {
                     int[] ArribaIzq = new int[2];
@@ -359,31 +361,108 @@ namespace AlgortimoAEstrella
             listaAbierta.Insert(indice, nodo);
         }
 
+        static Nodo ObtenerNodo(List<Nodo> lista, Nodo nodo)
+        {
+            foreach (Nodo value in lista)
+            {
+                if (value.posicion[0] == nodo.posicion[0] && value.posicion[1] == nodo.posicion[1])
+                {
+                    return value;
+                }
+
+            }
+            return null;
+        }
+
+        static Boolean EsIgual(List<Nodo> lista, Nodo nodo)
+        {
+            foreach(Nodo value in lista)
+            {
+                if(value.posicion[0] == nodo.posicion[0] && value.posicion[1] == nodo.posicion[1])
+                {
+                    return true;
+                }
+                continue;
+            }
+            return false;
+        }
         //Calcula la heuristica de cada uno de los nodos adyacentes
         static void calcular_fn(Nodo nodoActual, Nodo nodoFinal, List<Nodo> adyacentes, List<Nodo> listaAbierta, List<int[]> listaCerrada,double costoDiagonal)
         {
             double fn;
             double gn;
             Nodo Nodo_Adyacente;
+            //Console.WriteLine("Nodos adyacentes");
+            //imprimir_Adyacentes(adyacentes);
+
 
             foreach (Nodo nodo_abierto in adyacentes)
             {
 
                 if (!listaCerrada.Contains(nodo_abierto.posicion))
                 {
+
                     if (nodo_abierto.movimiento == 0) // Si el movimiento es directo
                     {
                         gn = nodoActual.gn + a;
+                        fn = (Math.Abs(nodo_abierto.posicion[0] - nodoFinal.posicion[0]) + Math.Abs(nodo_abierto.posicion[1] - nodoFinal.posicion[1])) * a + gn;
+                        Nodo_Adyacente = new Nodo(nodoActual, nodo_abierto.posicion, gn, fn, nodo_abierto.movimiento);//Se crea el nodo adyacente con el nodo padre, gn y fn calculados
+
+                        if (EsIgual(listaAbierta,nodo_abierto) == false)
+                        {
+                            agregarNodoAListaAbierta(Nodo_Adyacente);//Agrega todos los hijos del nodo actual.
+                        }
+                        else
+                        {
+
+                           Nodo nodoAntiguo = ObtenerNodo(listaAbierta, nodo_abierto);
+                           
+                           if (nodoAntiguo.gn < Nodo_Adyacente.gn)
+                            {
+ 
+                                Nodo_Adyacente.gn = nodoAntiguo.gn;
+                                Nodo_Adyacente.nodoPadre = nodoAntiguo.nodoPadre;
+
+                                listaAbierta.Remove(nodoAntiguo);
+                                agregarNodoAListaAbierta(Nodo_Adyacente);
+
+                            }
+                        }
+
                     }
                     else
                     {
                         gn = nodoActual.gn + costoDiagonal; //Movimiento en diagonal
+                        fn = (Math.Abs(nodo_abierto.posicion[0] - nodoFinal.posicion[0]) + Math.Abs(nodo_abierto.posicion[1] - nodoFinal.posicion[1])) * a + gn;
+                        Nodo_Adyacente = new Nodo(nodoActual, nodo_abierto.posicion, gn, fn, nodo_abierto.movimiento);//Se crea el nodo adyacente con el nodo padre, gn y fn calculados
+
+                        if (!listaAbierta.Contains(nodo_abierto))
+                        {
+                            agregarNodoAListaAbierta(Nodo_Adyacente);//Agrega todos los hijos del nodo actual.
+                        }
+                        else
+                        {
+
+                            Nodo nodoAntiguo = ObtenerNodo(listaAbierta, nodo_abierto);
+                            if (nodoAntiguo.gn < Nodo_Adyacente.gn)
+                            {
+
+                                Nodo_Adyacente.gn = nodoAntiguo.gn;
+                                Nodo_Adyacente.nodoPadre = nodoAntiguo.nodoPadre;
+
+                                listaAbierta.Remove(nodoAntiguo);
+                                agregarNodoAListaAbierta(Nodo_Adyacente);
+
+                            }
+                        }
+
+
                     }
 
+
                    
-                    fn = (Math.Abs(nodo_abierto.posicion[0] - nodoFinal.posicion[0]) + Math.Abs(nodo_abierto.posicion[1] - nodoFinal.posicion[1])) * a + gn;
-                    Nodo_Adyacente = new Nodo(nodoActual, nodo_abierto.posicion, gn, fn, nodo_abierto.movimiento);//Se crea el nodo adyacente con el nodo padre, gn y fn calculados
-                    agregarNodoAListaAbierta(Nodo_Adyacente);//Agrega todos los hijos del nodo actual.
+                    
+                   // agregarNodoAListaAbierta(Nodo_Adyacente);//Agrega todos los hijos del nodo actual.
                     
 
                 }
@@ -406,6 +485,7 @@ namespace AlgortimoAEstrella
             while (listaAbierta.Count() > 0)
             {
                 Nodo nodoActual = listaAbierta[listaAbierta.Count() - 1];
+                
                 if (nodoActual.posicion[0] == nodo_final.posicion[0] && nodoActual.posicion[1] == nodo_final.posicion[1])
                 {
                     List<int[]> mejorCamino = new List<int[]>();
@@ -417,10 +497,13 @@ namespace AlgortimoAEstrella
                     return mejorCamino;
                 }
                 listaAbierta.Remove(nodoActual);
-                
+                listaCerrada.Add(nodoActual.posicion);
+
+                //Console.WriteLine("Lista abierta");
+                //imprimir_ListaAbierta(listaAbierta);
                 nodosAdyacentes = encontrarNodosAdyacentes(nodoActual, Tablero, diagonal); //Encuentra los nodos adyacentes del nodo actual
                 calcular_fn(nodoActual, nodo_final, nodosAdyacentes, listaAbierta, listaCerrada,costo); //Calcula el fn de cada uno de los nodos adyacentes al nodo actual
-                listaCerrada.Add(nodoActual.posicion);
+                //listaCerrada.Add(nodoActual.posicion);
             }
            
             return null;
@@ -441,9 +524,7 @@ namespace AlgortimoAEstrella
             string filas = Console.ReadLine();
             n = int.Parse(filas);
 
-            Console.WriteLine("Ingrese la cantidad de obstaculos:");
-            string obs = Console.ReadLine();
-            cant_obs = int.Parse(obs);
+        
 
             Console.WriteLine("Ingrese el tamanio de cada cuadro a:");
             string tamanio = Console.ReadLine();
@@ -453,26 +534,57 @@ namespace AlgortimoAEstrella
 
             //Inicializar tablero con 0's y marcar inicio y fin
             llenarArreglo(Tablero);
-            Tablero[1, 2] = 2;
-            Tablero[m - 2, n - 2] = 3;
-
-            //Coordenadas de la posicion de inicio y fin
+            buscar = true;
             int[] pos_n = new int[3];
             int[] pos_final = new int[3];
 
-            pos_n[0] = 1;
-            pos_n[1] = 2;
+            /* Random random = new Random();
+             int filaInicio = random.Next(0, n);
+             int columnaInicio = random.Next(0, m);
 
-            pos_final[0] = m - 2;
-            pos_final[1] = n - 2;
+             Tablero[columnaInicio, filaInicio] = 2;
+             pos_n[0] = columnaInicio;
+             pos_n[1] = filaInicio;
 
+             while (buscar)
+             {
+                 int filaFinal = random.Next(0,n);
+                 int columnaFinal = random.Next(0, m);
+
+                 if (Tablero[columnaFinal, filaFinal] == 2)
+                 {
+                     buscar = true;
+                 }
+                 else
+                 {
+                     Tablero[columnaFinal, filaFinal] = 3;
+                     pos_final[0] = columnaFinal; //columna
+                     pos_final[1] = filaFinal;//fila
+                     buscar = false;
+                 }
+             }*/
+
+            Tablero[0, 1] = 2;
+            Tablero[3, 3] = 3;
+
+            Tablero[0, 0] = 1;
+            Tablero[1, 1] = 1;
+            Tablero[0, 2] = 1;
+            Tablero[1, 0] = 1;
+            Tablero[1, 2] = 1;
+
+            pos_n[0] = 0;
+            pos_n[1] = 1;
+
+            pos_final[0] = 3;
+            pos_final[1] = 3;
 
             costo_diagonal = Math.Sqrt(2) * a;
-            diagonal = true;
+            diagonal = false;
 
             //Sacar posiciones disponibles donde puedo poner obstaculos
-            List<int[]> disponibles = new List<int[]>();
-            disponibles = ObtenerPosicionesDisponibles(Tablero, n, m);
+            //List<int[]> disponibles = new List<int[]>();
+            //disponibles = ObtenerPosicionesDisponibles(Tablero, n, m);
 
             /*foreach( int[] value in disponibles)
             {
@@ -482,12 +594,12 @@ namespace AlgortimoAEstrella
             }*/
 
             //Tablero con obstaculos puestos
-            PonerObstaculos(Tablero, disponibles, cant_obs);
+            //PonerObstaculos(Tablero, disponibles, (m * n) / 3);
             Imprimir_Tablero_Obstaculos(Tablero);
             Console.WriteLine();
 
 
-            /*Console.Write("Ejecutando algoritmo estrella\n");
+            Console.Write("Ejecutando algoritmo estrella\n");
             Console.WriteLine();
             Ruta = Algoritmo_A_Estrella(pos_n, pos_final, costo_diagonal,diagonal,Tablero);
 
