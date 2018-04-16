@@ -144,8 +144,9 @@ namespace VoiceRecognitionMaze
                     banderaColumnas = 1;
                     habla.SpeakAsync("Please say the number of columns for the maze");
                 }
-                else if (e.Result.Text == "No")
+                else if (e.Result.Text == "no")
                 {
+                    habla.SpeakAsync("Thanks for playing, bye");
                     this.Close();
                 }
             }
@@ -241,7 +242,7 @@ namespace VoiceRecognitionMaze
                     {
                         tamanoCasillas = compararStringNumerosLetras(e.Result.Text, numerosEnLetras);
                         banderaTamanoCasilla = 0;
-                        habla.SpeakAsync("Creating table");
+                        habla.SpeakAsync("Creating maze");
                         InicializarTablero();
 
                         habla.SpeakAsync("Do you want the agent to be able to cross diagonals, say yes or no");
@@ -264,7 +265,7 @@ namespace VoiceRecognitionMaze
                     {
                         tamanoCasillas = compararStringNumeros(e.Result.Text, numerosComunes);
                         banderaTamanoCasilla = 0;
-                        habla.SpeakAsync("Creating table");
+                        habla.SpeakAsync("Creating maze");
                         InicializarTablero();
 
                         habla.SpeakAsync("Do you want the agent to be able to cross diagonals, say yes or no");
