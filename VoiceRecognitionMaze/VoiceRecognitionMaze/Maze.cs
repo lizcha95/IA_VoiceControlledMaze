@@ -52,6 +52,7 @@ namespace VoiceRecognitionMaze
         int moverAgenteFinal = 0;
         int banderaNodoFinal = 0;
         int continuarJugando = 0;
+        int decisionFinalSinRuta = 0;
 
         List<string> numerosEnLetras = new List<string> { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "zero","ten","eleven",
             "twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen","twenty","twenty one","twenty two","twenty three",
@@ -434,13 +435,13 @@ namespace VoiceRecognitionMaze
                     if(A_Estrella == true)
                     {
                         habla.SpeakAsync("Showing the shortest path");
-                        habla.SpeakAsync("The way out is outlined in the color blue, what do you want to do next, say play to play again, continue to stay in the current maze or finish to finish the game");
+                        habla.SpeakAsync("Say play to play again, continue to stay in the current maze or finish to finish the game");
                         salida = 0;
                         decisionFinal = 1;
                     }
                     else if(A_Estrella == false)
                     {
-                        habla.SpeakAsync("There is not a solution, what do you want to do next, say play to play again, continue to stay in the current maze or finish to finish the game");
+                        habla.SpeakAsync("Say play to play again, continue to stay in the current maze or finish to finish the game");
                         salida = 0;
                         decisionFinal = 1;
                     }
@@ -448,10 +449,9 @@ namespace VoiceRecognitionMaze
                 
                 else if (e.Result.Text == "no")
                 {
-
-                    habla.SpeakAsync("Thanks for playing, what do you want to do next, say play to play again, continue to stay in the current maze or finish to finish the game");
+                    habla.SpeakAsync("Say play to play again, continue to stay in the current maze or finish to finish the game");
                     salida = 0;
-                    decisionFinal = 1;
+                    decisionFinalSinRuta = 1;
                 }
             }
             else if (decisionFinal == 1)
@@ -465,6 +465,27 @@ namespace VoiceRecognitionMaze
                 else if(e.Result.Text == "continue")
                 {
                     habla.SpeakAsync("Cleaning the current outlined route");
+                    LimpiarRuta();
+                    decisionFinal = 0;
+                    habla.SpeakAsync("Do you want to move the start of the agent again, say yes or no");
+                    continuarJugando = 1;
+                }
+                else if (e.Result.Text == "finish")
+                {
+                    habla.SpeakAsync("Thanks for playing, bye");
+                    this.Close();
+                }
+            }
+            else if (decisionFinalSinRuta == 1)
+            {
+                if (e.Result.Text == "play")
+                {
+                    decisionFinal = 0;
+                    volverAComenzar();
+                    comenzar = 1;
+                }
+                else if (e.Result.Text == "continue")
+                {
                     LimpiarRuta();
                     decisionFinal = 0;
                     habla.SpeakAsync("Do you want to move the start of the agent again, say yes or no");
@@ -599,8 +620,8 @@ namespace VoiceRecognitionMaze
             }
             else
             {
-                habla.SpeakAsync("Showing the shortest path");
-                habla.SpeakAsync("The way out is outlined in the color blue, what do you want to do next, say play to play again or finish to finish the game");
+                //habla.SpeakAsync("Showing the shortest path");
+                //habla.SpeakAsync("The way out is outlined in the color blue, what do you want to do next, say play to play again or finish to finish the game");
                 PonerRuta(Ruta);
                 for (int i = 0; i < Tablero.GetLength(0); i++)
                 {
