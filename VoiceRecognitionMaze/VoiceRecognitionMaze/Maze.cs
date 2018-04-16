@@ -429,12 +429,24 @@ namespace VoiceRecognitionMaze
             {
                 if (e.Result.Text == "yes")
                 {
-                    habla.SpeakAsync("Showing the shortest path");
-                    CrearRuta();
-                    habla.SpeakAsync("The way out is outlined in the color blue, what do you want to do next, say play to play again or finish to finish the game");
-                    salida = 0;
-                    decisionFinal = 1;
-                }
+                    Boolean A_Estrella = CrearRuta();
+                    if(A_Estrella == true)
+                    {
+                        habla.SpeakAsync("Showing the shortest path");
+                        habla.SpeakAsync("The way out is outlined in the color blue, what do you want to do next, say play to play again or finish to finish the game");
+                        salida = 0;
+                        decisionFinal = 1;
+
+                    }
+                    else
+                    {
+                        habla.SpeakAsync("There is not a solution");
+                        salida = 0;
+                        decisionFinal = 1;
+
+                    }
+                }  
+                
                 else if (e.Result.Text == "no")
                 {
 
@@ -478,37 +490,41 @@ namespace VoiceRecognitionMaze
 
             buscar = true;
 
-            Random random = new Random();
-            int filaInicio = random.Next(0, filas);
-            int columnaInicio = random.Next(0, columnas);
+             Random random = new Random();
+             int filaInicio = random.Next(0, filas);
+             int columnaInicio = random.Next(0, columnas);
 
-            Tablero[columnaInicio, filaInicio] = 2;
-            pos_inicio[0] = columnaInicio;
-            pos_inicio[1] = filaInicio;
+             Tablero[columnaInicio, filaInicio] = 2;
+             pos_inicio[0] = columnaInicio;
+             pos_inicio[1] = filaInicio;
 
-            while (buscar)
-            {
-                int filaFinal = random.Next(0, filas);
-                int columnaFinal = random.Next(0, columnas);
+             while (buscar)
+             {
+                 int filaFinal = random.Next(0, filas);
+                 int columnaFinal = random.Next(0, columnas);
 
-                if (Tablero[columnaFinal, filaFinal] == 2)
-                {
-                    buscar = true;
-                }
-                else
-                {
-                    Tablero[columnaFinal, filaFinal] = 3;
-                    pos_final[0] = columnaFinal; //columna
-                    pos_final[1] = filaFinal;//fila
-                    buscar = false;
-                }
-            }
+                 if (Tablero[columnaFinal, filaFinal] == 2)
+                 {
+                     buscar = true;
+                 }
+                 else
+                 {
+                     Tablero[columnaFinal, filaFinal] = 3;
+                     pos_final[0] = columnaFinal; //columna
+                     pos_final[1] = filaFinal;//fila
+                     buscar = false;
+                 }
+             }
             costo_diagonal = Math.Sqrt(2) * tamanoCasillas;
 
+            // Verifies if the percent is in range 10-50.
+           
+            int squareCount = columnas * filas,
+            obstacleCount = squareCount * 10 / 100;
             //Sacar posiciones disponibles donde puedo poner obstaculos
             List<int[]> disponibles = new List<int[]>();
             disponibles = ObtenerPosicionesDisponibles(Tablero, filas, columnas);
-            PonerObstaculos(Tablero, disponibles, (columnas * filas) / 3);
+            PonerObstaculos(Tablero, disponibles, obstacleCount);
 
             //Pintar Tablero
             matrizTablero.BackgroundColor = Color.White;
@@ -561,16 +577,18 @@ namespace VoiceRecognitionMaze
 
         }
 
-        public void CrearRuta()
+        public Boolean CrearRuta()
         {
             Ruta = Algoritmo_A_Estrella(pos_inicio, pos_final, costo_diagonal, diagonal, Tablero);
 
             if (Ruta == null)
             {
-                habla.SpeakAsync("There is not a solution");
+                return false;
             }
             else
             {
+                habla.SpeakAsync("Showing the shortest path");
+                habla.SpeakAsync("The way out is outlined in the color blue, what do you want to do next, say play to play again or finish to finish the game");
                 PonerRuta(Ruta);
                 for (int i = 0; i < Tablero.GetLength(0); i++)
                 {
@@ -589,6 +607,8 @@ namespace VoiceRecognitionMaze
                         }
                     }
                 }
+                return true;
+                
             }
         }
 
@@ -2368,6 +2388,7 @@ namespace VoiceRecognitionMaze
                     }
                     else
                     {
+
                         int[] ocupadas = new int[3];
 
                         //Console.Write("Posicion x\n");
@@ -2378,25 +2399,35 @@ namespace VoiceRecognitionMaze
                         y = pos_disponibles[pos][1];
                         //Console.Write(y);
                         //Console.WriteLine();
-
-                        ocupadas[0] = x;
-                        ocupadas[1] = y;
-
-                        tablero[x, y] = 1;
-                        posOcupadas.Add(ocupadas);
-
-
-                        /*Console.Write("Posiciones ocupadas\n");
-                        foreach (int[] value in posOcupadas)
+                       /* if (Tablero[x, y] == Tablero[pos_final[0] - 1, pos_final[1]] || Tablero[x, y] == Tablero[pos_final[0] + 1, pos_final[1]] ||
+                             Tablero[x, y] == Tablero[pos_final[0], pos_final[1] - 1] || Tablero[x, y] == Tablero[pos_final[0], pos_final[1] + 1] ||
+                              Tablero[x, y] == Tablero[pos_final[0] + 1, pos_final[1]] || Tablero[x, y] == Tablero[pos_final[0] + 1, pos_final[1] - 1]
+                              || Tablero[x, y] == Tablero[pos_final[0] - 1, pos_final[1] - 1] || Tablero[x, y] == Tablero[pos_final[0] + 1, pos_final[1] + 1]
+                              || Tablero[x, y] == Tablero[pos_final[0] + 1, pos_final[1] - 1])
                         {
-
-                            Console.Write("[" + value[0] + "," + value[1] + "]" + " ");
-                            Console.WriteLine();
+                            estado = true;
                         }*/
 
-                        estado = false;
-                    }
+                        
+                            ocupadas[0] = x;
+                            ocupadas[1] = y;
 
+                            tablero[x, y] = 1;
+                            posOcupadas.Add(ocupadas);
+
+
+                            /*Console.Write("Posiciones ocupadas\n");
+                            foreach (int[] value in posOcupadas)
+                            {
+
+                                Console.Write("[" + value[0] + "," + value[1] + "]" + " ");
+                                Console.WriteLine();
+                            }*/
+
+                            estado = false;
+                        
+
+                    }
                 }
                 i += 1;
             }
@@ -2505,33 +2536,104 @@ namespace VoiceRecognitionMaze
             listaAbierta.Insert(indice, nodo);
         }
 
+       
+        public Nodo ObtenerNodo(List<Nodo> lista, Nodo nodo)
+        {
+            foreach (Nodo value in lista)
+            {
+                if (value.posicion[0] == nodo.posicion[0] && value.posicion[1] == nodo.posicion[1])
+                {
+                    return value;
+                }
+
+            }
+            return null;
+        }
+
+        public Boolean EsIgual(List<Nodo> lista, Nodo nodo)
+        {
+            foreach (Nodo value in lista)
+            {
+                if (value.posicion[0] == nodo.posicion[0] && value.posicion[1] == nodo.posicion[1])
+                {
+                    return true;
+                }
+                continue;
+            }
+            return false;
+        }
+
         //Calcula la heuristica de cada uno de los nodos adyacentes
         public void calcular_fn(Nodo nodoActual, Nodo nodoFinal, List<Nodo> adyacentes, List<Nodo> listaAbierta, List<int[]> listaCerrada, double costoDiagonal)
         {
             double fn;
             double gn;
             Nodo Nodo_Adyacente;
+            //Console.WriteLine("Nodos adyacentes");
+            //imprimir_Adyacentes(adyacentes);
+
 
             foreach (Nodo nodo_abierto in adyacentes)
             {
 
                 if (!listaCerrada.Contains(nodo_abierto.posicion))
                 {
+
                     if (nodo_abierto.movimiento == 0) // Si el movimiento es directo
                     {
                         gn = nodoActual.gn + tamanoCasillas;
+                        fn = (Math.Abs(nodo_abierto.posicion[0] - nodoFinal.posicion[0]) + Math.Abs(nodo_abierto.posicion[1] - nodoFinal.posicion[1])) * tamanoCasillas + gn;
+                        Nodo_Adyacente = new Nodo(nodoActual, nodo_abierto.posicion, gn, fn, nodo_abierto.movimiento);//Se crea el nodo adyacente con el nodo padre, gn y fn calculados
+
+                        if (EsIgual(listaAbierta, nodo_abierto) == false)
+                        {
+                            agregarNodoAListaAbierta(Nodo_Adyacente);//Agrega todos los hijos del nodo actual.
+                        }
+                        else
+                        {
+
+                            Nodo nodoAntiguo = ObtenerNodo(listaAbierta, nodo_abierto);
+
+                            if (nodoAntiguo.gn < Nodo_Adyacente.gn)
+                            {
+
+                                Nodo_Adyacente.gn = nodoAntiguo.gn;
+                                Nodo_Adyacente.nodoPadre = nodoAntiguo.nodoPadre;
+
+                                listaAbierta.Remove(nodoAntiguo);
+                                agregarNodoAListaAbierta(Nodo_Adyacente);
+
+                            }
+                        }
+
                     }
                     else
                     {
                         gn = nodoActual.gn + costoDiagonal; //Movimiento en diagonal
+                        fn = (Math.Abs(nodo_abierto.posicion[0] - nodoFinal.posicion[0]) + Math.Abs(nodo_abierto.posicion[1] - nodoFinal.posicion[1])) * tamanoCasillas + gn;
+                        Nodo_Adyacente = new Nodo(nodoActual, nodo_abierto.posicion, gn, fn, nodo_abierto.movimiento);//Se crea el nodo adyacente con el nodo padre, gn y fn calculados
+
+                        if (!listaAbierta.Contains(nodo_abierto))
+                        {
+                            agregarNodoAListaAbierta(Nodo_Adyacente);//Agrega todos los hijos del nodo actual.
+                        }
+                        else
+                        {
+                            Nodo nodoAntiguo = ObtenerNodo(listaAbierta, nodo_abierto);
+                            if (nodoAntiguo.gn < Nodo_Adyacente.gn)
+                            {
+
+                                Nodo_Adyacente.gn = nodoAntiguo.gn;
+                                Nodo_Adyacente.nodoPadre = nodoAntiguo.nodoPadre;
+
+                                listaAbierta.Remove(nodoAntiguo);
+                                agregarNodoAListaAbierta(Nodo_Adyacente);
+
+                            }
+                        }
+
+
                     }
-
-
-                    fn = (Math.Abs(nodo_abierto.posicion[0] - nodoFinal.posicion[0]) + Math.Abs(nodo_abierto.posicion[1] - nodoFinal.posicion[1])) * tamanoCasillas + gn;
-                    Nodo_Adyacente = new Nodo(nodoActual, nodo_abierto.posicion, gn, fn, nodo_abierto.movimiento);//Se crea el nodo adyacente con el nodo padre, gn y fn calculados
-                    agregarNodoAListaAbierta(Nodo_Adyacente);//Agrega todos los hijos del nodo actual.
-
-
                 }
 
             }
@@ -2552,6 +2654,7 @@ namespace VoiceRecognitionMaze
             while (listaAbierta.Count() > 0)
             {
                 Nodo nodoActual = listaAbierta[listaAbierta.Count() - 1];
+
                 if (nodoActual.posicion[0] == nodo_final.posicion[0] && nodoActual.posicion[1] == nodo_final.posicion[1])
                 {
                     List<int[]> mejorCamino = new List<int[]>();
@@ -2563,10 +2666,13 @@ namespace VoiceRecognitionMaze
                     return mejorCamino;
                 }
                 listaAbierta.Remove(nodoActual);
+                listaCerrada.Add(nodoActual.posicion);
 
+                //Console.WriteLine("Lista abierta");
+                //imprimir_ListaAbierta(listaAbierta);
                 nodosAdyacentes = encontrarNodosAdyacentes(nodoActual, Tablero, diagonal); //Encuentra los nodos adyacentes del nodo actual
                 calcular_fn(nodoActual, nodo_final, nodosAdyacentes, listaAbierta, listaCerrada, costo); //Calcula el fn de cada uno de los nodos adyacentes al nodo actual
-                listaCerrada.Add(nodoActual.posicion);
+                //listaCerrada.Add(nodoActual.posicion);
             }
 
             return null;
