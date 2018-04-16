@@ -51,7 +51,6 @@ namespace VoiceRecognitionMaze
         int moverAgenteInicio = 0;
         int moverAgenteFinal = 0;
         int banderaNodoFinal = 0;
-        int noCero = 0;
 
         List<string> numerosEnLetras = new List<string> { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "zero","ten","eleven",
             "twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen","twenty","twenty one","twenty two","twenty three",
@@ -123,7 +122,7 @@ namespace VoiceRecognitionMaze
 
             else if (comenzar == 1)
             {
-                if (e.Result.Text == "start")
+                if (e.Result.Text == "start" || e.Result.Text == "play")
                 {
                     habla.SpeakAsync("Do you want to set the table dimensions, say yes or no");
                     comenzar = 0;
@@ -181,7 +180,6 @@ namespace VoiceRecognitionMaze
                         banderaColumnas = 0;
                         banderaFilas = 1;
                         habla.SpeakAsync("Please say the number of rows for the table");
-
                     }
                 }
             }
@@ -270,8 +268,6 @@ namespace VoiceRecognitionMaze
                     }
                 }
             }
-
-          
           
             else if (activarDiagonal == 1)
             {
@@ -281,7 +277,7 @@ namespace VoiceRecognitionMaze
                     diagonal = true;
                     moverAgente = 1;
                     activarDiagonal = 0;
-                    habla.SpeakAsync("Do you want to move the start of the agent? say yes or no.");
+                    habla.SpeakAsync("Do you want to move the start of the agent, say yes or no.");
                     //habla.SpeakAsync("To play, please say up, down, left, right or stop for fixing the agent's position.");
                 }
 
@@ -291,7 +287,7 @@ namespace VoiceRecognitionMaze
                     diagonal = false;
                     moverAgente = 1;
                     activarDiagonal = 0;
-                    habla.SpeakAsync("Do you want to move the start of the agent? say yes or no.");
+                    habla.SpeakAsync("Do you want to move the start of the agent, say yes or no.");
                     //habla.SpeakAsync("To play, please say up, down, left, right or stop for fixing the agent's position.");
                 }
             }
@@ -304,7 +300,7 @@ namespace VoiceRecognitionMaze
                     moverAgente = 0;
                     nodo = true;
 
-                    habla.SpeakAsync("To play, please say up, down, left, right, northwest, southest, southwest, northeast or stop for fixing the agent's position.");
+                    habla.SpeakAsync("To play, please say up, down, left, right, northwest, southeast, southwest, northeast or stop for fixing the agent's position.");
                 }
 
                 else if (e.Result.Text == "no")
@@ -313,7 +309,7 @@ namespace VoiceRecognitionMaze
                     moverAgenteInicio = 0;
                     
                     banderaNodoFinal = 1;
-                    habla.SpeakAsync("Do you want to move the end of the route? say yes or no");
+                    habla.SpeakAsync("Do you want to move the end of the route, say yes or no");
                 }
             }
             else if (moverAgenteInicio == 1)
@@ -356,7 +352,7 @@ namespace VoiceRecognitionMaze
                 {
                     Console.WriteLine(e.Result.Text);
                     //habla.SpeakAsync("Do you want to see the way out of the maze, say yes or no");
-                    habla.SpeakAsync("Do you want to move the end of the route? say yes or no");
+                    habla.SpeakAsync("Do you want to move the end of the route, say yes or no");
                     //salida = 1;
                     moverAgenteInicio = 0;
                     banderaNodoFinal = 1;
@@ -367,7 +363,7 @@ namespace VoiceRecognitionMaze
             {
                 if (e.Result.Text == "yes")
                 {
-                    habla.SpeakAsync("To play, please say up, down, left, right, northwest, southest, northeast, southwest or stop for fixing the end of the route");
+                    habla.SpeakAsync("To play, please say up, down, left, right, northwest, southeast, northeast, southwest or stop for fixing the end of the route");
                     banderaNodoFinal = 0;
                     moverAgenteFinal = 1;
                     nodo = false;
@@ -452,9 +448,8 @@ namespace VoiceRecognitionMaze
                 if (e.Result.Text == "play")
                 {
                     decisionFinal = 0;
-                    LimpiarRuta();
-                    dimensiones = 1;
-
+                    volverAComenzar();
+                    comenzar = 1;
                 }
                 else if (e.Result.Text == "finish")
                 {
@@ -595,6 +590,13 @@ namespace VoiceRecognitionMaze
                     }
                 }
             }
+        }
+
+        public void volverAComenzar()
+        {
+            matrizTablero.Rows.Clear();
+            matrizTablero.Columns.Clear();
+            matrizTablero.Refresh();
         }
 
         //------------------------------------------ Movimientos del Agente -----------------------------
