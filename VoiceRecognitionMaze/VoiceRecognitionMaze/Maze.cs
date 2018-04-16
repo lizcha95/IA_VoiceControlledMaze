@@ -470,7 +470,7 @@ namespace VoiceRecognitionMaze
                     habla.SpeakAsync("Cleaning the current outlined route");
                     LimpiarRuta();
                     decisionFinal = 0;
-                    habla.SpeakAsync("Do you want to move the start of the agent again, say yes or no");
+                    habla.SpeakAsync("Do you want the agent to be able to cross diagonals, say yes or no");
                     continuarJugando = 1;
                 }
                 else if (e.Result.Text == "finish")
@@ -493,7 +493,7 @@ namespace VoiceRecognitionMaze
                 {
                     LimpiarRuta();
                     decisionFinal = 0;
-                    habla.SpeakAsync("Do you want to move the start of the agent again, say yes or no");
+                    habla.SpeakAsync("Do you want the agent to be able to cross diagonals, say yes or no");
                     continuarJugando = 1;
                 }
                 else if (e.Result.Text == "finish")
@@ -507,7 +507,7 @@ namespace VoiceRecognitionMaze
             else if (continuarJugando == 1)
             {
                 continuarJugando = 0;
-                moverAgente = 1;
+                activarDiagonal = 1;
             }
         }
 
