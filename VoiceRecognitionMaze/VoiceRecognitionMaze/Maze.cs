@@ -47,7 +47,6 @@ namespace VoiceRecognitionMaze
         int decisionFinal = 0;
         int moverAgente = 0;
         int salida = 0;
-        int jugar = 0;
         int moverAgenteInicio = 0;
         int moverAgenteFinal = 0;
         int banderaNodoFinal = 0;
@@ -72,8 +71,6 @@ namespace VoiceRecognitionMaze
         public Maze()
         {
             InitializeComponent();
-            //InicializarTablero();
-            //CrearRuta();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -122,11 +119,12 @@ namespace VoiceRecognitionMaze
                 Console.WriteLine("Low confidence");
             }
 
+            // Comienza el juego y verifica si el usuario quiere settear dimensiones o no, si dice no, se termina el juego
             else if (comenzar == 1)
             {
                 if (e.Result.Text == "start" || e.Result.Text == "play")
                 {
-                    habla.SpeakAsync("Do you want to set the table dimensions, say yes or no");
+                    habla.SpeakAsync("Do you want to set the maze dimensions, say yes or no");
                     comenzar = 0;
                     dimensiones = 1;
                 }
@@ -136,14 +134,15 @@ namespace VoiceRecognitionMaze
                     this.Close();
                 }
             }
-           
+            
+            // Pregunta la cantidad de columnas para el laberinto
             else if (dimensiones == 1)
             {
                 if (e.Result.Text == "yes")
                 {
                     dimensiones = 0;
                     banderaColumnas = 1;
-                    habla.SpeakAsync("Please say the number of columns for the table");
+                    habla.SpeakAsync("Please say the number of columns for the maze");
                 }
                 else if (e.Result.Text == "No")
                 {
@@ -151,9 +150,10 @@ namespace VoiceRecognitionMaze
                 }
             }
 
+            // Agarra el número de columnas que dijo el usuario y lo convierte a int, luego lo asigna
+            // a la variable global columnas
             else if (banderaColumnas == 1)
             {
-                palabras.Text = e.Result.Text;
                 if (compararStringNumerosLetras(e.Result.Text, numerosEnLetras) != -1)
                 {
                     if(compararStringNumerosLetras(e.Result.Text, numerosEnLetras) <= 1)
@@ -186,9 +186,10 @@ namespace VoiceRecognitionMaze
                 }
             }
 
+            // Agarra el número de filas que dijo el usuario y lo convierte a int, luego lo asigna
+            // a la variable global filas
             else if (banderaFilas == 1)
             {
-                palabras.Text = e.Result.Text;
                 if (compararStringNumerosLetras(e.Result.Text, numerosEnLetras) != -1)
                 {
                     if (compararStringNumerosLetras(e.Result.Text, numerosEnLetras) <= 1)
@@ -222,9 +223,10 @@ namespace VoiceRecognitionMaze
                 }                
             }
 
+            // Agarra el número de tamano de los cuadros que dijo el usuario y lo convierte a int, luego lo asigna
+            // a la variable global tamanoCasillas
             else if (banderaTamanoCasilla == 1)
             {
-                palabras.Text = e.Result.Text;
                 if (compararStringNumerosLetras(e.Result.Text, numerosEnLetras) != -1)
                 {
                     if (compararStringNumerosLetras(e.Result.Text, numerosEnLetras) <= 9)
@@ -271,6 +273,8 @@ namespace VoiceRecognitionMaze
                 }
             }
           
+            //Verifica si el usuario quiere usar la acción de usar diagonales y las activa o desactiva según el caso
+            // luego pregunta si quiere mover la casilla de inicio (o el agente)
             else if (activarDiagonal == 1)
             {
                 if (e.Result.Text == "yes")
@@ -280,7 +284,6 @@ namespace VoiceRecognitionMaze
                     moverAgente = 1;
                     activarDiagonal = 0;
                     habla.SpeakAsync("Do you want to move the start of the agent, say yes or no.");
-                    //habla.SpeakAsync("To play, please say up, down, left, right or stop for fixing the agent's position.");
                 }
 
                 else if (e.Result.Text == "no")
@@ -290,10 +293,10 @@ namespace VoiceRecognitionMaze
                     moverAgente = 1;
                     activarDiagonal = 0;
                     habla.SpeakAsync("Do you want to move the start of the agent, say yes or no.");
-                    //habla.SpeakAsync("To play, please say up, down, left, right or stop for fixing the agent's position.");
                 }
             }
 
+            // Da las instrucciones para mover el agente. Luego pregunta si quiere mover la casilla de salida
             else if (moverAgente == 1)
             {
                 if (e.Result.Text == "yes")
@@ -314,10 +317,10 @@ namespace VoiceRecognitionMaze
                     habla.SpeakAsync("Do you want to move the end of the route, say yes or no");
                 }
             }
+
+            // Mueve al agente de inicio dependiendo del comando del usuario
             else if (moverAgenteInicio == 1)
             {
-
-                Console.WriteLine(e.Result.Text);
                 if (e.Result.Text == "up")
                 {
                     MoverArriba();
@@ -353,14 +356,14 @@ namespace VoiceRecognitionMaze
                 else if (e.Result.Text == "stop")
                 {
                     Console.WriteLine(e.Result.Text);
-                    //habla.SpeakAsync("Do you want to see the way out of the maze, say yes or no");
                     habla.SpeakAsync("Do you want to move the end of the route, say yes or no");
-                    //salida = 1;
                     moverAgenteInicio = 0;
                     banderaNodoFinal = 1;
                 }
 
             }
+
+            // Da las instrucciones para mover el agente. Luego pregunta si quiere ya saber la ruta hacia la salida
             else if (banderaNodoFinal == 1)
             {
                 if (e.Result.Text == "yes")
@@ -369,22 +372,20 @@ namespace VoiceRecognitionMaze
                     banderaNodoFinal = 0;
                     moverAgenteFinal = 1;
                     nodo = false;
-                    
-
                 }
                 else if (e.Result.Text == "no")
                 {
-
                     habla.SpeakAsync("Do you want to see the way out of the maze, say yes or no");
                     salida = 1;
                     banderaNodoFinal = 0;
                     moverAgenteFinal = 0;
-
                 }
             }
+
+            // Mueve la casilla del final dependiendo del comando del usuario. 
+            // Luego pregunta si quiere ya saber la ruta hacia la salida
             else if (moverAgenteFinal == 1)
             {
-
                 if (e.Result.Text == "up")
                 {
                     MoverArriba();
@@ -419,14 +420,13 @@ namespace VoiceRecognitionMaze
                 }
                 else if (e.Result.Text == "stop")
                 {
-                    Console.WriteLine(e.Result.Text);
                     habla.SpeakAsync("Do you want to see the way out of the maze, say yes or no");
-
                     salida = 1;
                     moverAgenteFinal = 0;
                 }
-
             }
+
+            // Dibuja la ruta de salida en el laberinto, y luego pregunta al usuario qué quiere hacer ahora
             else if (salida == 1)
             {
                 if (e.Result.Text == "yes")
@@ -454,6 +454,8 @@ namespace VoiceRecognitionMaze
                     decisionFinalSinRuta = 1;
                 }
             }
+
+            // Dependiendo de qué acción quiera hacer ahora el usuario, la ejecuta. Con la ruta dibujada en el laberinto
             else if (decisionFinal == 1)
             {
                 if (e.Result.Text == "play")
@@ -476,6 +478,8 @@ namespace VoiceRecognitionMaze
                     this.Close();
                 }
             }
+
+            // Dependiendo de qué acción quiera hacer ahora el usuario, la ejecuta. Sin la ruta dibujada en el laberinto
             else if (decisionFinalSinRuta == 1)
             {
                 if (e.Result.Text == "play")
@@ -497,11 +501,12 @@ namespace VoiceRecognitionMaze
                     this.Close();
                 }
             }
+
+            // Si el usuario quiere continuar jugando, mantiene el laberinto actual y vuelve a pedir las dimensiones
             else if (continuarJugando == 1)
             {
                 continuarJugando = 0;
                 moverAgente = 1;
-
             }
         }
 
@@ -550,10 +555,11 @@ namespace VoiceRecognitionMaze
              }
             costo_diagonal = Math.Sqrt(2) * tamanoCasillas;
 
-            // Verifies if the percent is in range 10-50.
+            // Verifica si el porcentaje está en el rango 10-50
            
             int squareCount = columnas * filas,
             obstacleCount = squareCount * 10 / 100;
+
             //Sacar posiciones disponibles donde puedo poner obstaculos
             List<int[]> disponibles = new List<int[]>();
             disponibles = ObtenerPosicionesDisponibles(Tablero, filas, columnas);
@@ -591,12 +597,10 @@ namespace VoiceRecognitionMaze
                         PuntoLlegada.Style.BackColor = Color.Red;
                         PuntoLlegada.ReadOnly = false;
                         PuntoLlegada.Style.SelectionBackColor = Color.Red;
-                        jugar = 1;
                     }
-
                 }
-
             }
+
             //Establecer tamaño de cada cuadro
             foreach (DataGridViewColumn c in matrizTablero.Columns)
             {
@@ -620,8 +624,6 @@ namespace VoiceRecognitionMaze
             }
             else
             {
-                //habla.SpeakAsync("Showing the shortest path");
-                //habla.SpeakAsync("The way out is outlined in the color blue, what do you want to do next, say play to play again or finish to finish the game");
                 PonerRuta(Ruta);
                 for (int i = 0; i < Tablero.GetLength(0); i++)
                 {
@@ -641,7 +643,6 @@ namespace VoiceRecognitionMaze
                     }
                 }
                 return true;
-                
             }
         }
 
@@ -653,16 +654,15 @@ namespace VoiceRecognitionMaze
         }
 
         //------------------------------------------ Movimientos del Agente -----------------------------
-
-
+        
         public void MoverArriba()
         {
             int filaActualAgente;
             int filaNuevaAgente;
 
-            //Si estoy en la fila 0 no me puedo mover hacia arriba
-            //pos_inicio[1] = filas (coordenada y)
-            //pos_inicio[0] = columnas (coordenada x)
+            /*Si estoy en la fila 0 no me puedo mover hacia arriba
+            pos_inicio[0] = columnas (coordenada x)
+            pos_inicio[1] = filas (coordenada y)*/
 
             if (nodo == true)
             {
@@ -691,16 +691,14 @@ namespace VoiceRecognitionMaze
                     }
                     else
                     {
-                        Console.WriteLine("Movimiento arriba");
-                        Console.WriteLine("Movimiento invalido");
-                        habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end");
+                        Console.WriteLine("Movimiento arriba invalido");
+                        habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end, say a move again");
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Movimiento arriba");
-                    Console.WriteLine("Movimiento invalido");
-                    habla.SpeakAsync("Invalid move, cannot move past the limit");
+                    Console.WriteLine("Movimiento arriba invalido");
+                    habla.SpeakAsync("Invalid move, cannot move past the limit, say a move again");
                 }
             }
             else
@@ -733,16 +731,14 @@ namespace VoiceRecognitionMaze
                     }
                     else
                     {
-                        Console.WriteLine("Movimiento arriba");
-                        Console.WriteLine("Movimiento invalido");
-                        habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end");
+                        Console.WriteLine("Movimiento arriba invalido");
+                        habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end, say a move again");
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Movimiento arriba");
-                    Console.WriteLine("Movimiento invalido");
-                    habla.SpeakAsync("Invalid move, cannot move past the limit");
+                    Console.WriteLine("Movimiento arriba invalido");
+                    habla.SpeakAsync("Invalid move, cannot move past the limit, say a move again");
                 }
 
             }
@@ -781,16 +777,14 @@ namespace VoiceRecognitionMaze
                     }
                     else
                     {
-                        Console.WriteLine("Movimiento abajo");
-                        Console.WriteLine("Movimiento invalido");
-                        habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end");
+                        Console.WriteLine("Movimiento abajo invalido");
+                        habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end, say a move again");
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Movimiento abajo");
-                    Console.WriteLine("Movimiento invalido");
-                    habla.SpeakAsync("Invalid move, cannot move past the limit");
+                    Console.WriteLine("Movimiento abajo invalido");
+                    habla.SpeakAsync("Invalid move, cannot move past the limit, say a move again");
                 }
             }
             else
@@ -819,16 +813,14 @@ namespace VoiceRecognitionMaze
                     }
                     else
                     {
-                        Console.WriteLine("Movimiento abajo");
-                        Console.WriteLine("Movimiento invalido");
-                        habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end");
+                        Console.WriteLine("Movimiento abajo invalido");
+                        habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end, say a move again");
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Movimiento abajo");
-                    Console.WriteLine("Movimiento invalido");
-                    habla.SpeakAsync("Invalid move, cannot move past the limit");
+                    Console.WriteLine("Movimiento abajo invalido");
+                    habla.SpeakAsync("Invalid move, cannot move past the limit, say a move again");
                 }
             }
         }
@@ -873,19 +865,17 @@ namespace VoiceRecognitionMaze
                     }
                     else
                     {
-                        Console.WriteLine("Movimiento Izquierda");
-                        Console.WriteLine("Movimiento invalido");
-                        habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end");
+                        Console.WriteLine("Movimiento Izquierda invalido");
+                        habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end, say a move again");
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Movimiento Izquierda");
-                    Console.WriteLine("Movimiento invalido");
-                    habla.SpeakAsync("Invalid move, cannot move past the limit");
+                    Console.WriteLine("Movimiento Izquierda invalido");
+                    habla.SpeakAsync("Invalid move, cannot move past the limit, say a move again");
                 }
-
             }
+
             else
             {
                 if (pos_final[0] != 0)
@@ -918,16 +908,14 @@ namespace VoiceRecognitionMaze
                     }
                     else
                     {
-                        Console.WriteLine("Movimiento Izquierda");
-                        Console.WriteLine("Movimiento invalido");
-                        habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end");
+                        Console.WriteLine("Movimiento Izquierda invalido");
+                        habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end, say a move again");
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Movimiento Izquierda");
-                    Console.WriteLine("Movimiento invalido");
-                    habla.SpeakAsync("Invalid move, cannot move past the limit");
+                    Console.WriteLine("Movimiento Izquierda invalido");
+                    habla.SpeakAsync("Invalid move, cannot move past the limit, say a move again");
                 }
             }
         }
@@ -971,16 +959,14 @@ namespace VoiceRecognitionMaze
                     }
                     else
                     {
-                        Console.WriteLine("Movimiento derecha");
-                        Console.WriteLine("Movimiento invalido");
-                        habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end");
+                        Console.WriteLine("Movimiento derecha invalido");
+                        habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end, say a move again");
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Movimiento derecha");
-                    Console.WriteLine("Movimiento invalido");
-                    habla.SpeakAsync("Invalid move, cannot move past the limit");
+                    Console.WriteLine("Movimiento derecha invalido");
+                    habla.SpeakAsync("Invalid move, cannot move past the limit, say a move again");
                 }
 
             }
@@ -1016,16 +1002,14 @@ namespace VoiceRecognitionMaze
                     }
                     else
                     {
-                        Console.WriteLine("Movimiento derecha Final");
-                        Console.WriteLine("Movimiento invalido");
-                        habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end");
+                        Console.WriteLine("Movimiento derecha Final invalido");
+                        habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end, say a move again");
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Movimiento derecha Final");
-                    Console.WriteLine("Movimiento invalido");
-                    habla.SpeakAsync("Invalid move, cannot move past the limit");
+                    Console.WriteLine("Movimiento derecha Final invalido");
+                    habla.SpeakAsync("Invalid move, cannot move past the limit, say a move again");
                 }
 
             }
@@ -1076,16 +1060,14 @@ namespace VoiceRecognitionMaze
                     }
                     else
                     {
-                        Console.WriteLine("Movimiento diagonal NorEste");
-                        Console.WriteLine("Movimiento invalido");
-                        habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end");
+                        Console.WriteLine("Movimiento diagonal NorEste invalido");
+                        habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end , say a move again");
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Movimiento diagonal NorEste");
-                    Console.WriteLine("Movimiento invalido");
-                    habla.SpeakAsync("Invalid move, cannot move past the limit");
+                    Console.WriteLine("Movimiento diagonal NorEste invalido");
+                    habla.SpeakAsync("Invalid move, cannot move past the limit, say a move again");
                 }
             }
             else
@@ -1124,16 +1106,14 @@ namespace VoiceRecognitionMaze
                     }
                     else
                     {
-                        Console.WriteLine("Movimiento diagonal NorEste Final");
-                        Console.WriteLine("Movimiento invalido");
-                        habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end");
+                        Console.WriteLine("Movimiento diagonal NorEste Final invalido");
+                        habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end, say a move again");
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Movimiento diagonal NorEste Final");
-                    Console.WriteLine("Movimiento invalido");
-                    habla.SpeakAsync("Invalid move, cannot move past the limit");
+                    Console.WriteLine("Movimiento diagonal NorEste Final invalido");
+                    habla.SpeakAsync("Invalid move, cannot move past the limit, say a move again");
                 }
             }
         }
@@ -1183,16 +1163,14 @@ namespace VoiceRecognitionMaze
                     }
                     else
                     {
-                        Console.WriteLine("Movimiento diagonal NorOeste");
-                        Console.WriteLine("Movimiento invalido");
-                        habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end");
+                        Console.WriteLine("Movimiento diagonal NorOeste invalido");
+                        habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end, say a move again");
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Movimiento diagonal NorOeste");
-                    Console.WriteLine("Movimiento invalido");
-                    habla.SpeakAsync("Invalid move, cannot move past the limit");
+                    Console.WriteLine("Movimiento diagonal NorOeste invalido");
+                    habla.SpeakAsync("Invalid move, cannot move past the limit, say a move again");
                 }
 
 
@@ -1233,16 +1211,14 @@ namespace VoiceRecognitionMaze
                     }
                     else
                     {
-                        Console.WriteLine("Movimiento diagonal NorOeste Final");
-                        Console.WriteLine("Movimiento invalido");
-                        habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end");
+                        Console.WriteLine("Movimiento diagonal NorOeste Final invalido");
+                        habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end, say a move again");
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Movimiento diagonal NorOeste Final");
-                    Console.WriteLine("Movimiento invalido");
-                    habla.SpeakAsync("Invalid move, cannot move past the limit");
+                    Console.WriteLine("Movimiento diagonal NorOeste Final invalido");
+                    habla.SpeakAsync("Invalid move, cannot move past the limit, say a move again");
                 }
 
             }
@@ -1292,16 +1268,14 @@ namespace VoiceRecognitionMaze
                     }
                     else
                     {
-                        Console.WriteLine("Movimiento diagonal SurEste");
-                        Console.WriteLine("Movimiento invalido");
-                        habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end");
+                        Console.WriteLine("Movimiento diagonal SurEste invalido");
+                        habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end, say a move again");
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Movimiento diagonal SurEste");
-                    Console.WriteLine("Movimiento invalido");
-                    habla.SpeakAsync("Invalid move, cannot move past the limit");
+                    Console.WriteLine("Movimiento diagonal SurEste invalido");
+                    habla.SpeakAsync("Invalid move, cannot move past the limit, say a move again");
                 }
 
 
@@ -1342,16 +1316,14 @@ namespace VoiceRecognitionMaze
                     }
                     else
                     {
-                        Console.WriteLine("Movimiento diagonal SurEste Final");
-                        Console.WriteLine("Movimiento invalido");
-                        habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end");
+                        Console.WriteLine("Movimiento diagonal SurEste Final invalido");
+                        habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end, say a move again");
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Movimiento diagonal SurEste Final");
-                    Console.WriteLine("Movimiento invalido");
-                    habla.SpeakAsync("Invalid move, cannot move past the limit");
+                    Console.WriteLine("Movimiento diagonal SurEste Final invalido");
+                    habla.SpeakAsync("Invalid move, cannot move past the limit, say a move again");
                 }
 
             }
@@ -1402,16 +1374,14 @@ namespace VoiceRecognitionMaze
                     }
                     else
                     {
-                        Console.WriteLine("Movimiento diagonal SurOEste");
-                        Console.WriteLine("Movimiento invalido");
-                        habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end");
+                        Console.WriteLine("Movimiento diagonal SurOEste invalido");
+                        habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end, say a move again");
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Movimiento diagonal SurOEste");
-                    Console.WriteLine("Movimiento invalido");
-                    habla.SpeakAsync("Invalid move, cannot move past the limit");
+                    Console.WriteLine("Movimiento diagonal SurOEste invalido");
+                    habla.SpeakAsync("Invalid move, cannot move past the limit, say a move again");
                 }
             }
             else
@@ -1450,423 +1420,18 @@ namespace VoiceRecognitionMaze
                     }
                     else
                     {
-                        Console.WriteLine("Movimiento diagonal SurOEste");
-                        Console.WriteLine("Movimiento invalido");
-                        habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end");
+                        Console.WriteLine("Movimiento diagonal SurOEste invalido");
+                        habla.SpeakAsync("Invalid move, cannot move past an obstacle, the beginning or end, say a move again");
                     }
                 }
                 else
                 {
-                    Console.WriteLine("Movimiento diagonal SurOEste");
-                    Console.WriteLine("Movimiento invalido");
-                    habla.SpeakAsync("Invalid move, cannot move past the limit");
+                    Console.WriteLine("Movimiento diagonal SurOEste invalido");
+                    habla.SpeakAsync("Invalid move, cannot move past the limit, say a move again");
                 }
 
             }
         }
-
-       // -----------------------------------------------Mover nodo final-----------------------------------
-       /* public void MoverArribaNodoFinal()
-        {
-            int filaActualAgente;
-            int filaNuevaAgente;
-
-            //Si estoy en la fila 0 no me puedo mover hacia arriba
-            //pos_inicio[1] = filas (coordenada y)
-            //pos_inicio[0] = columnas (coordenada x)
-            if (pos_final[1] != 0)
-            {
-                filaActualAgente = pos_final[1];
-                filaNuevaAgente = pos_final[1] - 1;
-
-                if ((Tablero[pos_final[0], filaNuevaAgente]) != 1 && (Tablero[pos_final[0], filaNuevaAgente] != 2))
-                {
-                    DataGridViewCell agenteActual = matrizTablero[pos_final[0], filaActualAgente];
-                    agenteActual.Style.BackColor = Color.White;
-                    agenteActual.ReadOnly = false;
-                    agenteActual.Style.SelectionBackColor = Color.White;
-
-                    DataGridViewCell agenteNuevo = matrizTablero[pos_final[0], filaNuevaAgente];
-                    agenteNuevo.Style.BackColor = Color.Red;
-                    agenteNuevo.ReadOnly = false;
-                    agenteNuevo.Style.SelectionBackColor = Color.Red;
-
-                    Tablero[pos_final[0], filaActualAgente] = 0;
-                    Tablero[pos_final[0], filaNuevaAgente] = 3;
-
-                    pos_final[1] = filaNuevaAgente;
-
-                }
-                else
-                {
-                    Console.WriteLine("Movimiento arriba");
-                    Console.WriteLine("Movimiento invalido");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Movimiento arriba");
-                Console.WriteLine("Movimiento invalido");
-            }
-        }
-
-        public void MoverAbajoNodoFinal()
-        {
-            int filaActualAgente;
-            int filaNuevaAgente;
-            //pos_inicio[1] = filas (coordenada y)
-            //pos_inicio[0] = columnas (coordenada x)
-
-            if (pos_final[1] != filas - 1)  //Si la cantidad de filas ya es mayor se salió del tablero
-            {
-                filaActualAgente = pos_final[1];
-                filaNuevaAgente = pos_final[1] + 1;
-
-                if ((Tablero[pos_final[0], filaNuevaAgente]) != 1 && (Tablero[pos_final[0], filaNuevaAgente]) != 2)
-                {
-                    DataGridViewCell agenteActual = matrizTablero[pos_final[0], filaActualAgente];
-                    agenteActual.Style.BackColor = Color.White;
-                    agenteActual.ReadOnly = false;
-                    agenteActual.Style.SelectionBackColor = Color.White;
-
-                    DataGridViewCell agenteNuevo = matrizTablero[pos_final[0], filaNuevaAgente];
-                    agenteNuevo.Style.BackColor = Color.Red;
-                    agenteNuevo.ReadOnly = false;
-                    agenteNuevo.Style.SelectionBackColor = Color.Red;
-
-                    Tablero[pos_final[0], filaActualAgente] = 0;
-                    Tablero[pos_final[0], filaNuevaAgente] = 3;
-
-                    pos_final[1] = filaNuevaAgente;
-                }
-                else
-                {
-                    Console.WriteLine("Movimiento abajo");
-                    Console.WriteLine("Movimiento invalido");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Movimiento abajo");
-                Console.WriteLine("Movimiento invalido");
-            }
-        }
-
-        public void MoverIzqNodoFinal()
-        {
-            int columnaActualAgente;
-            int columnaNuevaAgente;
-
-            //pos_inicio[1] = filas (coordenada y)
-            //pos_inicio[0] = columnas (coordenada x)
-
-            if (pos_final[0] != 0)
-            {
-                columnaActualAgente = pos_final[0];
-                columnaNuevaAgente = pos_final[0] - 1;
-
-                if ((Tablero[columnaNuevaAgente, pos_final[1]]) != 1 && (Tablero[columnaNuevaAgente, pos_final[1]]) != 2)
-                {
-                    DataGridViewCell agenteActual = matrizTablero[columnaActualAgente, pos_final[1]];
-                    agenteActual.Style.BackColor = Color.White;
-                    agenteActual.ReadOnly = false;
-                    agenteActual.Style.SelectionBackColor = Color.White;
-
-                    DataGridViewCell agenteNuevo = matrizTablero[columnaNuevaAgente, pos_final[1]];
-                    agenteNuevo.Style.BackColor = Color.Red;
-                    agenteNuevo.ReadOnly = false;
-                    agenteNuevo.Style.SelectionBackColor = Color.Red;
-
-                    Tablero[columnaActualAgente, pos_final[1]] = 0;
-                    Tablero[columnaNuevaAgente, pos_final[1]] = 3;
-
-                    pos_final[0] = columnaNuevaAgente;
-
-                    Console.WriteLine("Movimiento izquierda: Posicion actual");
-                    Console.WriteLine(matrizTablero[columnaActualAgente, pos_final[1]]);
-
-                    Console.WriteLine("Movimiento izquierda:: Posicion nueva");
-                    Console.WriteLine(matrizTablero[columnaNuevaAgente, pos_final[1]]);
-                }
-                else
-                {
-                    Console.WriteLine("Movimiento Izquierda");
-                    Console.WriteLine("Movimiento invalido");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Movimiento Izquierda");
-                Console.WriteLine("Movimiento invalido");
-            }
-
-        }
-
-        public void MoverDerNodoFinal()
-        {
-            int columnaActualAgente;
-            int columnaNuevaAgente;
-
-            //pos_inicio[1] = filas (coordenada y)
-            //pos_inicio[0] = columnas (coordenada x)
-            if (pos_final[0] != columnas - 1) // Si estoy en el borde ya no me puedo mover hacia la derecha
-            {
-                columnaActualAgente = pos_final[0];
-                columnaNuevaAgente = pos_final[0] + 1;
-
-                if ((Tablero[columnaNuevaAgente, pos_final[1]]) != 1 && (Tablero[columnaNuevaAgente, pos_final[1]]) != 2)
-                {
-                    DataGridViewCell agenteActual = matrizTablero[columnaActualAgente, pos_final[1]];
-                    agenteActual.Style.BackColor = Color.White;
-                    agenteActual.ReadOnly = false;
-                    agenteActual.Style.SelectionBackColor = Color.White;
-
-                    DataGridViewCell agenteNuevo = matrizTablero[columnaNuevaAgente, pos_final[1]];
-                    agenteNuevo.Style.BackColor = Color.Red;
-                    agenteNuevo.ReadOnly = false;
-                    agenteNuevo.Style.SelectionBackColor = Color.Red;
-
-                    Tablero[columnaActualAgente, pos_final[1]] = 0;
-                    Tablero[columnaNuevaAgente, pos_final[1]] = 3;
-
-                    pos_final[0] = columnaNuevaAgente;
-
-                    Console.WriteLine("Movimiento derecha: Posicion actual Final");
-                    Console.WriteLine(matrizTablero[columnaActualAgente, pos_final[1]]);
-
-                    Console.WriteLine("Movimiento derecha: Posicion nueva Final");
-                    Console.WriteLine(matrizTablero[columnaNuevaAgente, pos_final[1]]);
-                }
-                else
-                {
-                    Console.WriteLine("Movimiento derecha Final");
-                    Console.WriteLine("Movimiento invalido");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Movimiento derecha Final");
-                Console.WriteLine("Movimiento invalido");
-            }
-
-        }
-
-        public void MoverDiagonalNorEsteNodoFinal()
-        {
-            int filaActualAgente;
-            int filaNuevaAgente;
-            int columnaActualAgente;
-            int columnaNuevaAgente;
-
-            //pos_inicio[1] = filas (coordenada y)
-            //pos_inicio[0] = columnas (coordenada x)
-            if (pos_final[1] != 0 && pos_final[0] != columnas - 1)
-            {
-                filaActualAgente = pos_final[1];
-                columnaActualAgente = pos_final[0];
-
-                filaNuevaAgente = pos_final[1] - 1;
-                columnaNuevaAgente = pos_final[0] + 1;
-
-                if ((Tablero[columnaNuevaAgente, filaNuevaAgente]) != 1 && (Tablero[columnaNuevaAgente, filaNuevaAgente]) != 2)
-                {
-                    DataGridViewCell agenteActual = matrizTablero[columnaActualAgente, filaActualAgente];
-                    agenteActual.Style.BackColor = Color.White;
-                    agenteActual.ReadOnly = false;
-                    agenteActual.Style.SelectionBackColor = Color.White;
-
-                    DataGridViewCell agenteNuevo = matrizTablero[columnaNuevaAgente, filaNuevaAgente];
-                    agenteNuevo.Style.BackColor = Color.Red;
-                    agenteNuevo.ReadOnly = false;
-                    agenteNuevo.Style.SelectionBackColor = Color.Red;
-
-                    Tablero[columnaActualAgente, filaActualAgente] = 0;
-                    Tablero[columnaNuevaAgente, filaNuevaAgente] = 3;
-
-                    pos_final[0] = columnaNuevaAgente;
-                    pos_final[1] = filaNuevaAgente;
-
-                    Console.WriteLine("Movimiento diagonal NorEste: Posicion actual Final");
-                    Console.WriteLine(matrizTablero[columnaActualAgente, filaActualAgente]);
-
-                    Console.WriteLine("Movimiento diagonal NorEste: Posicion nueva Final");
-                    Console.WriteLine(matrizTablero[columnaNuevaAgente, filaNuevaAgente]);
-                }
-                else
-                {
-                    Console.WriteLine("Movimiento diagonal NorEste Final");
-                    Console.WriteLine("Movimiento invalido");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Movimiento diagonal NorEste Final");
-                Console.WriteLine("Movimiento invalido");
-            }
-        }
-
-        public void MoverDiagonalNorOesteNodoFinal()
-        {
-            int filaActualAgente;
-            int filaNuevaAgente;
-            int columnaActualAgente;
-            int columnaNuevaAgente;
-
-            //pos_inicio[1] = filas (coordenada y)
-            //pos_inicio[0] = columnas (coordenada x)
-            if (pos_final[0] != 0 && pos_final[1] != 0)
-            {
-                filaActualAgente = pos_final[1];
-                columnaActualAgente = pos_final[0];
-
-                filaNuevaAgente = pos_final[1] - 1;
-                columnaNuevaAgente = pos_final[0] - 1;
-
-                if ((Tablero[columnaNuevaAgente, filaNuevaAgente]) != 1 && (Tablero[columnaNuevaAgente, filaNuevaAgente]) != 2)
-                {
-                    DataGridViewCell agenteActual = matrizTablero[columnaActualAgente, filaActualAgente];
-                    agenteActual.Style.BackColor = Color.White;
-                    agenteActual.ReadOnly = false;
-                    agenteActual.Style.SelectionBackColor = Color.White;
-
-                    DataGridViewCell agenteNuevo = matrizTablero[columnaNuevaAgente, filaNuevaAgente];
-                    agenteNuevo.Style.BackColor = Color.Red;
-                    agenteNuevo.ReadOnly = false;
-                    agenteNuevo.Style.SelectionBackColor = Color.Red;
-
-                    Tablero[columnaActualAgente, filaActualAgente] = 0;
-                    Tablero[columnaNuevaAgente, filaNuevaAgente] = 3;
-
-                    pos_final[0] = columnaNuevaAgente;
-                    pos_final[1] = filaNuevaAgente;
-
-                    Console.WriteLine("Movimiento diagonal NorOeste: Posicion actual Final");
-                    Console.WriteLine(matrizTablero[columnaActualAgente, filaActualAgente]);
-
-                    Console.WriteLine("Movimiento diagonal NorOeste: Posicion nueva Final");
-                    Console.WriteLine(matrizTablero[columnaNuevaAgente, filaNuevaAgente]);
-                }
-                else
-                {
-                    Console.WriteLine("Movimiento diagonal NorOeste Final");
-                    Console.WriteLine("Movimiento invalido");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Movimiento diagonal NorOeste Final");
-                Console.WriteLine("Movimiento invalido");
-            }
-
-
-        }
-        public void MoverDiagonalSurEsteNodoFinal()
-        {
-            int filaActualAgente;
-            int filaNuevaAgente;
-            int columnaActualAgente;
-            int columnaNuevaAgente;
-
-            //pos_inicio[1] = filas (coordenada y)
-            //pos_inicio[0] = columnas (coordenada x)
-            if (pos_final[0] != columnas - 1 && pos_final[1] != filas - 1)
-            {
-                filaActualAgente = pos_final[1];
-                columnaActualAgente = pos_final[0];
-
-                filaNuevaAgente = pos_final[1] + 1;
-                columnaNuevaAgente = pos_final[0] + 1;
-
-                if ((Tablero[columnaNuevaAgente, filaNuevaAgente]) != 1 && (Tablero[columnaNuevaAgente, filaNuevaAgente]) != 2)
-                {
-                    DataGridViewCell agenteActual = matrizTablero[columnaActualAgente, filaActualAgente];
-                    agenteActual.Style.BackColor = Color.White;
-                    agenteActual.ReadOnly = false;
-                    agenteActual.Style.SelectionBackColor = Color.White;
-
-                    DataGridViewCell agenteNuevo = matrizTablero[columnaNuevaAgente, filaNuevaAgente];
-                    agenteNuevo.Style.BackColor = Color.Red;
-                    agenteNuevo.ReadOnly = false;
-                    agenteNuevo.Style.SelectionBackColor = Color.Red;
-
-                    Tablero[columnaActualAgente, filaActualAgente] = 0;
-                    Tablero[columnaNuevaAgente, filaNuevaAgente] = 3;
-
-                    pos_final[0] = columnaNuevaAgente;
-                    pos_final[1] = filaNuevaAgente;
-
-                    Console.WriteLine("Movimiento diagonal SurEste Final: Posicion actual");
-                    Console.WriteLine(matrizTablero[columnaActualAgente, filaActualAgente]);
-
-                    Console.WriteLine("Movimiento diagonal SurEste Final: Posicion nueva");
-                    Console.WriteLine(matrizTablero[columnaNuevaAgente, filaNuevaAgente]);
-                }
-                else
-                {
-                    Console.WriteLine("Movimiento diagonal SurEste Final");
-                    Console.WriteLine("Movimiento invalido");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Movimiento diagonal SurEste Final");
-                Console.WriteLine("Movimiento invalido");
-            }
-        }
-
-        public void MoverDiagonalSurOesteNodoFinal()
-        {
-            int filaActualAgente;
-            int filaNuevaAgente;
-            int columnaActualAgente;
-            int columnaNuevaAgente;
-
-            //pos_inicio[1] = filas (coordenada y)
-            //pos_inicio[0] = columnas (coordenada x)
-            if (pos_final[0] != columnas - 1 && pos_final[1] != filas - 1)
-            {
-                filaActualAgente = pos_final[1];
-                columnaActualAgente = pos_final[0];
-
-                filaNuevaAgente = pos_final[1] + 1;
-                columnaNuevaAgente = pos_final[0] - 1;
-
-                if ((Tablero[columnaNuevaAgente, filaNuevaAgente]) != 1 && (Tablero[columnaNuevaAgente, filaNuevaAgente]) != 2)
-                {
-                    DataGridViewCell agenteActual = matrizTablero[columnaActualAgente, filaActualAgente];
-                    agenteActual.Style.BackColor = Color.White;
-                    agenteActual.ReadOnly = false;
-                    agenteActual.Style.SelectionBackColor = Color.White;
-
-                    DataGridViewCell agenteNuevo = matrizTablero[columnaNuevaAgente, filaNuevaAgente];
-                    agenteNuevo.Style.BackColor = Color.Red;
-                    agenteNuevo.ReadOnly = false;
-                    agenteNuevo.Style.SelectionBackColor = Color.Red;
-
-                    Tablero[columnaActualAgente, filaActualAgente] = 0;
-                    Tablero[columnaNuevaAgente, filaNuevaAgente] = 3;
-
-                    pos_final[0] = columnaNuevaAgente;
-                    pos_final[1] = filaNuevaAgente;
-
-                    Console.WriteLine("Movimiento diagonal SurOEste: Posicion actual");
-                    Console.WriteLine(matrizTablero[columnaActualAgente, filaActualAgente]);
-
-                    Console.WriteLine("Movimiento diagonal SurOEste: Posicion nueva");
-                    Console.WriteLine(matrizTablero[columnaNuevaAgente, filaNuevaAgente]);
-                }
-                else
-                {
-                    Console.WriteLine("Movimiento diagonal SurOEste");
-                    Console.WriteLine("Movimiento invalido");
-                }
-            }
-            else
-            {
-                Console.WriteLine("Movimiento diagonal SurOEste");
-                Console.WriteLine("Movimiento invalido");
-            }
-        }*/
 
         //------------------------------------------Limpiar la ruta-----------------------------
         public void LimpiarRuta()
@@ -2224,76 +1789,13 @@ namespace VoiceRecognitionMaze
 
         }
 
-        //----------------------------------------Métodos para imprimir------------------------------------------------------------
-
-        public void imprimir_ListaCerrada(List<int[]> cerrada)
-        {
-            foreach (int[] value in cerrada)
-            {
-                Console.Write("[" + value[0] + "," + value[1] + "]" + " ");
-                Console.WriteLine();
-            }
-        }
-
-
-        public void imprimir_ListaAbierta(List<Nodo> abierta)
-        {
-            foreach (Nodo value in abierta)
-            {
-                Console.Write("[" + value.posicion[0] + "," + value.posicion[1] + "]" + " ");
-                Console.WriteLine();
-            }
-        }
-
-        public void imprimir_Adyacentes(List<Nodo> adyacentes)
-        {
-            foreach (Nodo value in adyacentes)
-            {
-                Console.Write("[" + value.posicion[0] + "," + value.posicion[1] + "]" + " ");
-                Console.WriteLine();
-            }
-        }
-
-        public void imprimir_solucion(int[,] tablero)
-        {
-            Console.Write("Tablero con ruta\n");
-            Console.WriteLine();
-
-            for (int f = 0; f < tablero.GetLength(0); f++)
-            {
-                for (int c = 0; c < tablero.GetLength(1); c++)
-                {
-                    Console.Write(tablero[f, c] + " ");
-                }
-                Console.WriteLine();
-
-            }
-        }
-
-        public void Imprimir_Tablero_Obstaculos(int[,] tablero)
-        {
-            Console.Write("Tablero con obstaculos\n");
-
-            for (int f = 0; f < tablero.GetLength(0); f++)
-            {
-                for (int c = 0; c < tablero.GetLength(1); c++)
-                {
-                    Console.Write(tablero[f, c] + " ");
-                }
-                Console.WriteLine();
-            }
-        }
-
-
         //----------------------------------------------------Métodos para modificar el tablero----------------------------------------------------------------------
-
-
+        
         //Marca la ruta en el tablero de acuerdo al mejor camino obtenido
         public int[,] PonerRuta(List<int[]> ruta)
         {
             foreach (int[] value in ruta)
             {
-
                 if (Tablero[value[0], value[1]] == 2)
                 {
                     continue;
@@ -2303,11 +1805,8 @@ namespace VoiceRecognitionMaze
                     continue;
                 }
                 Tablero[value[0], value[1]] = 4;
-
             }
-            return Tablero;
-
-
+            return Tablero;            
         }
 
         //LLena el arreglo con 0's
@@ -2317,7 +1816,6 @@ namespace VoiceRecognitionMaze
             {
                 for (int c = 0; c < tablero.GetLength(1); c++)
                 {
-
                     tablero[f, c] = 0;
                 }
             }
@@ -2327,7 +1825,6 @@ namespace VoiceRecognitionMaze
         //Obtiene las posiciones disponibles en el tablero para poner obstaculos
         public List<int[]> ObtenerPosicionesDisponibles(int[,] tablero, int filas, int columnas)
         {
-
             List<int[]> posDisponibles = new List<int[]>();
 
             posDisponibles.Clear();
@@ -2348,17 +1845,6 @@ namespace VoiceRecognitionMaze
                         posiciones[1] = j;
 
                         posDisponibles.Add(posiciones);
-
-
-                        /*Console.Write("Lo que tiene el arreglo en el momento\n");
-                        foreach (int[] value in posDisponibles)
-                        {
-                            
-                            Console.Write("[" + value[0] + "," + value[1] + "]" + " ");
-                            Console.WriteLine();
-                        }*/
-
-
                     }
 
                 }
@@ -2377,7 +1863,6 @@ namespace VoiceRecognitionMaze
                     return true;
                 }
                 continue;
-
             }
             return false;
         }
@@ -2399,67 +1884,25 @@ namespace VoiceRecognitionMaze
 
                 while (estado)
                 {
-
-                    //Console.Write("Posicion random en el ciclo \n");
                     int pos = random.Next(0, pos_disponibles.Count());
-                    //Console.Write(pos);
-                    //Console.WriteLine();
 
                     if (valorOcupado(posOcupadas, pos_disponibles, pos) == true)
                     {
-
-
-                        //Console.Write("Existe elemento en la lista ocupada \n");
-
-
-                        /*Console.Write("Pos disponibles \n");
-                        Console.Write(pos_disponibles[pos][0]);
-                        Console.WriteLine();
-                        Console.Write(pos_disponibles[pos][1]);
-                        Console.WriteLine();*/
                         estado = true;
                     }
                     else
                     {
-
                         int[] ocupadas = new int[3];
-
-                        //Console.Write("Posicion x\n");
                         x = pos_disponibles[pos][0];
-                        //Console.Write(x);
-                        //Console.WriteLine();
-                        //Console.Write("Posicion y\n");
                         y = pos_disponibles[pos][1];
-                        //Console.Write(y);
-                        //Console.WriteLine();
-                       /* if (Tablero[x, y] == Tablero[pos_final[0] - 1, pos_final[1]] || Tablero[x, y] == Tablero[pos_final[0] + 1, pos_final[1]] ||
-                             Tablero[x, y] == Tablero[pos_final[0], pos_final[1] - 1] || Tablero[x, y] == Tablero[pos_final[0], pos_final[1] + 1] ||
-                              Tablero[x, y] == Tablero[pos_final[0] + 1, pos_final[1]] || Tablero[x, y] == Tablero[pos_final[0] + 1, pos_final[1] - 1]
-                              || Tablero[x, y] == Tablero[pos_final[0] - 1, pos_final[1] - 1] || Tablero[x, y] == Tablero[pos_final[0] + 1, pos_final[1] + 1]
-                              || Tablero[x, y] == Tablero[pos_final[0] + 1, pos_final[1] - 1])
-                        {
-                            estado = true;
-                        }*/
 
+                        ocupadas[0] = x;
+                        ocupadas[1] = y;
+
+                        tablero[x, y] = 1;
+                        posOcupadas.Add(ocupadas);
                         
-                            ocupadas[0] = x;
-                            ocupadas[1] = y;
-
-                            tablero[x, y] = 1;
-                            posOcupadas.Add(ocupadas);
-
-
-                            /*Console.Write("Posiciones ocupadas\n");
-                            foreach (int[] value in posOcupadas)
-                            {
-
-                                Console.Write("[" + value[0] + "," + value[1] + "]" + " ");
-                                Console.WriteLine();
-                            }*/
-
-                            estado = false;
-                        
-
+                        estado = false;
                     }
                 }
                 i += 1;
@@ -2475,8 +1918,7 @@ namespace VoiceRecognitionMaze
             List<Nodo> adyacentes = new List<Nodo>();
             int x = nodoActual.posicion[0];
             int y = nodoActual.posicion[1];
-
-            //Console.Write("Encontrando nodos adyacentes\n");
+            
             if (x - 1 >= 0 && Tablero[x - 1, y] != 1)
             {
                 int[] posIz = new int[2];
@@ -2578,7 +2020,6 @@ namespace VoiceRecognitionMaze
                 {
                     return value;
                 }
-
             }
             return null;
         }
@@ -2602,16 +2043,11 @@ namespace VoiceRecognitionMaze
             double fn;
             double gn;
             Nodo Nodo_Adyacente;
-            //Console.WriteLine("Nodos adyacentes");
-            //imprimir_Adyacentes(adyacentes);
-
 
             foreach (Nodo nodo_abierto in adyacentes)
             {
-
                 if (!listaCerrada.Contains(nodo_abierto.posicion))
                 {
-
                     if (nodo_abierto.movimiento == 0) // Si el movimiento es directo
                     {
                         gn = nodoActual.gn + tamanoCasillas;
@@ -2624,18 +2060,15 @@ namespace VoiceRecognitionMaze
                         }
                         else
                         {
-
                             Nodo nodoAntiguo = ObtenerNodo(listaAbierta, nodo_abierto);
 
                             if (nodoAntiguo.gn < Nodo_Adyacente.gn)
                             {
-
                                 Nodo_Adyacente.gn = nodoAntiguo.gn;
                                 Nodo_Adyacente.nodoPadre = nodoAntiguo.nodoPadre;
 
                                 listaAbierta.Remove(nodoAntiguo);
                                 agregarNodoAListaAbierta(Nodo_Adyacente);
-
                             }
                         }
 
@@ -2655,22 +2088,16 @@ namespace VoiceRecognitionMaze
                             Nodo nodoAntiguo = ObtenerNodo(listaAbierta, nodo_abierto);
                             if (nodoAntiguo.gn < Nodo_Adyacente.gn)
                             {
-
                                 Nodo_Adyacente.gn = nodoAntiguo.gn;
                                 Nodo_Adyacente.nodoPadre = nodoAntiguo.nodoPadre;
 
                                 listaAbierta.Remove(nodoAntiguo);
                                 agregarNodoAListaAbierta(Nodo_Adyacente);
-
                             }
                         }
-
-
                     }
                 }
-
             }
-
         }
 
         public List<int[]> Algoritmo_A_Estrella(int[] pos_n, int[] pos_final, double costo, Boolean diagonal, int[,] Tablero)
@@ -2701,18 +2128,12 @@ namespace VoiceRecognitionMaze
                 listaAbierta.Remove(nodoActual);
                 listaCerrada.Add(nodoActual.posicion);
 
-                //Console.WriteLine("Lista abierta");
-                //imprimir_ListaAbierta(listaAbierta);
                 nodosAdyacentes = encontrarNodosAdyacentes(nodoActual, Tablero, diagonal); //Encuentra los nodos adyacentes del nodo actual
                 calcular_fn(nodoActual, nodo_final, nodosAdyacentes, listaAbierta, listaCerrada, costo); //Calcula el fn de cada uno de los nodos adyacentes al nodo actual
-                //listaCerrada.Add(nodoActual.posicion);
             }
-
             return null;
         }
-
-        //Refrescar la pantalla
-
+        
         private void timer1_Tick(object sender, EventArgs e)
         {
             Invalidate();
@@ -2726,4 +2147,3 @@ namespace VoiceRecognitionMaze
        
     }
 }
-
