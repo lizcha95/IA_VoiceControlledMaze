@@ -1,4 +1,4 @@
-﻿namespace Logic.Utils.Xml
+﻿namespace Logic.Utils
 {
     using System;
     using System.Collections.Generic;
@@ -6,7 +6,7 @@
     using System.Text;
     using System.Threading.Tasks;
 
-    public static class XmlGenerator
+    public class ExtensionMethods
     {
     }
 }
