@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Services>
+  <Service>
+    <Code>ICE</Code>
+    <Details>Instalación de cocina eléctrica</Details>
+    <Hours>2</Hours>
+    <Payment>250</Payment>
+  </Service>
+  <Service>
+    <Code>ICG</Code>
+    <Details>Instalación de cocina de gas</Details>
+    <Hours>4</Hours>
+    <Payment>400</Payment>
+  </Service>
+  <Service>
+    <Code>ILA</Code>
+    <Details>Instalación de lavadora automática</Details>
+    <Hours>1</Hours>
+    <Payment>200</Payment>
+  </Service>
+  <Service>
+    <Code>RCE</Code>
+    <Details>Reparación de cocina eléctrica</Details>
+    <Hours>4</Hours>
+    <Payment>300</Payment>
+  </Service>
+  <Service>
+    <Code>RCG</Code>
+    <Details>Reparación de cocina de gas</Details>
+    <Hours>6</Hours>
+    <Payment>500</Payment>
+  </Service>
+  <Service>
+    <Code>RLA</Code>
+    <Details>Reparación de lavadora automática</Details>
+    <Hours>6</Hours>
+    <Payment>250</Payment>
+  </Service>
+</Services>
