@@ -8,23 +8,33 @@
     public static class DataGenerator
     {
         private static Random random = new Random();
+        private static NameGenerator nameGenerator = new NameGenerator(random);
 
-        public static List<Agent> GenerateAgents(int expectedQuantity, List<Service> availableServices)
+        private static string RandomName
         {
-            List<Agent> agents = new List<Agent>();
-            NameGenerator nameGenerator = new NameGenerator(random);
-            ServicesChooser servicesChooser = new ServicesChooser(random, availableServices);
-            int currentQuantity = 0;
-            while (++currentQuantity <= expectedQuantity)
+            get
             {
-                Console.WriteLine(string.Format("Generating agents number: {0}", currentQuantity));
-                agents.Add(new Agent(
-                    currentQuantity,
-                    nameGenerator.GenerateName(random.Next(Constants.Numbers.NAME_MINIMUM_LENGTH, Constants.Numbers.NAME_MAXIMUM_LENGTH + 1)),
-                    servicesChooser.ChooseServicesCodes())
-                );
+                return nameGenerator.GenerateName(random.Next(Constants.Numbers.NAME_MINIMUM_LENGTH, Constants.Numbers.NAME_MAXIMUM_LENGTH + 1));
             }
-            return agents;
+        }
+
+        public static IEnumerable<Agent> GenerateAgents(int quantity, List<Service> availableServices)
+        {
+            ServicesChooser servicesChooser = new ServicesChooser(random, availableServices);
+            return Enumerable.Range(1, quantity).Select(i =>
+            {
+                Console.WriteLine(string.Format(Constants.Messages.GENERATING_AGENT, i));
+                return new Agent(i, RandomName, servicesChooser.ChooseServicesCodes());
+            });
+        }
+
+        public static IEnumerable<Order> GenerateOrders(int quantity, List<Service> availableServices)
+        {
+            return Enumerable.Range(1, quantity).Select(i =>
+            {
+                Console.WriteLine(string.Format(Constants.Messages.GENERATING_ORDER, i));
+                return new Order(i, RandomName, availableServices.ElementAt(random.Next(0, availableServices.Count)).Code);
+            });
         }
 
         private class NameGenerator
@@ -72,7 +82,7 @@
             private List<Service> availableServices;
             private int availableServicesCount;
 
-            public ServicesChooser(Random random, IEnumerable<Service> availableServices)
+            public ServicesChooser(Random random, List<Service> availableServices)
             {
                 this.random = random;
                 this.availableServices = availableServices.ToList();

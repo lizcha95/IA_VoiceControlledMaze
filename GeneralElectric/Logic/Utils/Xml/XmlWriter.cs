@@ -7,7 +7,7 @@
 
     public static class XmlWriter
     {
-        public static void WriteAgents(List<Agent> agents)
+        public static void WriteAgents(IEnumerable<Agent> agents)
         {
             new XDocument(
                 new XElement("Agents",
@@ -24,7 +24,7 @@
             ).Save(Constants.Paths.AGENTS_FILE);
         }
 
-        public static void WriteOrders(List<Order> orders)
+        public static void WriteOrders(IEnumerable<Order> orders)
         {
             new XDocument(
                 new XElement("Orders",
