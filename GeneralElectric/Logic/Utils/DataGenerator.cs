@@ -24,7 +24,7 @@
             return Enumerable.Range(1, quantity).Select(i =>
             {
                 Console.WriteLine(string.Format(Constants.Messages.GENERATING_AGENT, i));
-                return new Agent(i, RandomName, servicesChooser.ChooseServicesCodes());
+                return new Agent(i, Faker.Name.FullName(), servicesChooser.ChooseServicesCodes());
             });
         }
 
@@ -33,7 +33,7 @@
             return Enumerable.Range(1, quantity).Select(i =>
             {
                 Console.WriteLine(string.Format(Constants.Messages.GENERATING_ORDER, i));
-                return new Order(i, RandomName, availableServices.ElementAt(random.Next(0, availableServices.Count)).Code);
+                return new Order(i, Faker.Company.Name(), availableServices.ElementAt(random.Next(0, availableServices.Count)).Code);
             });
         }
 
@@ -74,6 +74,8 @@
                 this.usedNames.Add(name);
                 return name.First().ToString().ToUpper() + name.Substring(1);
             }
+
+           
         }
 
         private class ServicesChooser
