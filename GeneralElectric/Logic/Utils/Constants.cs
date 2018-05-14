@@ -15,11 +15,12 @@
 
         public static class Numbers
         {
-            public const int AGENTS_QUANTITY = 2000;
             public const int INITIAL_POPULATION = 100;
             public const int NAME_MINIMUM_LENGTH = 10;
             public const int NAME_MAXIMUM_LENGTH = 15;
-            public const int ORDER_QUANTITY = 8000;
+            public const int MAX_HOURS = 40;
+            public const int QUANTITY_AGENTS = 2000;
+            public const int QUANTITY_ORDERS = 8000;
             public const double AVERAGE_LIMIT = 10;
         }
 

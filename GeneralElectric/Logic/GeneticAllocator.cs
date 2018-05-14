@@ -54,7 +54,9 @@
         {
             var orderSums = assignments.Select(assignment => assignment.Orders.Sum(order => order.Service.Payment));
             double paymentAverage = orderSums.Average();
-            return orderSums.Min() >= paymentAverage - Constants.Numbers.AVERAGE_LIMIT && paymentAverage + Constants.Numbers.AVERAGE_LIMIT >= orderSums.Max();
+            return !assignments.Where(assignment => assignment.Orders.Sum(order => order.Service.Hours) > Constants.Numbers.MAX_HOURS).Any()
+                && orderSums.Min() >= paymentAverage - Constants.Numbers.AVERAGE_LIMIT 
+                && paymentAverage + Constants.Numbers.AVERAGE_LIMIT >= orderSums.Max();
         }
 
         public void Selection()
