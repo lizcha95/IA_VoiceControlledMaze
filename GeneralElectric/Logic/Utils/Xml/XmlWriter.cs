@@ -16,7 +16,7 @@
                         new XElement("ID", agent.ID),
                         new XElement("Name", agent.Name),
                         new XElement("ServiceCodes", 
-                            from serviceCode in agent.Services.Select(service => service.Code)
+                            from serviceCode in agent.ServicesCodes
                             select new XElement("Code", serviceCode)
                         )
                     )

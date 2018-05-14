@@ -25,7 +25,7 @@
         {
             foreach (Agent agent in this.currentContext.Agents)
             {
-                this.agentsGridView.Rows.Add(agent.ID, agent.Name, string.Join(", ", agent.Services.Select(service => service.Code)));
+                this.agentsGridView.Rows.Add(agent.ID, agent.Name, string.Join(", ", agent.ServicesCodes));
             }
         }
 
