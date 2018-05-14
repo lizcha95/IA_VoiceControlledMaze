@@ -7,10 +7,10 @@
         private Agent agent;
         private List<Order> orders;
 
-        public Assignment(Agent agent, List<Order> orders)
+        public Assignment(Agent agent)
         {
             this.agent = agent;
-            this.orders = orders;
+            this.orders = new List<Order>();
         }
 
         public Agent Agent { get { return this.agent; } }

@@ -5,7 +5,7 @@
     using System.Xml.Linq;
     using Classes;
 
-    public static class XmlWriter
+    internal static class XmlWriter
     {
         public static void WriteAgents(IEnumerable<Agent> agents)
         {
@@ -16,7 +16,7 @@
                         new XElement("ID", agent.ID),
                         new XElement("Name", agent.Name),
                         new XElement("ServiceCodes", 
-                            from serviceCode in agent.ServiceCodes
+                            from serviceCode in agent.Services.Select(service => service.Code)
                             select new XElement("Code", serviceCode)
                         )
                     )
@@ -32,7 +32,7 @@
                     select new XElement("Order",
                         new XElement("ID", order.ID),
                         new XElement("Client", order.Client),
-                        new XElement("ServiceCode", order.ServiceCode)
+                        new XElement("ServiceCode", order.Service.Code)
                     )
                 )
             ).Save(Constants.Paths.ORDERS_FILE);

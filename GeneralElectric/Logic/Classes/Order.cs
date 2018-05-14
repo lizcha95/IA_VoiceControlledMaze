@@ -4,17 +4,17 @@
     {
         private int id;
         private string client;
-        private string serviceCode;
+        private Service service;
 
-        public Order(int id, string client, string serviceCode)
+        public Order(int id, string client, Service service)
         {
             this.id = id;
             this.client = client;
-            this.serviceCode = serviceCode;
+            this.service = service;
         }
 
         public int ID { get { return this.id; } }
         public string Client { get { return this.client; } }
-        public string ServiceCode { get { return this.serviceCode; } }
+        public Service Service { get { return this.service; } }
     }
 }

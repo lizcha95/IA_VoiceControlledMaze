@@ -1,6 +1,6 @@
 ﻿namespace Gui.Forms
 {
-    partial class mainForm
+    partial class FormMain
     {
         /// <summary>
         /// Required designer variable.
@@ -59,7 +59,7 @@
             this.agentsGridView.RowTemplate.Height = 28;
             this.agentsGridView.Size = new System.Drawing.Size(667, 520);
             this.agentsGridView.TabIndex = 0;
-            this.agentsGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
+            this.agentsGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridView1_CellContentClick);
             // 
             // agentId
             // 
@@ -118,7 +118,7 @@
             this.buttonLoadAgents.TabIndex = 2;
             this.buttonLoadAgents.Text = "Load Agents";
             this.buttonLoadAgents.UseVisualStyleBackColor = true;
-            this.buttonLoadAgents.Click += new System.EventHandler(this.buttonLoadAgents_Click);
+            this.buttonLoadAgents.Click += new System.EventHandler(this.ButtonLoadAgents_Click);
             // 
             // buttonAssignOrders
             // 
@@ -180,7 +180,7 @@
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "mainForm";
             this.Text = "General Electric Services";
-            this.Load += new System.EventHandler(this.mainForm_Load);
+            this.Load += new System.EventHandler(this.FormMain_Load);
             ((System.ComponentModel.ISupportInitialize)(this.agentsGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.ordersGridView)).EndInit();
             this.ResumeLayout(false);

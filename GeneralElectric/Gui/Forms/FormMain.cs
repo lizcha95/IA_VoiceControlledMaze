@@ -1,60 +1,45 @@
 ﻿namespace Gui.Forms
 {
     using System;
-    using System.Collections.Generic;
     using System.Windows.Forms;
     using System.Linq;
+    using Logic.Classes;
 
-    public partial class mainForm : Form
+    public partial class FormMain : Form
     {
-        public mainForm()
+        private Context currentContext;
+
+        public FormMain()
         {
             this.InitializeComponent();
+
+            this.currentContext = Context.Current;
         }
 
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private void DataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
 
         }
 
-        private void buttonLoadAgents_Click(object sender, System.EventArgs e)
+        private void ButtonLoadAgents_Click(object sender, System.EventArgs e)
         {
-            foreach (Logic.Classes.Agent agent in Logic.Utils.Xml.XmlReader.ReadAgents())
+            foreach (Agent agent in this.currentContext.Agents)
             {
-                agentsGridView.Rows.Add(agent.ID, agent.Name, listToString(agent.ServiceCodes));
+                this.agentsGridView.Rows.Add(agent.ID, agent.Name, string.Join(", ", agent.Services.Select(service => service.Code)));
             }
         }
 
         private void buttonLoadOrders_Click(object sender, System.EventArgs e)
         {
-            foreach (Logic.Classes.Order order in Logic.Utils.Xml.XmlReader.ReadOrders())
+            foreach (Order order in this.currentContext.Orders)
             {
-                ordersGridView.Rows.Add(order.ID, order.Client, order.ServiceCode);
+                ordersGridView.Rows.Add(order.ID, order.Client, order.Service.Code);
             }
         }
 
-        private string listToString(List<string> list)
-        {
-            string servicesList = String.Join(",", list);
-            return servicesList;
-        }
-
-        private void mainForm_Load(object sender, EventArgs e)
+        private void FormMain_Load(object sender, EventArgs e)
         {
 
-        }
-
-        private void button_Cargar(object sender, System.EventArgs e)
-        {
-            var services = Logic.Utils.Xml.XmlReader.ReadServices().ToList();
-
-            // Generate and save random agents.
-            Logic.Utils.Xml.XmlWriter.WriteAgents(Logic.Utils.DataGenerator.GenerateAgents(Logic.Utils.Constants.Numbers.AGENTS_QUANTITY, services));
-
-            Console.WriteLine();
-
-            // Generate and save random orders.
-            Logic.Utils.Xml.XmlWriter.WriteOrders(Logic.Utils.DataGenerator.GenerateOrders(Logic.Utils.Constants.Numbers.ORDER_QUANTITY, services));
         }
     }
 }
