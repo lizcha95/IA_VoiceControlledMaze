@@ -22,6 +22,10 @@
             public const int QUANTITY_AGENTS = 2000;
             public const int QUANTITY_ORDERS = 8000;
             public const double AVERAGE_LIMIT = 10;
+            public const float SELECTION_PERCENTAGE = 50/100;
+            public const float BEST_INDIVIDUALS_PERCENTAGE = 95/100;
+            public const float WORST_INDIVIDUALS_PERCENTAGE = 5/100;
+
         }
 
         public static class Paths

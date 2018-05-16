@@ -14,8 +14,17 @@
 
         private int agentsCount;
         private int expectedPayment;
+        private float selection_percentage;
+        private float selection_percentage_best_individuals;
+        private float selection_percentage_worst_individuals;
+
 
         private IEnumerable<IGrouping<string, Order>> groupedOrders;
+        private IEnumerable<Tuple<IEnumerable<Assignment>, int>> fitness_generation;
+        private List<Tuple<IEnumerable<Assignment>, int>> ordered_population;
+        private List<Tuple<IEnumerable<Assignment>, int>> best_individuals;
+        private List<Tuple<IEnumerable<Assignment>, int>> worst_individuals;
+        private IEnumerable<IEnumerable<Assignment>> new_generation;
 
         public GeneticAllocator(IEnumerable<Agent> agents, IEnumerable<Service> services, IEnumerable<Order> orders)
         {
@@ -63,14 +72,50 @@
             var exceedOrdersQuantity = assignments
                 .Where(assignment => assignment.Orders.Sum(order => order.Service.Hours) > Constants.Numbers.MAX_HOURS)
                 .Count();
-            return int.MaxValue 
+            return int.MaxValue
                 - int.MaxValue / this.agentsCount * exceedOrdersQuantity
                 - orderPayments.Sum(orderPayment => Math.Abs(this.expectedPayment - orderPayment));
         }
 
-        public void Selection()
-        {
 
+        //Add the fitness to each individual
+        public IEnumerable<Tuple<IEnumerable<Assignment>, int>> CalculateFitness(IEnumerable<IEnumerable<Assignment>> generation)
+        {
+            foreach (IEnumerable<Assignment> individual in generation)
+            {
+                Tuple<IEnumerable<Assignment>, int> individual_with_fitness = new Tuple<IEnumerable<Assignment>, int>(individual, Evaluation(individual));
+                fitness_generation.ToList().Add(individual_with_fitness);
+            }
+            return fitness_generation;
+        }
+
+        public IEnumerable<IEnumerable<Assignment>> Selection(IEnumerable<Tuple<IEnumerable<Assignment>, int>> generation)
+        {
+            ordered_population = generation.OrderByDescending(f => f.Item2).ToList(); //Sort the list by the greatest fitness
+            selection_percentage = ordered_population.Count() * ((float)Constants.Numbers.SELECTION_PERCENTAGE);
+
+            //Split the list in half according to the percentage of selection
+            best_individuals = ordered_population.GetRange(0, (int)selection_percentage);
+            worst_individuals = ordered_population.GetRange((int)selection_percentage + 1, ordered_population.Count());
+
+            //Percentage of selection of good and bad individuals
+            selection_percentage_best_individuals = best_individuals.Count() * (Constants.Numbers.BEST_INDIVIDUALS_PERCENTAGE);
+            selection_percentage_worst_individuals = worst_individuals.Count() * (Constants.Numbers.WORST_INDIVIDUALS_PERCENTAGE);
+
+            best_individuals.RandomPops((int)selection_percentage_best_individuals);
+            worst_individuals.RandomPops((int)selection_percentage_worst_individuals);
+
+            //Add new individuals
+            foreach (Tuple<IEnumerable<Assignment>, int> best in best_individuals)
+            {
+                new_generation.ToList().Add(best.Item1);
+            }
+
+            foreach (Tuple<IEnumerable<Assignment>, int> worst in worst_individuals)
+            {
+                new_generation.ToList().Add(worst.Item1);
+            }
+            return new_generation;
         }
 
         public void Crossover()
@@ -80,6 +125,7 @@
 
         public void Mutation()
         {
+
 
         }
     }
