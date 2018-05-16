@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
     using Classes;
     using Utils;
 
@@ -23,9 +24,11 @@
             this.agents = agents;
             this.services = services;
             this.orders = orders;
+            // Group the orders by service code.
             this.groupedOrders = orders.GroupBy(order => order.Service.Code);
 
             this.agentsCount = agents.Count();
+            // Expected payment for each assignment.
             this.expectedPayment = orders.Sum(order => order.Service.Payment) / this.agentsCount;
 
             this.random = new Random();
@@ -36,6 +39,10 @@
             return null;
         }
 
+        /// <summary>
+        /// Initializes a new population of individuals for the process.
+        /// </summary>
+        /// <returns>Yields randomly-generated individuals.</returns>
         private IEnumerable<IEnumerable<Assignment>> InitializePopulation()
         {
             for (int i = 0; i < Constants.Numbers.INITIAL_POPULATION; i++)
@@ -45,33 +52,64 @@
             }
         }
 
-        public List<Assignment> GenerateIndividual()
+        /// <summary>
+        /// Generates randomly a new individual using the total amount of existing <see cref="Order"/>s.
+        /// </summary>
+        /// <returns>A new randomly-generated individual.</returns>
+        private List<Assignment> GenerateIndividual()
         {
-            List<Assignment> assignments = this.agents.Select(agent => new Assignment(agent)).ToList();
+            // Generate a base individual using the total amount of existing agents.
+            List<Assignment> individual = this.agents.Select(agent => new Assignment(agent)).ToList();
+            // Distribute orders for the individual in a random way.
+            this.DistributeOrders(individual, this.groupedOrders);
+            return individual;
+        }
+
+        /// <summary>
+        /// Distributes <see cref="Order"/>s for an individual in an equitable and random way.
+        /// </summary>
+        /// <param name="individual">The individual to assign it <see cref="Order"/>s randomly.</param>
+        /// <param name="groupedOrders">The orders to distribute grouped by <see cref="Service.Code"/>.</param>
+        private void DistributeOrders(IEnumerable<Assignment> individual, IEnumerable<IGrouping<string, Order>> groupedOrders)
+        {
             List<Order> ungroupedOrders;
             IEnumerable<Assignment> temporalAssignments;
             int ordersQuotient, ordersRemainder;
-            foreach (var groupedOrder in this.groupedOrders)
+            // Iterate each orders group.
+            foreach (var ordersGroup in groupedOrders)
             {
-                temporalAssignments = assignments
-                    .Where(assignment => assignment.Agent.ServicesCodes.Contains(groupedOrder.Key))
+                // Select assignments of agents that can handle the current type of order ordering them by descending 
+                // orders count and descending orders hours.
+                temporalAssignments = individual
+                    .Where(assignment => assignment.Agent.ServicesCodes.Contains(ordersGroup.Key))
                     .OrderByDescending(assignment => assignment.Orders.Count)
                     .ThenByDescending(assignment => assignment.Orders.Sum(order => order.Service.Hours));
-                ungroupedOrders = groupedOrder.Select(group => group).ToList();
-                ordersQuotient = groupedOrder.Count() / temporalAssignments.Count();
-                ordersRemainder = groupedOrder.Count() % temporalAssignments.Count();
+                // Flatten the grouped orders.
+                ungroupedOrders = ordersGroup.Select(group => group).ToList();
+                // Calculate the amount of orders for each assign.
+                ordersQuotient = ordersGroup.Count() / temporalAssignments.Count();
+                // Calculate the remainder orders quantity.
+                ordersRemainder = ordersGroup.Count() % temporalAssignments.Count();
+                // Iterate the temporal assignments to add to its orders the calculated amount of orders randomly.
                 foreach (Assignment assignment in temporalAssignments)
                     assignment.Orders.AddRange(ungroupedOrders.RandomPops(ordersQuotient + (ordersRemainder-- > 0 ? 1 : 0)));
             }
-            return assignments;
         }
 
-        private int Evaluation(IEnumerable<Assignment> assignments)
+        /// <summary>
+        /// Calculates a fitness value for an individual.
+        /// </summary>
+        /// <param name="individual">The individual to analyze.</param>
+        /// <returns>The fitness value of the analyzed individual.</returns>
+        private int Evaluation(IEnumerable<Assignment> individual)
         {
-            var orderPayments = assignments.Select(assignment => assignment.Orders.Sum(order => order.Service.Payment));
-            var exceedOrdersQuantity = assignments
+            // Get the total payment of each assignment.
+            var orderPayments = individual.Select(assignment => assignment.Orders.Sum(order => order.Service.Payment));
+            // Get the quantity of exceeded-in-hours assignments.
+            var exceedOrdersQuantity = individual
                 .Where(assignment => assignment.Orders.Sum(order => order.Service.Hours) > Constants.Numbers.MAX_HOURS)
                 .Count();
+            // Calculate the fitness strongly penalizing the exceeded-in-hours assignments and softly penalizing differences in payments.
             return int.MaxValue 
                 - int.MaxValue / this.agentsCount * exceedOrdersQuantity
                 - orderPayments.Sum(orderPayment => Math.Abs(this.expectedPayment - orderPayment));
@@ -82,24 +120,38 @@
 
         }
 
-        public IEnumerable<Assignment> Crossover(IEnumerable<Assignment> individual1, IEnumerable<Assignment> individual2)
+        private IEnumerable<Assignment> Crossover(IEnumerable<Assignment> parent1, IEnumerable<Assignment> parent2)
         {
             // 50% chance to switch the individuals.
             if (this.random.Next(0, 2) == 1)
             {
-                var temporalIndividual = individual1;
-                individual1 = individual2;
-                individual2 = temporalIndividual;
+                var temporalParent = parent1;
+                parent1 = parent2;
+                parent2 = temporalParent;
             }
-            int crossingPoint = this.random.Next(this.agentsCount / 4 - 1, this.agentsCount / 4 * 3 - 1);
-            List<Assignment> listIndividual1 = individual1.ToList(),
-                listIndividual2 = individual2.ToList(),
-                listNewIndividual = listIndividual1.GetRange(0, crossingPoint)
-                    .Concat(listIndividual2.GetRange(crossingPoint, listIndividual2.Count - crossingPoint))
-                    .ToList();
-
-            return listNewIndividual;
-        }
+            // Cross the parents in a simple way to obtain a child.
+            var child = parent1.CrossWith(parent2, this.random.Next(this.agentsCount / 4 - 1, this.agentsCount / 4 * 3 - 1));
+            // Select the child orders grouped by assignments.
+            var childGroupedOrders = child.Select(assignment => assignment.Orders);
+            // Get the IDs of repeatead orders of the child.
+            var childRepeatedOrdersIDs = childGroupedOrders.SelectMany(order => order)
+                .GroupBy(order => order.ID)
+                .Where(group => group.Count() > 1)
+                .Select(group => group.Key);
+            // Remove ALL the repeated orders of the child assignments.
+            foreach (int id in childRepeatedOrdersIDs)
+                Parallel.ForEach(childGroupedOrders, orderGroup => orderGroup.RemoveAll(order1 =>
+                    orderGroup.Where(order2 => order2.ID == id).Contains(order1, Order.Comparer))
+                );
+            // Get the child missing orders grouped by service.
+            var missingGroupedOrders = this.orders.Except(
+                child.Select(assignment => assignment.Orders).SelectMany(order => order), 
+                Order.Comparer
+            ).GroupBy(order => order.Service.Code);
+            // Distribute randomly the missing orders.
+            this.DistributeOrders(child, missingGroupedOrders);
+            return child;
+        }        
 
         public void Mutation(IEnumerable<Assignment> individual)
         {
