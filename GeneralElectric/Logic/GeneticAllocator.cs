@@ -14,7 +14,7 @@
 
         private int agentsCount;
         private int expectedPayment;
-        private float selection_percentage;
+        private int selection_percentage;
         private float selection_percentage_best_individuals;
         private float selection_percentage_worst_individuals;
 
@@ -77,26 +77,21 @@
                 - orderPayments.Sum(orderPayment => Math.Abs(this.expectedPayment - orderPayment));
         }
 
-
         //Add the fitness to each individual
         public IEnumerable<Tuple<IEnumerable<Assignment>, int>> CalculateFitness(IEnumerable<IEnumerable<Assignment>> generation)
         {
-            foreach (IEnumerable<Assignment> individual in generation)
-            {
-                Tuple<IEnumerable<Assignment>, int> individual_with_fitness = new Tuple<IEnumerable<Assignment>, int>(individual, Evaluation(individual));
-                fitness_generation.ToList().Add(individual_with_fitness);
-            }
+            fitness_generation = generation.Select(individual => new Tuple<IEnumerable<Assignment>, int>(individual, Evaluation(individual)));
             return fitness_generation;
         }
-
+    
         public IEnumerable<IEnumerable<Assignment>> Selection(IEnumerable<Tuple<IEnumerable<Assignment>, int>> generation)
         {
-            ordered_population = generation.OrderByDescending(f => f.Item2).ToList(); //Sort the list by the greatest fitness
-            selection_percentage = ordered_population.Count() * ((float)Constants.Numbers.SELECTION_PERCENTAGE);
+            ordered_population = generation.OrderBy(f => f.Item2).ToList(); //Sort the list by the greatest fitness
+            selection_percentage = ordered_population.Count() * (Constants.Numbers.SELECTION_PERCENTAGE);
 
             //Split the list in half according to the percentage of selection
-            best_individuals = ordered_population.GetRange(0, (int)selection_percentage);
-            worst_individuals = ordered_population.GetRange((int)selection_percentage + 1, ordered_population.Count());
+            best_individuals = ordered_population.GetRange(0,selection_percentage);
+            worst_individuals = ordered_population.GetRange(selection_percentage, ordered_population.Count()-selection_percentage);
 
             //Percentage of selection of good and bad individuals
             selection_percentage_best_individuals = best_individuals.Count() * (Constants.Numbers.BEST_INDIVIDUALS_PERCENTAGE);

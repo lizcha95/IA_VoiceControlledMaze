@@ -41,6 +41,13 @@
             this.buttonLoadOrders = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.label3 = new System.Windows.Forms.Label();
+            this.button_first = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.button_next = new System.Windows.Forms.Button();
+            this.button_last_page = new System.Windows.Forms.Button();
+            this.button_previous = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.agentsGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.ordersGridView)).BeginInit();
             this.SuspendLayout();
@@ -53,11 +60,12 @@
             this.agentId,
             this.agentName,
             this.serviciosXagente});
-            this.agentsGridView.Location = new System.Drawing.Point(24, 45);
+            this.agentsGridView.Location = new System.Drawing.Point(53, 45);
             this.agentsGridView.Margin = new System.Windows.Forms.Padding(2);
             this.agentsGridView.Name = "agentsGridView";
             this.agentsGridView.RowTemplate.Height = 28;
-            this.agentsGridView.Size = new System.Drawing.Size(667, 520);
+            this.agentsGridView.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.agentsGridView.Size = new System.Drawing.Size(563, 422);
             this.agentsGridView.TabIndex = 0;
             this.agentsGridView.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridView1_CellContentClick);
             // 
@@ -165,11 +173,82 @@
             this.label2.TabIndex = 6;
             this.label2.Text = "Orders";
             // 
-            // mainForm
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(155, 483);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(404, 20);
+            this.flowLayoutPanel1.TabIndex = 7;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(66, 490);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(64, 13);
+            this.label3.TabIndex = 8;
+            this.label3.Text = "Go to Page:";
+            this.label3.Click += new System.EventHandler(this.label3_Click);
+            // 
+            // button_first
+            // 
+            this.button_first.Location = new System.Drawing.Point(55, 524);
+            this.button_first.Name = "button_first";
+            this.button_first.Size = new System.Drawing.Size(75, 23);
+            this.button_first.TabIndex = 9;
+            this.button_first.Text = "First Page";
+            this.button_first.UseVisualStyleBackColor = true;
+            this.button_first.Click += new System.EventHandler(this.button_first_Click);
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(276, 526);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(100, 20);
+            this.textBox1.TabIndex = 11;
+            // 
+            // button_next
+            // 
+            this.button_next.Location = new System.Drawing.Point(412, 523);
+            this.button_next.Name = "button_next";
+            this.button_next.Size = new System.Drawing.Size(75, 23);
+            this.button_next.TabIndex = 12;
+            this.button_next.Text = "Next Page";
+            this.button_next.UseVisualStyleBackColor = true;
+            this.button_next.Click += new System.EventHandler(this.button_next_Click);
+            // 
+            // button_last_page
+            // 
+            this.button_last_page.Location = new System.Drawing.Point(510, 523);
+            this.button_last_page.Name = "button_last_page";
+            this.button_last_page.Size = new System.Drawing.Size(75, 23);
+            this.button_last_page.TabIndex = 13;
+            this.button_last_page.Text = "Last Page";
+            this.button_last_page.UseVisualStyleBackColor = true;
+            this.button_last_page.Click += new System.EventHandler(this.button_last_page_Click);
+            // 
+            // button_previous
+            // 
+            this.button_previous.Location = new System.Drawing.Point(155, 524);
+            this.button_previous.Name = "button_previous";
+            this.button_previous.Size = new System.Drawing.Size(103, 23);
+            this.button_previous.TabIndex = 14;
+            this.button_previous.Text = "Previous Page";
+            this.button_previous.UseVisualStyleBackColor = true;
+            this.button_previous.Click += new System.EventHandler(this.button_previous_Click);
+            // 
+            // FormMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(994, 646);
+            this.Controls.Add(this.button_previous);
+            this.Controls.Add(this.button_last_page);
+            this.Controls.Add(this.button_next);
+            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.button_first);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.buttonLoadOrders);
@@ -178,7 +257,7 @@
             this.Controls.Add(this.ordersGridView);
             this.Controls.Add(this.agentsGridView);
             this.Margin = new System.Windows.Forms.Padding(2);
-            this.Name = "mainForm";
+            this.Name = "FormMain";
             this.Text = "General Electric Services";
             this.Load += new System.EventHandler(this.FormMain_Load);
             ((System.ComponentModel.ISupportInitialize)(this.agentsGridView)).EndInit();
@@ -203,6 +282,13 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn orderId;
         private System.Windows.Forms.DataGridViewTextBoxColumn orderClient;
         private System.Windows.Forms.DataGridViewTextBoxColumn orderCode;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button button_first;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Button button_next;
+        private System.Windows.Forms.Button button_last_page;
+        private System.Windows.Forms.Button button_previous;
     }
 }
 
