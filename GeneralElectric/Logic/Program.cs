@@ -12,12 +12,12 @@
             var services = XmlReader.ReadServices().ToList();
 
             // Generate and save random agents.
-            XmlWriter.WriteAgents(DataGenerator.GenerateAgents(Constants.Numbers.QUANTITY_AGENTS, services));
+            XmlWriter.WriteAgents(DataGenerator.GenerateAgents(Constants.Values.QUANTITY_AGENTS, services));
 
             Console.WriteLine();
 
             // Generate and save random orders.
-            XmlWriter.WriteOrders(DataGenerator.GenerateOrders(Constants.Numbers.QUANTITY_ORDERS, services));
+            XmlWriter.WriteOrders(DataGenerator.GenerateOrders(Constants.Values.QUANTITY_ORDERS, services));
 
             Console.WriteLine("\n\n" + Constants.Messages.FINISHED);
             Console.ReadKey();

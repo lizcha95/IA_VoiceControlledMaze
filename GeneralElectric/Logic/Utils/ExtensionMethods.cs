@@ -86,17 +86,30 @@
         /// Returns a specified quantity of elements of random selected positions of a <see cref="List{T}"/> before removing them.
         /// </summary>
         /// <typeparam name="T">The type of the <see cref="List{T}"/>.</typeparam>
-        /// <param name="list">The list to random pop the elements.</param>
+        /// <param name="list">The <see cref="List{T}"/> to random pop the elements.</param>
         /// <param name="quantity">The quantity of elements to pop randomly.</param>
         /// <returns>A <see cref="List{T}"/> of "quantity" random popped elements.</returns>
         public static List<T> RandomPops<T>(this List<T> list, int quantity)
         {
             if (quantity < 0)
-                return null;
+                return default(List<T>);
             List<T> resultElements = new List<T>();
             while (quantity-- > 0 && list.Count > 0)
                 resultElements.Add(list.RandomPop());
             return resultElements;
+        }
+
+        /// <summary>
+        /// Returns a random couple of elements of the <see cref="List{T}"/>.
+        /// </summary>
+        /// <typeparam name="T">The type of the <see cref="List{T}"/>.</typeparam>
+        /// <param name="list">The <see cref="List{T}"/> to random pop a couple of elements.</param>
+        /// <returns></returns>
+        public static Tuple<T, T> PopRandomCouple<T>(this List<T> list)
+        {
+            if (list.Count < 2)
+                return default(Tuple<T, T>);
+            return new Tuple<T, T>(list.RandomPop(), list.RandomPop());
         }
     }
 }
