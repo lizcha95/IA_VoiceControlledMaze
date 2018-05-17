@@ -8,6 +8,7 @@
     using System.Threading.Tasks;
     using Classes;
     using Utils;
+    using Individual = System.Collections.Generic.IEnumerable<Classes.Assignment>; // An alias for the Individual.
 
     public class GeneticAllocator : BackgroundWorker
     {
@@ -16,8 +17,8 @@
         private IEnumerable<Order> orders;
         private IEnumerable<IGrouping<string, Order>> groupedOrders;
 
-        private IEnumerable<Assignment> bestIndividual;
-        private IEnumerable<IEnumerable<Assignment>> currentPopulation;
+        private Individual bestIndividual;
+        private IEnumerable<Individual> currentPopulation;
 
         private int agentsCount;
         private int expectedPayment;
@@ -47,7 +48,7 @@
             this.WorkerReportsProgress = true;
         }
 
-        public IEnumerable<Assignment> BestIndividual { get { return this.bestIndividual; } }
+        public Individual BestIndividual { get { return this.bestIndividual; } }
 
         /// <summary>
         /// Executes the async process.
@@ -134,7 +135,7 @@
         /// Initializes a new population of individuals for the process.
         /// </summary>
         /// <returns>Yields randomly-generated individuals.</returns>
-        private IEnumerable<IEnumerable<Assignment>> InitializePopulation()
+        private IEnumerable<Individual> InitializePopulation()
         {
             for (int i = 0; i < Constants.Values.INITIAL_POPULATION; i++)
             {
@@ -148,7 +149,7 @@
         /// </summary>
         /// <param name="individual">The individual to analyze.</param>
         /// <returns>The fitness value of the analyzed individual.</returns>
-        private int Evaluation(IEnumerable<Assignment> individual)
+        private int Evaluation(Individual individual)
         {
             // Get the total payment of each assignment.
             var orderPayments = individual.Select(assignment => assignment.Orders.Sum(order => order.Service.Payment));
@@ -162,7 +163,7 @@
                 - orderPayments.Sum(orderPayment => Math.Abs(this.expectedPayment - orderPayment));
         }
 
-        private IEnumerable<IEnumerable<Assignment>> Selection(IEnumerable<Tuple<IEnumerable<Assignment>, int>> generation)
+        private IEnumerable<Individual> Selection(IEnumerable<Tuple<Individual, int>> generation)
         {
             this.ReportProgress(2, Constants.Reports.GENETIC_SELECTION);
             return null;
@@ -174,7 +175,7 @@
         /// <param name="parent1">The individual parent 1.</param>
         /// <param name="parent2">The individual parent 2.</param>
         /// <returns>A new child result of the crossing process.</returns>
-        private IEnumerable<Assignment> Crossover(IEnumerable<Assignment> parent1, IEnumerable<Assignment> parent2)
+        private Individual Crossover(Individual parent1, Individual parent2)
         {
             // 50% chance to switch the individuals.
             if (this.random.NextDouble() < Constants.Probabilities.SWITCH_INDIVIDUALS)
@@ -211,7 +212,7 @@
         /// Mutates an individual reassigning orders with a randomly selected service code.
         /// </summary>
         /// <param name="individual">The individual to mutate.</param>
-        private void Mutation(IEnumerable<Assignment> individual)
+        private void Mutation(Individual individual)
         {
             // Select a random service code.
             string selectedService = this.services.RandomElement().Code;
@@ -241,10 +242,10 @@
         /// </summary>
         /// <param name="individual">The individual to assign it <see cref="Order"/>s randomly.</param>
         /// <param name="groupedOrders">The orders to distribute grouped by <see cref="Service.Code"/>.</param>
-        private void DistributeOrders(IEnumerable<Assignment> individual, IEnumerable<IGrouping<string, Order>> groupedOrders)
+        private void DistributeOrders(Individual individual, IEnumerable<IGrouping<string, Order>> groupedOrders)
         {
             List<Order> ungroupedOrders;
-            IEnumerable<Assignment> temporalAssignments;
+            Individual temporalAssignments;
             int ordersQuotient, ordersRemainder;
             // Iterate each orders group.
             foreach (var ordersGroup in groupedOrders)
@@ -271,7 +272,7 @@
         /// Bounds the current population individuals with its fitness value.
         /// </summary>
         /// <returns>A population of current individuals linked to its fitness value.</returns>
-        private IEnumerable<Tuple<IEnumerable<Assignment>, int>> LinkFitness()
+        private IEnumerable<Tuple<Individual, int>> LinkFitness()
         {
             this.ReportProgress(2, Constants.Reports.FITNESS_GENERATION);
             return this.currentPopulation.Select(individual => Tuple.Create(individual, this.Evaluation(individual)));
@@ -281,7 +282,7 @@
         /// Orders the provided population fitness and selects its best individual.
         /// </summary>
         /// <returns>The best individual of the population fitness.</returns>
-        private Tuple<IEnumerable<Assignment>, int> BestByFitness(IEnumerable<Tuple<IEnumerable<Assignment>, int>> populationFitness)
+        private Tuple<Individual, int> BestByFitness(IEnumerable<Tuple<Individual, int>> populationFitness)
         {
             this.ReportProgress(3, Constants.Reports.FITNESS_BEST);
             populationFitness = populationFitness.OrderBy(individualFitness => individualFitness.Item2); // Order by the fitness value and set.
@@ -295,7 +296,7 @@
         /// </summary>
         /// <param name="population">The population to cross its individuals.</param>
         /// <returns>A new population result of the crossing process.</returns>
-        private IEnumerable<IEnumerable<Assignment>> CrossPopulation(IEnumerable<IEnumerable<Assignment>> population)
+        private IEnumerable<Individual> CrossPopulation(IEnumerable<Individual> population)
         {
             this.ReportProgress(2, Constants.Reports.GENETIC_CROSSOVER);
             var listPopulation = population.ToList();
