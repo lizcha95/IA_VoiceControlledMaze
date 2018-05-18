@@ -80,8 +80,8 @@
         //Add the fitness to each individual
         public IEnumerable<Tuple<IEnumerable<Assignment>, int>> CalculateFitness(IEnumerable<IEnumerable<Assignment>> generation)
         {
-            fitness_generation = generation.Select(individual => new Tuple<IEnumerable<Assignment>, int>(individual, Evaluation(individual)));
-            return fitness_generation;
+           return generation.Select(individual => new Tuple<IEnumerable<Assignment>, int>(individual, Evaluation(individual)));
+           
         }
     
         public IEnumerable<IEnumerable<Assignment>> Selection(IEnumerable<Tuple<IEnumerable<Assignment>, int>> generation)
