@@ -13,9 +13,18 @@
         private IEnumerable<Service> services;
         private IEnumerable<Order> orders;
         private IEnumerable<IGrouping<string, Order>> groupedOrders;
+        private List<Tuple<IEnumerable<Assignment>, int>> ordered_population;
+        private List<Tuple<IEnumerable<Assignment>, int>> best_individuals;
+        private List<Tuple<IEnumerable<Assignment>, int>> worst_individuals;
+        
+
+      
 
         private int agentsCount;
         private int expectedPayment;
+        private int selection_percentage;
+        private float selection_percentage_best_individuals;
+        private float selection_percentage_worst_individuals;
 
         private Random random;
 
@@ -115,9 +124,35 @@
                 - orderPayments.Sum(orderPayment => Math.Abs(this.expectedPayment - orderPayment));
         }
 
-        public void Selection()
+        //Add the fitness to each individual
+        public IEnumerable<Tuple<IEnumerable<Assignment>, int>> CalculateFitness(IEnumerable<IEnumerable<Assignment>> generation)
         {
+            //Evaluate each individual and add the fitness
+            return generation.Select(individual => new Tuple<IEnumerable<Assignment>, int>(individual, Evaluation(individual)));
 
+        }
+
+        public IEnumerable<IEnumerable<Assignment>> Selection(IEnumerable<Tuple<IEnumerable<Assignment>, int>> generation)
+        {
+            IEnumerable<IEnumerable<Assignment>> new_generation;
+            //Sort the list by the greatest fitness
+            ordered_population = generation.OrderBy(f => f.Item2).ToList(); 
+            selection_percentage = ordered_population.Count() * (Constants.Numbers.SELECTION_PERCENTAGE);
+
+            //Split the list in half according to the selection percentage
+            best_individuals = ordered_population.GetRange(0, selection_percentage);
+            worst_individuals = ordered_population.GetRange(selection_percentage, ordered_population.Count() - selection_percentage);
+
+            //Percentage of selection of good and bad individuals
+            selection_percentage_best_individuals = best_individuals.Count() * (Constants.Numbers.BEST_INDIVIDUALS_PERCENTAGE);
+            selection_percentage_worst_individuals = worst_individuals.Count() * (Constants.Numbers.WORST_INDIVIDUALS_PERCENTAGE);
+
+            best_individuals.RandomPops((int)selection_percentage_best_individuals);
+            worst_individuals.RandomPops((int)selection_percentage_worst_individuals);
+
+            //Add new individuals to create a new poblation
+            new_generation = best_individuals.Select(best => best.Item1).Concat(worst_individuals.Select(worst => worst.Item1));
+            return new_generation;
         }
 
         private IEnumerable<Assignment> Crossover(IEnumerable<Assignment> parent1, IEnumerable<Assignment> parent2)
