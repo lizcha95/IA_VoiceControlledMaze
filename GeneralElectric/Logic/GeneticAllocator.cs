@@ -16,7 +16,7 @@
         private IEnumerable<Service> services;
         private IEnumerable<Order> orders;
         private IEnumerable<IGrouping<string, Order>> groupedOrders;
-
+        
         private Individual bestIndividual;
         private IEnumerable<Individual> currentPopulation;
 
@@ -109,7 +109,7 @@
                 // Mutation with probability.
                 int mutationCount = this.currentPopulation.Sum(individual =>
                 {
-                    if (this.random.NextDouble() < Constants.Probabilities.MUTATION)
+                    if (this.random.NextDouble() < Constants.Percents.MUTATION)
                     {
                         this.Mutation(individual);
                         return 1;
@@ -137,7 +137,7 @@
         /// <returns>Yields randomly-generated individuals.</returns>
         private IEnumerable<Individual> InitializePopulation()
         {
-            for (int i = 0; i < Constants.Values.INITIAL_POPULATION; i++)
+            for (int i = 0; i < Constants.Numbers.INITIAL_POPULATION; i++)
             {
                 Console.WriteLine(string.Format(Constants.Messages.GENERATING_POPULATION_MEMBER, i + 1));
                 yield return this.GenerateIndividual();
@@ -155,7 +155,7 @@
             var orderPayments = individual.Select(assignment => assignment.Orders.Sum(order => order.Service.Payment));
             // Get the quantity of exceeded-in-hours assignments.
             var exceedOrdersQuantity = individual
-                .Where(assignment => assignment.Orders.Sum(order => order.Service.Hours) > Constants.Values.MAX_HOURS)
+                .Where(assignment => assignment.Orders.Sum(order => order.Service.Hours) > Constants.Numbers.MAX_HOURS)
                 .Count();
             // Calculate the fitness strongly penalizing the exceeded-in-hours assignments and softly penalizing differences in payments.
             return int.MaxValue 
@@ -163,10 +163,35 @@
                 - orderPayments.Sum(orderPayment => Math.Abs(this.expectedPayment - orderPayment));
         }
 
-        private IEnumerable<Individual> Selection(IEnumerable<Tuple<Individual, int>> generation)
+        public IEnumerable<IEnumerable<Assignment>> Selection(IEnumerable<Tuple<IEnumerable<Assignment>, int>> generation)
         {
-            this.ReportProgress(2, Constants.Reports.GENETIC_SELECTION);
-            return null;
+            int selection_percentage;
+            double selection_percentage_best_individuals;
+            double selection_percentage_worst_individuals;
+            IEnumerable<IEnumerable<Assignment>> new_generation;
+
+            List<Tuple<IEnumerable<Assignment>, int>> ordered_population;
+            List<Tuple<IEnumerable<Assignment>, int>> best_individuals;
+            List<Tuple<IEnumerable<Assignment>, int>> worst_individuals;
+
+            //Sort the list by the greatest fitness
+            ordered_population = generation.OrderBy(f => f.Item2).ToList(); 
+            selection_percentage = (int)(ordered_population.Count() * (Constants.Percents.SELECTION));
+
+            //Split the list in half according to the selection percentage
+            best_individuals = ordered_population.GetRange(0, selection_percentage);
+            worst_individuals = ordered_population.GetRange(selection_percentage, ordered_population.Count() - selection_percentage);
+
+            //Percentage of selection of good and bad individuals
+            selection_percentage_best_individuals = best_individuals.Count() * (Constants.Percents.BEST_INDIVIDUALS);
+            selection_percentage_worst_individuals = worst_individuals.Count() * (Constants.Percents.WORST_INDIVIDUALS);
+
+            best_individuals.RandomPops((int)selection_percentage_best_individuals);
+            worst_individuals.RandomPops((int)selection_percentage_worst_individuals);
+
+            //Add new individuals to create a new poblation
+            new_generation = best_individuals.Select(best => best.Item1).Concat(worst_individuals.Select(worst => worst.Item1));
+            return new_generation;
         }
 
         /// <summary>
@@ -178,7 +203,7 @@
         private Individual Crossover(Individual parent1, Individual parent2)
         {
             // 50% chance to switch the individuals.
-            if (this.random.NextDouble() < Constants.Probabilities.SWITCH_INDIVIDUALS)
+            if (this.random.NextDouble() < Constants.Percents.SWITCH_INDIVIDUALS)
             {
                 var temporalParent = parent1;
                 parent1 = parent2;
