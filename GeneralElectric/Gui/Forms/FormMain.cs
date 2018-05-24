@@ -3,17 +3,25 @@
     using System;
     using System.Windows.Forms;
     using System.Linq;
+    using Logic;
     using Logic.Classes;
 
     public partial class FormMain : Form
     {
         private Context currentContext;
+        private GeneticAllocator geneticAllocator;
 
         public FormMain()
         {
             this.InitializeComponent();
 
             this.currentContext = Context.Current;
+            this.geneticAllocator = new GeneticAllocator(
+                this.currentContext.Agents,
+                this.currentContext.Services,
+                this.currentContext.Orders
+            );
+            this.geneticAllocator.Execute(10);
         }
 
         private void DataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)

@@ -14,10 +14,8 @@
         /// <typeparam name="T">The type of the sequence.</typeparam>
         /// <param name="elements">The sequence.</param>
         /// <returns>A randomly selected element of the sequence.</returns>
-        public static T RandomElement<T>(this IEnumerable<T> elements)
-        {
-            return elements.ElementAt(random.Next(0, elements.Count()));
-        }
+        public static T RandomElement<T>(this IEnumerable<T> elements) =>
+            elements.ElementAt(random.Next(0, elements.Count()));
 
         /// <summary>
         /// Selects a random collection of elements of a sequence.
@@ -100,6 +98,16 @@
         }
 
         /// <summary>
+        /// Returns a specified quantity of elements of random selected positions of a <see cref="List{T}"/> before removing them.
+        /// </summary>
+        /// <typeparam name="T">The type of the <see cref="List{T}"/>.</typeparam>
+        /// <param name="list">The <see cref="List{T}"/> to random pop the elements.</param>
+        /// <param name="quantity">The quantity of elements to pop randomly (this value is ceiled).</param>
+        /// <returns>A <see cref="List{T}"/> of "quantity" random popped elements.</returns>
+        public static List<T> RandomPops<T>(this List<T> list, double quantity) =>
+            list.RandomPops((int)Math.Ceiling(quantity));
+
+        /// <summary>
         /// Returns a random couple of elements of the <see cref="List{T}"/>.
         /// </summary>
         /// <typeparam name="T">The type of the <see cref="List{T}"/>.</typeparam>
@@ -111,5 +119,23 @@
                 return default(Tuple<T, T>);
             return new Tuple<T, T>(list.RandomPop(), list.RandomPop());
         }
+
+        /// <summary>
+        /// Rounds the multiplication of the given numbers.
+        /// </summary>
+        /// <param name="base">The base double for the operation.</param>
+        /// <param name="multiplier">The multiplier for the operation.</param>
+        /// <returns>The result of the operation.</returns>
+        public static int RoundWithMultiplier(this double @base, double multiplier) =>
+            (int)Math.Round(@base * multiplier);
+
+        /// <summary>
+        /// Returns a random integer preferring lower values.
+        /// </summary>
+        /// <param name="random">The <see cref="Random"/> instance.</param>
+        /// <param name="maxValue">The max value for the result.</param>
+        /// <returns></returns>
+        public static int NextPreferringLowers(this Random random, int maxValue) =>
+            (int)(maxValue - Math.Ceiling(random.NextDouble() * maxValue));
     }
 }

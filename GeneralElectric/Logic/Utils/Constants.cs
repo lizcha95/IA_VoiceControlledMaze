@@ -7,6 +7,7 @@
     {
         public static class Messages
         {
+            public const string CROSSING_COUPLE = "Cruzando pareja número: {0}, hijos: {1}";
             public const string FINISHED = "Listo!";
             public const string GENERATING_AGENT = "Generando agente número {0}.";
             public const string GENERATING_ORDER = "Generando orden número {0}.";
@@ -15,12 +16,14 @@
 
         public static class Numbers
         {
+            public const int ACCEPTABLE_DIFFERENCE = 100;
             public const int INITIAL_POPULATION = 100;
             public const int NAME_MINIMUM_LENGTH = 10;
             public const int NAME_MAXIMUM_LENGTH = 15;
+            public const int MAX_CHILDREN = 5;
             public const int MAX_HOURS = 40;
-            public const int QUANTITY_AGENTS = 2000;
-            public const int QUANTITY_ORDERS = 8000;
+            public const int QUANTITY_AGENTS = 100;
+            public const int QUANTITY_ORDERS = 400;
             public const double AVERAGE_LIMIT = 10;
         }
 
@@ -34,12 +37,11 @@
 
         public static class Percents
         {
-
-            public const double BEST_INDIVIDUALS = 0.95;
+            public const double INDIVIDUALS_BEST = 0.95;
+            public const double INDIVIDUALS_SWITCH = 0.5;
+            public const double INDIVIDUALS_WORST = 0.05;
             public const double MUTATION = 0.05;
-            public const double SELECTION = 0.5;
-            public const double SWITCH_INDIVIDUALS = 0.5;
-            public const double WORST_INDIVIDUALS = 0.05;
+            public const double SELECTION_POINT = 0.5;
         }
 
         public static class Reports

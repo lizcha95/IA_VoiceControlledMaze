@@ -18,7 +18,7 @@
         private IEnumerable<IGrouping<string, Order>> groupedOrders;
         
         private Individual bestIndividual;
-        private IEnumerable<Individual> currentPopulation;
+        private List<Individual> currentPopulation;
 
         private int agentsCount;
         private int expectedPayment;
@@ -41,7 +41,7 @@
             // Expected payment for each assignment.
             this.expectedPayment = orders.Sum(order => order.Service.Payment) / this.agentsCount;
             // The expected minimum fitness for the best individual.
-            this.minExpectedFitness = int.MaxValue - int.MaxValue / this.agentsCount;
+            this.minExpectedFitness = int.MaxValue - this.agentsCount * Constants.Numbers.ACCEPTABLE_DIFFERENCE;
 
             this.random = new Random();
 
@@ -86,7 +86,7 @@
             base.OnDoWork(e);
             this.workerThread = Thread.CurrentThread;
 
-            this.currentPopulation = this.InitializePopulation();
+            this.currentPopulation = this.InitializePopulation().ToList();
             int generationCount = 0;
             // Default stop condition.
             while (++generationCount <= this.generationLimit && this.currentPopulation.Count() > 1)
@@ -105,7 +105,7 @@
                     this.ReportProgress(3, Constants.Reports.INDIVIDUAL_DOESNT_MEETS);
 
                 // Selection and crossover.
-                this.currentPopulation = this.CrossPopulation(this.Selection(populationFitness));
+                this.currentPopulation = this.CrossPopulation(this.Selection(populationFitness)).ToList();
                 // Mutation with probability.
                 int mutationCount = this.currentPopulation.Sum(individual =>
                 {
@@ -126,9 +126,12 @@
         /// </summary>
         /// <param name="level">The level from where the message is sent.</param>
         /// <param name="message">The message to send.</param>
-        private void ReportProgress(int level, string message)
+        /// <param name="triggerEvent"></param>
+        private void ReportProgress(int level, string message, bool triggerEvent = true)
         {
-            this.OnProgressChanged(new ProgressChangedEventArgs(0, Enumerable.Repeat("    ", level) + message));
+            Console.WriteLine(message);
+            if (triggerEvent)
+                this.OnProgressChanged(new ProgressChangedEventArgs(0, Enumerable.Repeat("    ", level) + message));
         }
 
         /// <summary>
@@ -139,7 +142,7 @@
         {
             for (int i = 0; i < Constants.Numbers.INITIAL_POPULATION; i++)
             {
-                Console.WriteLine(string.Format(Constants.Messages.GENERATING_POPULATION_MEMBER, i + 1));
+                this.ReportProgress(0, string.Format(Constants.Messages.GENERATING_POPULATION_MEMBER, i + 1), false);
                 yield return this.GenerateIndividual();
             }
         }
@@ -152,10 +155,10 @@
         private int Evaluation(Individual individual)
         {
             // Get the total payment of each assignment.
-            var orderPayments = individual.Select(assignment => assignment.Orders.Sum(order => order.Service.Payment));
+            var orderPayments = individual.Select(assignment => assignment.Payment);
             // Get the quantity of exceeded-in-hours assignments.
             var exceedOrdersQuantity = individual
-                .Where(assignment => assignment.Orders.Sum(order => order.Service.Hours) > Constants.Numbers.MAX_HOURS)
+                .Where(assignment => assignment.Exceeded)
                 .Count();
             // Calculate the fitness strongly penalizing the exceeded-in-hours assignments and softly penalizing differences in payments.
             return int.MaxValue 
@@ -163,35 +166,33 @@
                 - orderPayments.Sum(orderPayment => Math.Abs(this.expectedPayment - orderPayment));
         }
 
-        public IEnumerable<IEnumerable<Assignment>> Selection(IEnumerable<Tuple<IEnumerable<Assignment>, int>> generation)
+        /// <summary>
+        /// Applies the selection process over a population fitness.
+        /// </summary>
+        /// <param name="generationFitness">An orderer-by-firtness population fitness.</param>
+        /// <returns>The individuals collection result of the selection process.</returns>
+        private IEnumerable<Individual> Selection(IEnumerable<Tuple<Individual, int>> generationFitness)
         {
-            int selection_percentage;
-            double selection_percentage_best_individuals;
-            double selection_percentage_worst_individuals;
-            IEnumerable<IEnumerable<Assignment>> new_generation;
+            this.ReportProgress(2, Constants.Reports.GENETIC_SELECTION);
+            // Enumerate the whole collection into a list.
+            var listGeneration = generationFitness.ToList();
+            // Define the point to separate best and worst individuals.
+            int selectionSeparatorPoint = (int)(listGeneration.Count() * (Constants.Percents.SELECTION_POINT)),
+                bestIndividualsSelectionCount,
+                worstIndividualsSelectionCount;
 
-            List<Tuple<IEnumerable<Assignment>, int>> ordered_population;
-            List<Tuple<IEnumerable<Assignment>, int>> best_individuals;
-            List<Tuple<IEnumerable<Assignment>, int>> worst_individuals;
-
-            //Sort the list by the greatest fitness
-            ordered_population = generation.OrderBy(f => f.Item2).ToList(); 
-            selection_percentage = (int)(ordered_population.Count() * (Constants.Percents.SELECTION));
-
-            //Split the list in half according to the selection percentage
-            best_individuals = ordered_population.GetRange(0, selection_percentage);
-            worst_individuals = ordered_population.GetRange(selection_percentage, ordered_population.Count() - selection_percentage);
-
-            //Percentage of selection of good and bad individuals
-            selection_percentage_best_individuals = best_individuals.Count() * (Constants.Percents.BEST_INDIVIDUALS);
-            selection_percentage_worst_individuals = worst_individuals.Count() * (Constants.Percents.WORST_INDIVIDUALS);
-
-            best_individuals.RandomPops((int)selection_percentage_best_individuals);
-            worst_individuals.RandomPops((int)selection_percentage_worst_individuals);
-
-            //Add new individuals to create a new poblation
-            new_generation = best_individuals.Select(best => best.Item1).Concat(worst_individuals.Select(worst => worst.Item1));
-            return new_generation;
+            // Split the list in half according to the selection separator point.
+            var bestIndividuals = listGeneration.GetRange(0, selectionSeparatorPoint);
+            var worstIndividuals = listGeneration.GetRange(selectionSeparatorPoint, listGeneration.Count() - selectionSeparatorPoint);
+            // Calcule the amounts of individuals for the selection.
+            bestIndividualsSelectionCount = Constants.Percents.INDIVIDUALS_BEST.RoundWithMultiplier(bestIndividuals.Count);
+            worstIndividualsSelectionCount = Constants.Percents.INDIVIDUALS_WORST.RoundWithMultiplier(worstIndividuals.Count);
+            // To prevent an odd result.
+            if ((bestIndividualsSelectionCount + worstIndividualsSelectionCount) % 2 != 0)
+                worstIndividualsSelectionCount++;
+            return bestIndividuals.RandomPops(bestIndividualsSelectionCount)
+                .Concat(worstIndividuals.RandomPops(worstIndividualsSelectionCount))
+                .Select(populationFitness => populationFitness.Item1);
         }
 
         /// <summary>
@@ -203,7 +204,7 @@
         private Individual Crossover(Individual parent1, Individual parent2)
         {
             // 50% chance to switch the individuals.
-            if (this.random.NextDouble() < Constants.Percents.SWITCH_INDIVIDUALS)
+            if (this.random.NextDouble() < Constants.Percents.INDIVIDUALS_SWITCH)
             {
                 var temporalParent = parent1;
                 parent1 = parent2;
@@ -255,7 +256,7 @@
         /// <returns>A new randomly-generated individual.</returns>
         private List<Assignment> GenerateIndividual()
         {
-            // Generate a base individual using the total amount of existing agents.
+            // Generate a base individual using the total amount of existing agents and enumerate them into a list.
             List<Assignment> individual = this.agents.Select(agent => new Assignment(agent)).ToList();
             // Distribute orders for the individual in a random way.
             this.DistributeOrders(individual, this.groupedOrders);
@@ -281,7 +282,7 @@
                     .Where(assignment => assignment.Agent.ServicesCodes.Contains(ordersGroup.Key))
                     .OrderByDescending(assignment => assignment.Orders.Count)
                     .ThenByDescending(assignment => assignment.Orders.Sum(order => order.Service.Hours));
-                // Flatten the grouped orders.
+                // Flatten the grouped orders and enumerate them into a list.
                 ungroupedOrders = ordersGroup.Select(group => group).ToList();
                 // Calculate the amount of orders for each assign.
                 ordersQuotient = ordersGroup.Count() / temporalAssignments.Count();
@@ -324,9 +325,19 @@
         private IEnumerable<Individual> CrossPopulation(IEnumerable<Individual> population)
         {
             this.ReportProgress(2, Constants.Reports.GENETIC_CROSSOVER);
-            var listPopulation = population.ToList();
+            var listPopulation = population.ToList(); // Enumerate the whole collection into a list.
+            Individual parent1, parent2;
+            int crossingCouple = 0, coupleChildrenCount;
             while (listPopulation.Count >= 2)
-                yield return this.Crossover(listPopulation.RandomPop(), listPopulation.RandomPop());
+            {
+                // A random number of children for each couple.
+                coupleChildrenCount = random.NextPreferringLowers(Constants.Numbers.MAX_CHILDREN + 1);
+                this.ReportProgress(3, string.Format(Constants.Messages.CROSSING_COUPLE, ++crossingCouple, coupleChildrenCount), false);
+                parent1 = listPopulation.RandomPop();
+                parent2 = listPopulation.RandomPop();
+                for (int i = 0; i < coupleChildrenCount; i++)
+                    yield return this.Crossover(parent1, parent2);
+            }
         }
     }
 }
