@@ -41,5 +41,14 @@
                        services.Where(service => service.Code == orderElement.Element("ServiceCode").Value).Single()
                     );
         }
+
+        public static IEnumerable<KeyValuePair<int, int>> ReadProbabilities()
+        {
+            return from probabilityElement in XDocument.Load(Constants.Paths.PROBABILITIES_FILE).Root.Elements()
+                   select new KeyValuePair<int, int>(
+                       Convert.ToInt32(probabilityElement.Attribute("Value").Value),
+                       (int)(Convert.ToDouble(probabilityElement.Value) * 100)
+                    );
+        }
     }
 }

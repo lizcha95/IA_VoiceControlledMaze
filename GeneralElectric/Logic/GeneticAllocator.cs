@@ -8,6 +8,7 @@
     using System.Threading.Tasks;
     using Classes;
     using Utils;
+    using Utils.Xml;
     using Individual = System.Collections.Generic.IEnumerable<Classes.Assignment>; // An alias for the Individual.
 
     public class GeneticAllocator : BackgroundWorker
@@ -19,6 +20,8 @@
         
         private Individual bestIndividual;
         private List<Individual> currentPopulation;
+
+        private IEnumerable<int> siblingsRandomizer;
 
         private int agentsCount;
         private int expectedPayment;
@@ -37,11 +40,17 @@
             // Group the orders by service code.
             this.groupedOrders = orders.GroupBy(order => order.Service.Code);
 
+            // To randomize siblings calculation with probabilities.
+            this.siblingsRandomizer = XmlReader.ReadProbabilities()
+                .Select(probability => probability.ToCollection())
+                .SelectMany(group => group)
+                .Shuffle();
+
             this.agentsCount = agents.Count();
             // Expected payment for each assignment.
             this.expectedPayment = orders.Sum(order => order.Service.Payment) / this.agentsCount;
             // The expected minimum fitness for the best individual.
-            this.minExpectedFitness = int.MaxValue - this.agentsCount * Constants.Numbers.ACCEPTABLE_DIFFERENCE;
+            this.minExpectedFitness = int.MaxValue - services.Min(service => service.Payment) * this.agentsCount;
 
             this.random = new Random();
 
@@ -102,7 +111,7 @@
                     break; // Found result.
                 }
                 else
-                    this.ReportProgress(3, Constants.Reports.INDIVIDUAL_DOESNT_MEETS);
+                    this.ReportProgress(3, Constants.Reports.INDIVIDUAL_DOESNT_MEETS + bestCurrentIndividualFitness.Item2.ToString());
 
                 // Selection and crossover.
                 this.currentPopulation = this.CrossPopulation(this.Selection(populationFitness)).ToList();
@@ -119,6 +128,7 @@
                 this.ReportProgress(2, string.Format(Constants.Reports.GENETIC_MUTATION, mutationCount));
                 this.ReportProgress(0, string.Empty);
             }
+            this.ReportProgress(0, Constants.Reports.PROCESS_END);
         }
 
         /// <summary>
@@ -129,9 +139,10 @@
         /// <param name="triggerEvent"></param>
         private void ReportProgress(int level, string message, bool triggerEvent = true)
         {
+            message = string.Concat(Enumerable.Repeat("    ", level)) + message;
             Console.WriteLine(message);
             if (triggerEvent)
-                this.OnProgressChanged(new ProgressChangedEventArgs(0, Enumerable.Repeat("    ", level) + message));
+                this.OnProgressChanged(new ProgressChangedEventArgs(0, message));
         }
 
         /// <summary>
@@ -142,7 +153,7 @@
         {
             for (int i = 0; i < Constants.Numbers.INITIAL_POPULATION; i++)
             {
-                this.ReportProgress(0, string.Format(Constants.Messages.GENERATING_POPULATION_MEMBER, i + 1), false);
+                this.ReportProgress(0, string.Format(Constants.Reports.INDIVIDUAL_GENERATION, i + 1), false);
                 yield return this.GenerateIndividual();
             }
         }
@@ -276,12 +287,13 @@
             // Iterate each orders group.
             foreach (var ordersGroup in groupedOrders)
             {
-                // Select assignments of agents that can handle the current type of order ordering them by descending 
-                // orders count and descending orders hours.
+                // Select assignments of agents that can handle the current type of order ordering them by 
+                // payment, agent handling services quantity and orders hours.
                 temporalAssignments = individual
                     .Where(assignment => assignment.Agent.ServicesCodes.Contains(ordersGroup.Key))
-                    .OrderByDescending(assignment => assignment.Orders.Count)
-                    .ThenByDescending(assignment => assignment.Orders.Sum(order => order.Service.Hours));
+                    .OrderBy(assignment => assignment.Payment)
+                    .ThenBy(assignment => assignment.Agent.ServicesCodes.Count())
+                    .ThenBy(assignment => assignment.Orders.Sum(order => order.Service.Hours));
                 // Flatten the grouped orders and enumerate them into a list.
                 ungroupedOrders = ordersGroup.Select(group => group).ToList();
                 // Calculate the amount of orders for each assign.
@@ -311,7 +323,7 @@
         private Tuple<Individual, int> BestByFitness(IEnumerable<Tuple<Individual, int>> populationFitness)
         {
             this.ReportProgress(3, Constants.Reports.FITNESS_BEST);
-            populationFitness = populationFitness.OrderBy(individualFitness => individualFitness.Item2); // Order by the fitness value and set.
+            populationFitness = populationFitness.OrderByDescending(individualFitness => individualFitness.Item2); // Order by the fitness value and set.
             return populationFitness
                 .Take(1) // Select TOP 1.
                 .Single(); // Convert from collection to single element.
@@ -331,8 +343,8 @@
             while (listPopulation.Count >= 2)
             {
                 // A random number of children for each couple.
-                coupleChildrenCount = random.NextPreferringLowers(Constants.Numbers.MAX_CHILDREN + 1);
-                this.ReportProgress(3, string.Format(Constants.Messages.CROSSING_COUPLE, ++crossingCouple, coupleChildrenCount), false);
+                coupleChildrenCount = this.siblingsRandomizer.RandomElement();
+                this.ReportProgress(3, string.Format(Constants.Reports.CROSSING_COUPLE, ++crossingCouple, coupleChildrenCount), false);
                 parent1 = listPopulation.RandomPop();
                 parent2 = listPopulation.RandomPop();
                 for (int i = 0; i < coupleChildrenCount; i++)

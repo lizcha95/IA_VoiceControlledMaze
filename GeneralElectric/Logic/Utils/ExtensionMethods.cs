@@ -52,6 +52,15 @@
         }
 
         /// <summary>
+        /// Shuffles a sequence of elements randomly.
+        /// </summary>
+        /// <typeparam name="T">The type of the sequence.</typeparam>
+        /// <param name="elements">The sequence.</param>
+        /// <returns>The same sequence with its elements in a shuffled-randomly order.</returns>
+        public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> elements) =>
+            elements.OrderBy(element => random.Next());
+
+        /// <summary>
         /// Returns the element of the specified position of a <see cref="List{T}"/> before removing it.
         /// </summary>
         /// <typeparam name="T">The type of the <see cref="List{T}"/>.</typeparam>
@@ -98,16 +107,6 @@
         }
 
         /// <summary>
-        /// Returns a specified quantity of elements of random selected positions of a <see cref="List{T}"/> before removing them.
-        /// </summary>
-        /// <typeparam name="T">The type of the <see cref="List{T}"/>.</typeparam>
-        /// <param name="list">The <see cref="List{T}"/> to random pop the elements.</param>
-        /// <param name="quantity">The quantity of elements to pop randomly (this value is ceiled).</param>
-        /// <returns>A <see cref="List{T}"/> of "quantity" random popped elements.</returns>
-        public static List<T> RandomPops<T>(this List<T> list, double quantity) =>
-            list.RandomPops((int)Math.Ceiling(quantity));
-
-        /// <summary>
         /// Returns a random couple of elements of the <see cref="List{T}"/>.
         /// </summary>
         /// <typeparam name="T">The type of the <see cref="List{T}"/>.</typeparam>
@@ -130,12 +129,12 @@
             (int)Math.Round(@base * multiplier);
 
         /// <summary>
-        /// Returns a random integer preferring lower values.
+        /// Converts a <see cref="KeyValuePair{TKey, int}"/> into a collection.
         /// </summary>
-        /// <param name="random">The <see cref="Random"/> instance.</param>
-        /// <param name="maxValue">The max value for the result.</param>
-        /// <returns></returns>
-        public static int NextPreferringLowers(this Random random, int maxValue) =>
-            (int)(maxValue - Math.Ceiling(random.NextDouble() * maxValue));
+        /// <typeparam name="TKey">The type of the key.</typeparam>
+        /// <param name="keyValuePair">The <see cref="KeyValuePair{TKey, int}"/> to convert.</param>
+        /// <returns>A collection using the <see cref="KeyValuePair{TKey, int}"/>.</returns>
+        public static IEnumerable<TKey> ToCollection<TKey>(this KeyValuePair<TKey, int> keyValuePair) =>
+            Enumerable.Repeat(keyValuePair.Key, keyValuePair.Value);
     }
 }
