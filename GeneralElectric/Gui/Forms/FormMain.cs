@@ -10,7 +10,7 @@
     {
         private Context currentContext;
         private int currentPage = 0;
-        private int currentSize = 30;
+        private int currentSize = 10;
  
 
         public FormMain()
@@ -36,10 +36,13 @@
 
             textBox1.Text = "Page " + (pagenum + 1) + " of " + (int)(this.currentContext.Agents.Count()/ pagesize);
 
-            foreach (Agent agent in this.currentContext.Agents)
+           
+
+
+            /*foreach (Agent agent in this.currentContext.Agents)
             {
                 this.agentsGridView.Rows.Add(agent.ID, agent.Name, string.Join(", ", agent.ServicesCodes));
-            }
+            }*/
            
 
         }
