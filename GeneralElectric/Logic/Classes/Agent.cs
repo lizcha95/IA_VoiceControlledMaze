@@ -22,5 +22,6 @@
         public string Name { get { return this.name; } }
         public List<Service> Services { get { return this.services; } }
         public IEnumerable<string> ServicesCodes { get { return this.servicesCodes; } }
+        public string ServicesValue { get { return string.Join(", ", this.servicesCodes) + "."; } }
     }
 }
