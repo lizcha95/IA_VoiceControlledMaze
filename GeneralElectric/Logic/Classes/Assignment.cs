@@ -1,6 +1,7 @@
 ﻿namespace Logic.Classes
 {
     using System.Collections.Generic;
+    using System.ComponentModel;
     using System.Linq;
     using Utils;
 
@@ -14,11 +15,17 @@
             this.agent = agent;
             this.orders = new List<Order>();
         }
-
-        public Agent Agent { get { return this.agent; } }
-        public List<Order> Orders { get { return this.orders; } }
-
+        
+        [DisplayName("Nombre agente")]
+        public string AgentName { get { return this.agent.Name; } }
+        [DisplayName("Pago")]
         public int Payment { get { return this.orders.Sum(order => order.Service.Payment); } }
-        public bool Exceeded { get { return this.orders.Sum(order => order.Service.Hours) > Constants.Numbers.MAX_HOURS; } }
+        [DisplayName("Horas")]
+        public int Hours { get { return this.orders.Sum(order => order.Service.Hours); } }
+        [DisplayName("Órdenes asignadas")]
+        public string OrdersValue { get { return string.Join(", ", this.orders.Select(order => order.ID).OrderByDescending(id => id)) + "."; } }
+        internal List<Order> Orders { get { return this.orders; } }
+        internal Agent Agent { get { return this.agent; } }
+        internal bool Exceeded { get { return this.Hours > Constants.Numbers.MAX_HOURS; } }
     }
 }
