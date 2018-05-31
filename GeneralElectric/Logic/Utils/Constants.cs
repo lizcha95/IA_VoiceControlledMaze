@@ -48,6 +48,7 @@
             public const string FITNESS_GENERATION = "Obteniendo el valor fitness de cada individuo.";
             public const string FITNESS_BEST = "Obteniendo el mejor individuo de la generación.";
             public const string GENETIC_CROSSOVER = "Aplicando cruces.";
+            public const string GENETIC_INITIALIZE_POPULATION = "Generando población inicial de individuos.";
             public const string GENETIC_MUTATION = "Mutaciones aplicadas: {0}";
             public const string GENETIC_SELECTION = "Aplicando selección.";
             public const string INDIVIDUAL_DOESNT_MEETS = "El individuo no es lo suficientemente bueno.";

@@ -57,6 +57,8 @@
             this.WorkerReportsProgress = true;
         }
 
+        public event EventHandler<EventArgs> Stopped;
+
         public Individual BestIndividual { get { return this.bestIndividual; } }
 
         /// <summary>
@@ -82,6 +84,7 @@
                     this.workerThread.Abort();
                     this.workerThread = null;
                     this.ReportProgress(0, Constants.Reports.PROCESS_STOP);
+                    this.Stopped?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -151,6 +154,7 @@
         /// <returns>Yields randomly-generated individuals.</returns>
         private IEnumerable<Individual> InitializePopulation()
         {
+            this.ReportProgress(0, Constants.Reports.GENETIC_INITIALIZE_POPULATION);
             for (int i = 0; i < Constants.Numbers.INITIAL_POPULATION; i++)
             {
                 this.ReportProgress(0, string.Format(Constants.Reports.INDIVIDUAL_GENERATION, i + 1), false);
