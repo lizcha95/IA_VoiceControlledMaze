@@ -75,6 +75,17 @@
             this.gridViewOrders.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
 
 
+            this.gridViewResults.BorderStyle = BorderStyle.FixedSingle;
+            this.gridViewResults.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(238, 239, 249);
+            this.gridViewResults.CellBorderStyle = DataGridViewCellBorderStyle.Single;
+            this.gridViewResults.DefaultCellStyle.SelectionBackColor = Color.DarkTurquoise;
+            this.gridViewResults.DefaultCellStyle.SelectionForeColor = Color.WhiteSmoke;
+            this.gridViewResults.BackgroundColor = Color.White;
+
+            this.gridViewResults.EnableHeadersVisualStyles = false;
+            this.gridViewResults.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+            this.gridViewResults.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(20, 25, 72);
+            this.gridViewResults.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
         }
 
         private void GeneticAllocator_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -251,6 +262,8 @@
         {
             this.geneticAllocator.Execute(this.generationLimit);
         }
+
+        
     }
     
 }
