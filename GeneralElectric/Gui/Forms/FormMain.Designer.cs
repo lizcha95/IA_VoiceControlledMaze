@@ -28,8 +28,8 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle47 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle48 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.gridViewAgents = new System.Windows.Forms.DataGridView();
@@ -50,14 +50,14 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.LoadData = new System.Windows.Forms.TabPage();
             this.AssignOrders = new System.Windows.Forms.TabPage();
+            this.label7 = new System.Windows.Forms.Label();
+            this.listBoxLog = new System.Windows.Forms.ListBox();
             this.labelNumberPageAssign = new System.Windows.Forms.Label();
             this.buttonNextAssign = new System.Windows.Forms.Button();
             this.buttonPreviousAssign = new System.Windows.Forms.Button();
             this.buttonAssignOrders = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.gridViewResults = new System.Windows.Forms.DataGridView();
-            this.listBoxLog = new System.Windows.Forms.ListBox();
-            this.label7 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.gridViewAgents)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridViewOrders)).BeginInit();
             this.tabControl1.SuspendLayout();
@@ -86,17 +86,17 @@
             this.gridViewAgents.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.gridViewAgents.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
             this.gridViewAgents.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle47.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle47.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle47.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle47.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle47.Padding = new System.Windows.Forms.Padding(0, 9, 0, 0);
-            dataGridViewCellStyle47.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle47.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle47.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.gridViewAgents.DefaultCellStyle = dataGridViewCellStyle47;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.Padding = new System.Windows.Forms.Padding(0, 9, 0, 0);
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.gridViewAgents.DefaultCellStyle = dataGridViewCellStyle1;
             this.gridViewAgents.Location = new System.Drawing.Point(34, 100);
-            this.gridViewAgents.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.gridViewAgents.Margin = new System.Windows.Forms.Padding(2);
             this.gridViewAgents.Name = "gridViewAgents";
             this.gridViewAgents.RowTemplate.Height = 30;
             this.gridViewAgents.Size = new System.Drawing.Size(467, 426);
@@ -108,17 +108,17 @@
             this.gridViewOrders.AllowUserToOrderColumns = true;
             this.gridViewOrders.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.AllCells;
             this.gridViewOrders.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridViewCellStyle48.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle48.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle48.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle48.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle48.Padding = new System.Windows.Forms.Padding(0, 9, 0, 0);
-            dataGridViewCellStyle48.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle48.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle48.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.gridViewOrders.DefaultCellStyle = dataGridViewCellStyle48;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.Padding = new System.Windows.Forms.Padding(0, 9, 0, 0);
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.gridViewOrders.DefaultCellStyle = dataGridViewCellStyle2;
             this.gridViewOrders.Location = new System.Drawing.Point(716, 100);
-            this.gridViewOrders.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.gridViewOrders.Margin = new System.Windows.Forms.Padding(2);
             this.gridViewOrders.Name = "gridViewOrders";
             this.gridViewOrders.RowTemplate.Height = 28;
             this.gridViewOrders.Size = new System.Drawing.Size(448, 426);
@@ -131,7 +131,7 @@
             this.buttonLoadAgents.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonLoadAgents.ForeColor = System.Drawing.Color.White;
             this.buttonLoadAgents.Location = new System.Drawing.Point(202, 654);
-            this.buttonLoadAgents.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.buttonLoadAgents.Margin = new System.Windows.Forms.Padding(2);
             this.buttonLoadAgents.Name = "buttonLoadAgents";
             this.buttonLoadAgents.Size = new System.Drawing.Size(120, 30);
             this.buttonLoadAgents.TabIndex = 2;
@@ -146,7 +146,7 @@
             this.buttonLoadOrders.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonLoadOrders.ForeColor = System.Drawing.Color.White;
             this.buttonLoadOrders.Location = new System.Drawing.Point(881, 654);
-            this.buttonLoadOrders.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.buttonLoadOrders.Margin = new System.Windows.Forms.Padding(2);
             this.buttonLoadOrders.Name = "buttonLoadOrders";
             this.buttonLoadOrders.Size = new System.Drawing.Size(120, 30);
             this.buttonLoadOrders.TabIndex = 4;
@@ -179,7 +179,6 @@
             this.label2.TabIndex = 6;
             this.label2.Text = "Orders";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-          
             // 
             // label3
             // 
@@ -311,12 +310,11 @@
             this.LoadData.Controls.Add(this.buttonPreviousAgent);
             this.LoadData.Location = new System.Drawing.Point(4, 22);
             this.LoadData.Name = "LoadData";
-            this.LoadData.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.LoadData.Padding = new System.Windows.Forms.Padding(3);
             this.LoadData.Size = new System.Drawing.Size(1257, 787);
             this.LoadData.TabIndex = 0;
             this.LoadData.Text = "Load Data";
             this.LoadData.UseVisualStyleBackColor = true;
-            
             // 
             // AssignOrders
             // 
@@ -330,12 +328,31 @@
             this.AssignOrders.Controls.Add(this.gridViewResults);
             this.AssignOrders.Location = new System.Drawing.Point(4, 22);
             this.AssignOrders.Name = "AssignOrders";
-            this.AssignOrders.Padding = new System.Windows.Forms.Padding(3, 3, 3, 3);
-            this.AssignOrders.Size = new System.Drawing.Size(1256, 787);
+            this.AssignOrders.Padding = new System.Windows.Forms.Padding(3);
+            this.AssignOrders.Size = new System.Drawing.Size(1257, 787);
             this.AssignOrders.TabIndex = 1;
             this.AssignOrders.Text = "Assign Orders";
             this.AssignOrders.UseVisualStyleBackColor = true;
-            
+            // 
+            // label7
+            // 
+            this.label7.BackColor = System.Drawing.SystemColors.HotTrack;
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.ForeColor = System.Drawing.Color.White;
+            this.label7.Location = new System.Drawing.Point(880, 31);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(339, 44);
+            this.label7.TabIndex = 23;
+            this.label7.Text = "Process";
+            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // listBoxLog
+            // 
+            this.listBoxLog.FormattingEnabled = true;
+            this.listBoxLog.Location = new System.Drawing.Point(880, 80);
+            this.listBoxLog.Name = "listBoxLog";
+            this.listBoxLog.Size = new System.Drawing.Size(339, 485);
+            this.listBoxLog.TabIndex = 22;
             // 
             // labelNumberPageAssign
             // 
@@ -380,7 +397,7 @@
             this.buttonAssignOrders.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonAssignOrders.ForeColor = System.Drawing.Color.White;
             this.buttonAssignOrders.Location = new System.Drawing.Point(296, 658);
-            this.buttonAssignOrders.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.buttonAssignOrders.Margin = new System.Windows.Forms.Padding(2);
             this.buttonAssignOrders.Name = "buttonAssignOrders";
             this.buttonAssignOrders.Size = new System.Drawing.Size(197, 31);
             this.buttonAssignOrders.TabIndex = 7;
@@ -400,7 +417,6 @@
             this.label6.TabIndex = 6;
             this.label6.Text = "Orders Assignment";
             this.label6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            
             // 
             // gridViewResults
             // 
@@ -410,29 +426,6 @@
             this.gridViewResults.RowTemplate.Height = 28;
             this.gridViewResults.Size = new System.Drawing.Size(744, 495);
             this.gridViewResults.TabIndex = 0;
-            
-            // 
-            // listBoxLog
-            // 
-            this.listBoxLog.FormattingEnabled = true;
-            this.listBoxLog.Location = new System.Drawing.Point(880, 80);
-            this.listBoxLog.Name = "listBoxLog";
-            this.listBoxLog.Size = new System.Drawing.Size(339, 485);
-            this.listBoxLog.TabIndex = 22;
-           
-            // 
-            // label7
-            // 
-            this.label7.BackColor = System.Drawing.SystemColors.HotTrack;
-            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.ForeColor = System.Drawing.Color.White;
-            this.label7.Location = new System.Drawing.Point(880, 31);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(339, 44);
-            this.label7.TabIndex = 23;
-            this.label7.Text = "Process";
-            this.label7.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            
             // 
             // FormMain
             // 
@@ -444,7 +437,7 @@
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Font = new System.Drawing.Font("Cambria", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "FormMain";
             this.Text = "General Electric Services";
             this.Load += new System.EventHandler(this.FormMain_Load);

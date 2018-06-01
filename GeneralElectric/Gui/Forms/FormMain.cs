@@ -6,10 +6,14 @@
     using System.Threading.Tasks;
     using System.Linq;
     using System.Drawing;
+    using System.Speech.Recognition;
+    using System.Speech.Synthesis;
+    using System.Globalization;
+    using System.Collections.Generic;
     using Logic;
     using Logic.Classes;
     using PagedList;
-    using System.Collections.Generic;
+    
 
     public partial class FormMain : Form
     {
@@ -29,6 +33,14 @@
 
         private int generationLimit;
 
+        //Speech Recognition
+        private SpeechRecognitionEngine recorder;
+        private SpeechSynthesizer speaker;
+        private CultureInfo cultureInfo;
+
+        //Flags
+        private int start = 1;
+
         public FormMain()
         {
             this.InitializeComponent();
@@ -44,10 +56,204 @@
             this.geneticAllocator.Stopped += this.GeneticAllocator_Stopped;
 
             this.generationLimit = 10; // Hay que poner una opción para modificar esto.
+
+            this.recorder = new SpeechRecognitionEngine();
+            this.speaker = new SpeechSynthesizer();
+            this.cultureInfo = new CultureInfo("en-US");
+            
         }
 
         private void FormMain_Load(object sender, EventArgs e)
         {
+            InitializeDesignDataGridViews();
+            CreateGrammar();
+        }
+
+        private void CreateGrammar()
+        {
+
+            Timer timer = new Timer();
+            timer.Interval = 1;
+            timer.Tick += delegate (object s, EventArgs ee)
+            {
+                ((Timer)s).Stop();
+                try
+                {
+
+                    Choices commands = new Choices();
+                    commands.Add(new string[] { "load data", "assign", "load agents", "load orders", "finish", "previous agents", "next agents",
+                                                "previous orders", "next orders", "assign orders"});
+                    GrammarBuilder gb = new GrammarBuilder();
+                    gb.Culture = this.cultureInfo; // English Idiom
+                    gb.Append(commands);
+
+                    Grammar grammar = new Grammar(gb);
+                    this.recorder.LoadGrammar(grammar); // Add grammar to the recognizer
+                    this.recorder.SetInputToDefaultAudioDevice(); // Use the microphone
+                    this.speaker.SelectVoiceByHints(VoiceGender.Male, VoiceAge.Senior, 0, this.cultureInfo);
+                    this.recorder.RecognizeAsync(RecognizeMode.Multiple);
+                    this.speaker.SpeakAsync("Hello, Welcome to General Electric Services");
+                    this.speaker.SpeakAsync("To load tab say load data or assign orders");
+                    this.speaker.SpeakAsync("To load agents' table say load agents or to charge orders' table say load orders");
+
+                    this.recorder.SpeechRecognized += new EventHandler<SpeechRecognizedEventArgs>(recognized_listener);
+
+                }
+                catch (InvalidOperationException)
+                {
+                    MessageBox.Show("No se puede iniciar");
+                }
+            };
+
+            timer.Start();
+
+
+        }
+        private async void recognized_listener(object sender, SpeechRecognizedEventArgs e)
+        {
+            float confidence = e.Result.Confidence;
+
+            if (confidence < 0.65)
+            {
+                speaker.SpeakAsync("Speak louder please");
+                return;
+
+            }
+
+            Console.WriteLine(e.Result.Text);
+
+            if (e.Result.Text == "load data")
+            {
+                if(tabControl1.SelectedIndex != 0)
+                {
+                    tabControl1.SelectedTab = LoadData;
+                }
+                else
+                {
+                    speaker.SpeakAsync("You are already positioned in the tab load data");
+                }
+
+            }
+
+            else if (e.Result.Text == "assign")
+            {
+                if(tabControl1.SelectedIndex != 1)
+                {
+                    tabControl1.SelectedTab = AssignOrders;
+                }
+                else
+                {
+                    speaker.SpeakAsync("You are already positioned in the tab assign orders");
+                }
+                
+            }
+
+            else if (e.Result.Text == "load agents")
+            {
+                if(tabControl1.SelectedIndex == 0)
+                {
+                    AgentsList = await GetPagedAgentsList();
+                    this.buttonPreviousAgent.Enabled = AgentsList.HasPreviousPage;
+                    this.buttonNextAgent.Enabled = AgentsList.HasNextPage;
+                    this.gridViewAgents.DataSource = AgentsList.ToList();
+                    this.labelPageNumberAgent.Text = string.Format("Page {0}/{1}", pageNumber, AgentsList.PageCount);
+                }
+                else
+                {
+                    speaker.SpeakAsync("to load data, you must be positioned in the load data tab");
+                }
+            }
+
+            else if (e.Result.Text == "load orders")
+            {
+                if (tabControl1.SelectedIndex == 0)
+                {
+                    OrdersList = await GetPagedOrdersList();
+                    this.buttonPreviousOrder.Enabled = OrdersList.HasPreviousPage;
+                    this.buttonNextOrder.Enabled = OrdersList.HasNextPage;
+                    this.gridViewOrders.DataSource = OrdersList.ToList();
+                    this.labelPageNumberOrders.Text = string.Format("Page {0}/{1}", pageNumber, OrdersList.PageCount);
+                }
+                else
+                {
+                    speaker.SpeakAsync("to load orders, you must be positioned in the load data tab");
+                }
+            }
+
+            else if (e.Result.Text == "previous agents")
+            {
+                if (AgentsList.HasPreviousPage)
+                {
+                    AgentsList = await GetPagedAgentsList(--pageNumber);
+                    this.buttonPreviousAgent.Enabled = AgentsList.HasPreviousPage;
+                    this.buttonNextAgent.Enabled = AgentsList.HasNextPage;
+                    this.gridViewAgents.DataSource = AgentsList.ToList();
+                    this.labelPageNumberAgent.Text = string.Format("Page {0}/{1}", pageNumber, AgentsList.PageCount);
+                }
+                else
+                {
+                    speaker.SpeakAsync("there is not previous page");
+                }
+            }
+
+            else if (e.Result.Text == "next agents")
+            {
+                if (AgentsList.HasNextPage)
+                {
+                    AgentsList = await GetPagedAgentsList(++pageNumber);
+                    this.buttonPreviousAgent.Enabled = AgentsList.HasPreviousPage;
+                    this.buttonNextAgent.Enabled = AgentsList.HasNextPage;
+                    this.gridViewAgents.DataSource = AgentsList.ToList();
+                    this.labelPageNumberAgent.Text = string.Format("Page {0}/{1}", pageNumber, AgentsList.PageCount);
+                }
+                else
+                {
+                    speaker.SpeakAsync("there is not next page");
+                }
+            }
+
+            else if (e.Result.Text == "previous orders")
+            {
+                if (OrdersList.HasPreviousPage)
+                {
+                    OrdersList = await GetPagedOrdersList(--pageNumber);
+                    this.buttonPreviousOrder.Enabled = OrdersList.HasPreviousPage;
+                    this.buttonNextOrder.Enabled = OrdersList.HasNextPage;
+                    this.gridViewOrders.DataSource = OrdersList.ToList();
+                    this.labelPageNumberOrders.Text = string.Format("Page {0}/{1}", pageNumber, OrdersList.PageCount);
+                }
+                else
+                {
+                    speaker.SpeakAsync("there is not previous page");
+                }
+            }
+
+            else if (e.Result.Text == "next orders")
+            {
+                if (OrdersList.HasNextPage)
+                {
+                    OrdersList = await GetPagedOrdersList(++pageNumber);
+                    this.buttonPreviousOrder.Enabled = OrdersList.HasPreviousPage;
+                    this.buttonNextOrder.Enabled = OrdersList.HasNextPage;
+                    this.gridViewOrders.DataSource = OrdersList.ToList();
+                    this.labelPageNumberOrders.Text = string.Format("Page {0}/{1}", pageNumber, OrdersList.PageCount);
+                }
+                else
+                {
+                    speaker.SpeakAsync("there is not next page");
+                }
+            }
+
+            else if (e.Result.Text == "finish")
+            {
+                this.Close();
+            }
+
+        }
+
+        private void InitializeDesignDataGridViews()
+        {
+
             this.gridViewAgents.BorderStyle = BorderStyle.FixedSingle;
             this.gridViewAgents.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(238, 239, 249);
             this.gridViewAgents.CellBorderStyle = DataGridViewCellBorderStyle.Single;
