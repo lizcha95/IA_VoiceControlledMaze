@@ -80,8 +80,10 @@
                 {
 
                     Choices commands = new Choices();
-                    commands.Add("start");
-                    commands.Add("finish");
+                    commands.Add("load data");
+                    commands.Add("assign orders");
+                    commands.Add("load agents");
+                    commands.Add("load orders");
                     GrammarBuilder gb = new GrammarBuilder();
                     gb.Culture = this.cultureInfo; // English Idiom
                     gb.Append(commands);
@@ -91,7 +93,10 @@
                     this.recorder.SetInputToDefaultAudioDevice(); // Use the microphone
                     this.speaker.SelectVoiceByHints(VoiceGender.Male, VoiceAge.Senior, 0, this.cultureInfo);
                     this.recorder.RecognizeAsync(RecognizeMode.Multiple);
-                    this.speaker.SpeakAsync("Hello, Welcome to General Electric Services to start say start or, to finish say finish.");
+                    this.speaker.SpeakAsync("Hello, Welcome to General Electric Services");
+                    this.speaker.SpeakAsync("To load tab say load data or assign orders");
+                    this.speaker.SpeakAsync("To load agents' table say load agents or to charge orders' table say load orders");
+
                     this.recorder.SpeechRecognized += new EventHandler<SpeechRecognizedEventArgs>(recognized_listener);
 
                 }
@@ -115,19 +120,25 @@
                 return;
 
             }
-            if (e.Result.Text == "start")
+            foreach (RecognizedWordUnit word in e.Result.Words)
+            {
+                if (word.Text == "load data")
                 {
-                    speaker.SpeakAsync("Say load agents to charge agents table");
-                    start = 0;
-
+                    
+                    if(tabControl1.SelectedIndex == 0)
+                    {
+                        speaker.SpeakAsync("You are already positioned in the tab load data");
+                    }
+                 
                 }
+                
                 else if (e.Result.Text == "finish")
                 {
                     //speaker.SpeakAsync("");
                     this.Close();
                 }
-            
 
+            }
 
         }
 
