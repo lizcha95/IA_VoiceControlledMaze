@@ -1,6 +1,7 @@
 ﻿namespace Logic.Classes
 {
     using System.Collections.Generic;
+    using System.ComponentModel;
 
     public class Order
     {
@@ -17,8 +18,11 @@
         }
 
         public int ID { get { return this.id; } }
+        [DisplayName("Cliente")]
         public string Client { get { return this.client; } }
-        public Service Service { get { return this.service; } }
+        [DisplayName("Código servicio")]
+        public string ServiceCode { get { return this.service.Code; } }
+        internal Service Service { get { return this.service; } }
 
         public static OrderComparer Comparer { get { return comparer; } }
 
