@@ -6,10 +6,14 @@
     using System.Threading.Tasks;
     using System.Linq;
     using System.Drawing;
+    using System.Speech.Recognition;
+    using System.Speech.Synthesis;
+    using System.Globalization;
+    using System.Collections.Generic;
     using Logic;
     using Logic.Classes;
     using PagedList;
-    using System.Collections.Generic;
+    
 
     public partial class FormMain : Form
     {
@@ -29,6 +33,14 @@
 
         private int generationLimit;
 
+        //Speech Recognition
+        private SpeechRecognitionEngine recorder;
+        private SpeechSynthesizer speaker;
+        private CultureInfo cultureInfo;
+
+        //Flags
+        private int start = 1;
+
         public FormMain()
         {
             this.InitializeComponent();
@@ -44,10 +56,84 @@
             this.geneticAllocator.Stopped += this.GeneticAllocator_Stopped;
 
             this.generationLimit = 10; // Hay que poner una opción para modificar esto.
+
+            this.recorder = new SpeechRecognitionEngine();
+            this.speaker = new SpeechSynthesizer();
+            this.cultureInfo = new CultureInfo("en-US");
+            CreateGrammar();
         }
 
         private void FormMain_Load(object sender, EventArgs e)
         {
+            InitializeDesignDataGridViews();
+        }
+
+        private void CreateGrammar()
+        {
+
+            Timer timer = new Timer();
+            timer.Interval = 1;
+            timer.Tick += delegate (object s, EventArgs ee)
+            {
+                ((Timer)s).Stop();
+                try
+                {
+
+                    Choices commands = new Choices();
+                    commands.Add("start");
+                    commands.Add("finish");
+                    GrammarBuilder gb = new GrammarBuilder();
+                    gb.Culture = this.cultureInfo; // English Idiom
+                    gb.Append(commands);
+
+                    Grammar grammar = new Grammar(gb);
+                    this.recorder.LoadGrammar(grammar); // Add grammar to the recognizer
+                    this.recorder.SetInputToDefaultAudioDevice(); // Use the microphone
+                    this.speaker.SelectVoiceByHints(VoiceGender.Male, VoiceAge.Senior, 0, this.cultureInfo);
+                    this.recorder.RecognizeAsync(RecognizeMode.Multiple);
+                    this.speaker.SpeakAsync("Hello, Welcome to General Electric Services to start say start or, to finish say finish.");
+                    this.recorder.SpeechRecognized += new EventHandler<SpeechRecognizedEventArgs>(recognized_listener);
+
+                }
+                catch (InvalidOperationException)
+                {
+                    MessageBox.Show("No se puede iniciar");
+                }
+            };
+
+            timer.Start();
+
+
+        }
+        private void recognized_listener(object sender, SpeechRecognizedEventArgs e)
+        {
+            float confidence = e.Result.Confidence;
+
+            if (confidence < 0.65)
+            {
+                speaker.SpeakAsync("Speak louder please");
+                return;
+
+            }
+            if (e.Result.Text == "start")
+                {
+                    speaker.SpeakAsync("Say load agents to charge agents table");
+                    start = 0;
+
+                }
+                else if (e.Result.Text == "finish")
+                {
+                    //speaker.SpeakAsync("");
+                    this.Close();
+                }
+            
+
+
+        }
+
+        private void InitializeDesignDataGridViews()
+        {
+
             this.gridViewAgents.BorderStyle = BorderStyle.FixedSingle;
             this.gridViewAgents.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(238, 239, 249);
             this.gridViewAgents.CellBorderStyle = DataGridViewCellBorderStyle.Single;
