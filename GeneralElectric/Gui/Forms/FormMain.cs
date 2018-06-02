@@ -13,15 +13,11 @@
     using Logic;
     using Logic.Classes;
     using PagedList;
-    
+    using MaterialSkin.Controls;
+    using MaterialSkin;
 
-    public partial class FormMain : Form
+    public partial class FormMain : MaterialForm
     {
-        private int currentPageAgents = 0;
-        private int currentSizeAgents = 10;
-
-        private int currentPageOrders = 0;
-        private int currentSizeOrders = 10;
 
         private int pageNumber = 1;
 
@@ -37,9 +33,7 @@
         private SpeechRecognitionEngine recorder;
         private SpeechSynthesizer speaker;
         private CultureInfo cultureInfo;
-
-        //Flags
-        private int start = 1;
+        
 
         public FormMain()
         {
@@ -60,13 +54,14 @@
             this.recorder = new SpeechRecognitionEngine();
             this.speaker = new SpeechSynthesizer();
             this.cultureInfo = new CultureInfo("en-US");
+            CreateGrammar();
             
         }
 
         private void FormMain_Load(object sender, EventArgs e)
         {
             InitializeDesignDataGridViews();
-            CreateGrammar();
+            
         }
 
         private void CreateGrammar()
@@ -79,7 +74,6 @@
                 ((Timer)s).Stop();
                 try
                 {
-
                     Choices commands = new Choices();
                     commands.Add(new string[] { "load data", "assign", "load agents", "load orders", "finish", "previous agents", "next agents",
                                                 "previous orders", "next orders", "assign orders"});
@@ -93,8 +87,10 @@
                     this.speaker.SelectVoiceByHints(VoiceGender.Male, VoiceAge.Senior, 0, this.cultureInfo);
                     this.recorder.RecognizeAsync(RecognizeMode.Multiple);
                     this.speaker.SpeakAsync("Hello, Welcome to General Electric Services");
-                    this.speaker.SpeakAsync("To load tab say load data or assign orders");
-                    this.speaker.SpeakAsync("To load agents' table say load agents or to charge orders' table say load orders");
+                    this.speaker.SpeakAsync("To change the window say load data or assign");
+                    this.speaker.SpeakAsync("In the load data window you can load service agents and service orders");
+                    this.speaker.SpeakAsync("To load service agents' table say load agents");
+                    this.speaker.SpeakAsync("To load service orders' table say load orders");
 
                     this.recorder.SpeechRecognized += new EventHandler<SpeechRecognizedEventArgs>(recognized_listener);
 
@@ -115,7 +111,7 @@
 
             if (confidence < 0.65)
             {
-                speaker.SpeakAsync("Speak louder please");
+                speaker.SpeakAsync("Speak louder, I don't understand what you say");
                 return;
 
             }
@@ -124,9 +120,13 @@
 
             if (e.Result.Text == "load data")
             {
-                if(tabControl1.SelectedIndex != 0)
+                if (materialTabControl1.SelectedIndex != 0)
                 {
-                    tabControl1.SelectedTab = LoadData;
+                    materialTabControl1.SelectedTab = LoadData;
+
+                    this.speaker.SpeakAsync("To load service agents' table say load agents");
+                    this.speaker.SpeakAsync("To load service orders' table say load orders");
+
                 }
                 else
                 {
@@ -137,26 +137,33 @@
 
             else if (e.Result.Text == "assign")
             {
-                if(tabControl1.SelectedIndex != 1)
+                if (materialTabControl1.SelectedIndex != 1)
                 {
-                    tabControl1.SelectedTab = AssignOrders;
+                    materialTabControl1.SelectedTab = AssignOrders;
+
+                    this.speaker.SpeakAsync("In the assign window you can assign service orders to the service agents");
+                    this.speaker.SpeakAsync("To assign service orders say assign orders");
+                    
                 }
                 else
                 {
                     speaker.SpeakAsync("You are already positioned in the tab assign orders");
+                    this.speaker.SpeakAsync("To assign service orders say assign orders");
+
                 }
-                
+
             }
 
             else if (e.Result.Text == "load agents")
             {
-                if(tabControl1.SelectedIndex == 0)
+                if (materialTabControl1.SelectedIndex == 0)
                 {
                     AgentsList = await GetPagedAgentsList();
-                    this.buttonPreviousAgent.Enabled = AgentsList.HasPreviousPage;
-                    this.buttonNextAgent.Enabled = AgentsList.HasNextPage;
                     this.gridViewAgents.DataSource = AgentsList.ToList();
-                    this.labelPageNumberAgent.Text = string.Format("Page {0}/{1}", pageNumber, AgentsList.PageCount);
+                    this.materialLabel3.Text = string.Format("Page {0}/{1}", pageNumber, AgentsList.PageCount);
+
+                    speaker.SpeakAsync("You can say next agent or previous agent to look all the agents in the table");
+
                 }
                 else
                 {
@@ -166,13 +173,13 @@
 
             else if (e.Result.Text == "load orders")
             {
-                if (tabControl1.SelectedIndex == 0)
+                if (materialTabControl1.SelectedIndex == 0)
                 {
                     OrdersList = await GetPagedOrdersList();
-                    this.buttonPreviousOrder.Enabled = OrdersList.HasPreviousPage;
-                    this.buttonNextOrder.Enabled = OrdersList.HasNextPage;
                     this.gridViewOrders.DataSource = OrdersList.ToList();
                     this.labelPageNumberOrders.Text = string.Format("Page {0}/{1}", pageNumber, OrdersList.PageCount);
+                    speaker.SpeakAsync("You can say next order or previous order to look all the orders in the table");
+
                 }
                 else
                 {
@@ -185,10 +192,8 @@
                 if (AgentsList.HasPreviousPage)
                 {
                     AgentsList = await GetPagedAgentsList(--pageNumber);
-                    this.buttonPreviousAgent.Enabled = AgentsList.HasPreviousPage;
-                    this.buttonNextAgent.Enabled = AgentsList.HasNextPage;
                     this.gridViewAgents.DataSource = AgentsList.ToList();
-                    this.labelPageNumberAgent.Text = string.Format("Page {0}/{1}", pageNumber, AgentsList.PageCount);
+                    this.materialLabel3.Text = string.Format("Page {0}/{1}", pageNumber, AgentsList.PageCount);
                 }
                 else
                 {
@@ -201,10 +206,8 @@
                 if (AgentsList.HasNextPage)
                 {
                     AgentsList = await GetPagedAgentsList(++pageNumber);
-                    this.buttonPreviousAgent.Enabled = AgentsList.HasPreviousPage;
-                    this.buttonNextAgent.Enabled = AgentsList.HasNextPage;
                     this.gridViewAgents.DataSource = AgentsList.ToList();
-                    this.labelPageNumberAgent.Text = string.Format("Page {0}/{1}", pageNumber, AgentsList.PageCount);
+                    this.materialLabel3.Text = string.Format("Page {0}/{1}", pageNumber, AgentsList.PageCount);
                 }
                 else
                 {
@@ -216,9 +219,7 @@
             {
                 if (OrdersList.HasPreviousPage)
                 {
-                    OrdersList = await GetPagedOrdersList(--pageNumber);
-                    this.buttonPreviousOrder.Enabled = OrdersList.HasPreviousPage;
-                    this.buttonNextOrder.Enabled = OrdersList.HasNextPage;
+                    OrdersList = await GetPagedOrdersList(--pageNumber);;
                     this.gridViewOrders.DataSource = OrdersList.ToList();
                     this.labelPageNumberOrders.Text = string.Format("Page {0}/{1}", pageNumber, OrdersList.PageCount);
                 }
@@ -233,8 +234,6 @@
                 if (OrdersList.HasNextPage)
                 {
                     OrdersList = await GetPagedOrdersList(++pageNumber);
-                    this.buttonPreviousOrder.Enabled = OrdersList.HasPreviousPage;
-                    this.buttonNextOrder.Enabled = OrdersList.HasNextPage;
                     this.gridViewOrders.DataSource = OrdersList.ToList();
                     this.labelPageNumberOrders.Text = string.Format("Page {0}/{1}", pageNumber, OrdersList.PageCount);
                 }
@@ -243,45 +242,64 @@
                     speaker.SpeakAsync("there is not next page");
                 }
             }
+            else if (e.Result.Text == "assign orders")
+            {
+                if (materialTabControl1.SelectedIndex == 1)
+                {
+                    this.geneticAllocator.Execute(this.generationLimit);
+                    speaker.SpeakAsync("Wait while the service assignment ends");
+                }
+                else
+                {
+                    speaker.SpeakAsync("to assign orders, you must be positioned in the assign tab");
+                }
+            }
 
             else if (e.Result.Text == "finish")
             {
                 this.Close();
+                speaker.SpeakAsync("Good Bye");
+                return;
             }
 
         }
-
         private void InitializeDesignDataGridViews()
         {
+            var skinManager = MaterialSkinManager.Instance;
+            skinManager.AddFormToManage(this);
+            skinManager.Theme = MaterialSkinManager.Themes.LIGHT;
+            skinManager.ColorScheme = new ColorScheme(Primary.BlueGrey700,Primary.BlueGrey700,Primary.BlueGrey500,Accent.LightBlue200,TextShade.WHITE);
 
-            this.gridViewAgents.BorderStyle = BorderStyle.FixedSingle;
+            this.gridViewAgents.BorderStyle = BorderStyle.Fixed3D;
             this.gridViewAgents.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(238, 239, 249);
             this.gridViewAgents.CellBorderStyle = DataGridViewCellBorderStyle.Single;
-
-            this.gridViewAgents.DefaultCellStyle.SelectionBackColor = Color.DarkTurquoise;
+            this.gridViewAgents.DefaultCellStyle.SelectionBackColor = Color.SkyBlue;
             this.gridViewAgents.DefaultCellStyle.SelectionForeColor = Color.WhiteSmoke;
             this.gridViewAgents.BackgroundColor = Color.White;
 
             this.gridViewAgents.EnableHeadersVisualStyles = false;
             this.gridViewAgents.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
-            this.gridViewAgents.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(20, 25, 72);
+            this.gridViewAgents.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            this.gridViewAgents.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.gridViewAgents.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(0,0,0);
             this.gridViewAgents.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
 
 
-            this.gridViewOrders.BorderStyle = BorderStyle.FixedSingle;
+            this.gridViewOrders.BorderStyle = BorderStyle.Fixed3D;
             this.gridViewOrders.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(238, 239, 249);
             this.gridViewOrders.CellBorderStyle = DataGridViewCellBorderStyle.Single;
-            this.gridViewOrders.DefaultCellStyle.SelectionBackColor = Color.DarkTurquoise;
+            this.gridViewOrders.DefaultCellStyle.SelectionBackColor = Color.SkyBlue;
             this.gridViewOrders.DefaultCellStyle.SelectionForeColor = Color.WhiteSmoke;
             this.gridViewOrders.BackgroundColor = Color.White;
 
             this.gridViewOrders.EnableHeadersVisualStyles = false;
             this.gridViewOrders.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
-            this.gridViewOrders.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(20, 25, 72);
+            this.gridViewOrders.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            this.gridViewOrders.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.gridViewOrders.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(0, 0, 0);
             this.gridViewOrders.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-
-
-            this.gridViewResults.BorderStyle = BorderStyle.FixedSingle;
+;
+            this.gridViewResults.BorderStyle = BorderStyle.Fixed3D;
             this.gridViewResults.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(238, 239, 249);
             this.gridViewResults.CellBorderStyle = DataGridViewCellBorderStyle.Single;
             this.gridViewResults.DefaultCellStyle.SelectionBackColor = Color.DarkTurquoise;
@@ -290,7 +308,9 @@
 
             this.gridViewResults.EnableHeadersVisualStyles = false;
             this.gridViewResults.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
-            this.gridViewResults.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(20, 25, 72);
+            this.gridViewResults.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+            this.gridViewResults.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
+            this.gridViewResults.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(0, 0, 0);
             this.gridViewResults.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
         }
 
@@ -313,13 +333,7 @@
             // Esto se ejecuta cuando se cancela el proceso.
         }
 
-        private void DataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
-
-
-        public async Task<IPagedList<Agent>> GetPagedAgentsList(int pageNumber = 1, int pageSize = 12)
+        public async Task<IPagedList<Agent>> GetPagedAgentsList(int pageNumber = 1, int pageSize = 20)
         {
 
             return await Task.Factory.StartNew(() =>
@@ -330,7 +344,7 @@
         }
 
 
-        public async Task<IPagedList<Order>> GetPagedOrdersList(int pageNumber = 1, int pageSize = 12){
+        public async Task<IPagedList<Order>> GetPagedOrdersList(int pageNumber = 1, int pageSize = 20){
 
               return await Task.Factory.StartNew(() =>
               {
@@ -342,30 +356,16 @@
         private async void ButtonLoadAgents_Click(object sender, System.EventArgs e)
         {
             AgentsList = await GetPagedAgentsList();
-            this.buttonPreviousAgent.Enabled = AgentsList.HasPreviousPage;
-            this.buttonNextAgent.Enabled = AgentsList.HasNextPage;
             this.gridViewAgents.DataSource = AgentsList.ToList();
-            this.labelPageNumberAgent.Text = string.Format("Page {0}/{1}", pageNumber, AgentsList.PageCount);
+            this.materialLabel3.Text = string.Format("Page {0}/{1}", pageNumber, AgentsList.PageCount);
 
-            /*this.labelPageNumberAgent.Text = string.Format("Page {0}/{1}", currentPageAgents, this.currentContext.Agents.Count());
-            foreach (Agent agent in GetPage(this.currentContext.Agents, currentPageAgents, currentSizeAgents))
-            {
-                this.agentsGridView.Rows.Add(agent.ID, agent.Name, string.Join(", ", agent.ServicesCodes));   
-                
-            }*/
 
         }
 
         private async void buttonLoadOrders_Click(object sender, System.EventArgs e)
         {
-           /* this.labelPageNumberOrders.Text = string.Format("Page {0}/{1}", currentPageOrders, this.currentContext.Orders.Count());
-            foreach (Order order in GetPage(this.currentContext.Orders, currentPageOrders, currentSizeOrders))
-            {
-                this.ordersGridView.Rows.Add(order.ID, order.Client, string.Join(", ", order.Service.Code));
-            }*/
+           
              OrdersList = await GetPagedOrdersList();
-             this.buttonPreviousOrder.Enabled = OrdersList.HasPreviousPage;
-             this.buttonNextOrder.Enabled = OrdersList.HasNextPage;
              this.gridViewOrders.DataSource = OrdersList.ToList();
              this.labelPageNumberOrders.Text = string.Format("Page {0}/{1}", pageNumber, OrdersList.PageCount);
         }        
@@ -378,64 +378,29 @@
         
         private async void ButtonNextAgent_Click(object sender, EventArgs e)
         {
-
-            /*currentPageAgents = ((currentPageAgents + 1) * currentSizeAgents) < this.currentContext.Agents.Count() ?
-              (currentPageAgents + 1) : currentPageAgents;
-
-            this.labelPageNumberAgent.Text = string.Format("Page {0}/{1}", currentPageAgents,this.currentContext.Agents.Count());
-            foreach (Agent agent in GetPage(this.currentContext.Agents, currentPageAgents, currentSizeAgents))
-            {
-                this.agentsGridView.Rows.Add(agent.ID, agent.Name, string.Join(", ", agent.ServicesCodes));
-               
-
-            }*/
-
             if (AgentsList.HasNextPage)
               {
                   AgentsList = await GetPagedAgentsList(++pageNumber);
-                  this.buttonPreviousAgent.Enabled = AgentsList.HasPreviousPage;
-                  this.buttonNextAgent.Enabled = AgentsList.HasNextPage;
                   this.gridViewAgents.DataSource = AgentsList.ToList();
-                  this.labelPageNumberAgent.Text = string.Format("Page {0}/{1}", pageNumber, AgentsList.PageCount);
+                  this.materialLabel3.Text = string.Format("Page {0}/{1}", pageNumber, AgentsList.PageCount);
               }
         }
 
         private async void ButtonPreviousAgent_Click(object sender, EventArgs e)
         {
-            /*currentPageAgents = (currentPageAgents - currentSizeOrders) < 0 ? (currentPageAgents - 1) : 0;
-
-            this.labelPageNumberAgent.Text = string.Format("Page {0}/{1}", currentPageAgents, this.currentContext.Agents.Count());
-            foreach (Agent agent in GetPage(this.currentContext.Agents, currentPageAgents, currentSizeAgents))
-            {
-               this.agentsGridView.Rows.Add(agent.ID, agent.Name, string.Join(", ", agent.ServicesCodes));
-
-            }*/
-
             if (AgentsList.HasPreviousPage)
             {
                 AgentsList = await GetPagedAgentsList(--pageNumber);
-                this.buttonPreviousAgent.Enabled = AgentsList.HasPreviousPage;
-                this.buttonNextAgent.Enabled = AgentsList.HasNextPage;
                 this.gridViewAgents.DataSource = AgentsList.ToList();
-                this.labelPageNumberAgent.Text = string.Format("Page {0}/{1}", pageNumber, AgentsList.PageCount);
+                this.materialLabel3.Text = string.Format("Page {0}/{1}", pageNumber, AgentsList.PageCount);
             }
         }
         private async void ButtonPreviousOrder_Click(object sender, EventArgs e)
         {
-            /*currentPageOrders = (currentPageOrders - currentSizeOrders) < 0 ? (currentPageOrders - 1) : 0;
-
-            this.labelPageNumberOrders.Text = string.Format("Page {0}/{1}", currentPageOrders, this.currentContext.Orders.Count());
-            foreach (Order order in GetPage(this.currentContext.Orders, currentPageOrders, currentSizeOrders))
-            {
-                this.ordersGridView.Rows.Add(order.ID, order.Client, string.Join(", ", order.Service.Code));
-            }*/
-
-            
+           
             if (OrdersList.HasPreviousPage)
             {
                 OrdersList = await GetPagedOrdersList(--pageNumber);
-                this.buttonPreviousOrder.Enabled = OrdersList.HasPreviousPage;
-                this.buttonNextOrder.Enabled = OrdersList.HasNextPage;
                 this.gridViewOrders.DataSource = OrdersList.ToList();
                 this.labelPageNumberOrders.Text = string.Format("Page {0}/{1}", pageNumber, OrdersList.PageCount);
             }
@@ -444,21 +409,10 @@
 
         private async void ButtonNextOrder_Click(object sender, EventArgs e)
         {
-
-            /*currentPageOrders = ((currentPageOrders + 1) * currentSizeOrders) < this.currentContext.Agents.Count() ?
-              (currentPageOrders + 1) : currentPageOrders;
-
-            this.labelPageNumberOrders.Text = string.Format("Page {0}/{1}", currentPageOrders, this.currentContext.Orders.Count());
-            foreach (Order order in GetPage(this.currentContext.Orders, currentPageOrders, currentSizeOrders))
-            {
-                this.ordersGridView.Rows.Add(order.ID, order.Client, string.Join(", ", order.Service.Code));
-            }*/
             if (OrdersList.HasNextPage)
              {
 
                  OrdersList = await GetPagedOrdersList(++pageNumber);
-                 this.buttonPreviousOrder.Enabled = OrdersList.HasPreviousPage;
-                 this.buttonNextOrder.Enabled = OrdersList.HasNextPage;
                  this.gridViewOrders.DataSource = OrdersList.ToList();
                  this.labelPageNumberOrders.Text = string.Format("Page {0}/{1}", pageNumber, OrdersList.PageCount);
              }
@@ -469,10 +423,11 @@
             this.geneticAllocator.Execute(this.generationLimit);
         }
 
-        
+        }
     }
+  
     
-}
+
         
     
 
