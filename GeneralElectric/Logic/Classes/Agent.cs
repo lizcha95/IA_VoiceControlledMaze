@@ -20,10 +20,10 @@
         }
 
         public int ID { get { return this.id; } }
-        [DisplayName("Nombre")]
+        [DisplayName("Name")]
         public string Name { get { return this.name; } }
         public List<Service> Services { get { return this.services; } }
-        [DisplayName("Códigos servicios")]
+        [DisplayName("Services Codes")]
         public string ServicesValue { get { return string.Join(", ", this.servicesCodes) + "."; } }
         internal IEnumerable<string> ServicesCodes { get { return this.servicesCodes; } }
     }

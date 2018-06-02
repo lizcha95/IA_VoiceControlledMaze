@@ -18,9 +18,9 @@
         }
 
         public int ID { get { return this.id; } }
-        [DisplayName("Cliente")]
+        [DisplayName("Client")]
         public string Client { get { return this.client; } }
-        [DisplayName("Código servicio")]
+        [DisplayName("Service Code")]
         public string ServiceCode { get { return this.service.Code; } }
         internal Service Service { get { return this.service; } }
 
