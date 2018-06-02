@@ -19,7 +19,9 @@
     public partial class FormMain : MaterialForm
     {
 
-        private int pageNumber = 1;
+        private int pageNumberAgent = 1;
+        private int pageNumberOrder = 1;
+
 
         private IPagedList<Agent> AgentsList;
         private IPagedList<Order> OrdersList;
@@ -160,7 +162,7 @@
                 {
                     AgentsList = await GetPagedAgentsList();
                     this.gridViewAgents.DataSource = AgentsList.ToList();
-                    this.materialLabel3.Text = string.Format("Page {0}/{1}", pageNumber, AgentsList.PageCount);
+                    this.materialLabel3.Text = string.Format("Page {0}/{1}", pageNumberAgent, AgentsList.PageCount);
 
                     speaker.SpeakAsync("You can say next agent or previous agent to look all the agents in the table");
 
@@ -177,7 +179,7 @@
                 {
                     OrdersList = await GetPagedOrdersList();
                     this.gridViewOrders.DataSource = OrdersList.ToList();
-                    this.labelPageNumberOrders.Text = string.Format("Page {0}/{1}", pageNumber, OrdersList.PageCount);
+                    this.labelPageNumberOrders.Text = string.Format("Page {0}/{1}", pageNumberOrder, OrdersList.PageCount);
                     speaker.SpeakAsync("You can say next order or previous order to look all the orders in the table");
 
                 }
@@ -191,9 +193,9 @@
             {
                 if (AgentsList.HasPreviousPage)
                 {
-                    AgentsList = await GetPagedAgentsList(--pageNumber);
+                    AgentsList = await GetPagedAgentsList(--pageNumberAgent);
                     this.gridViewAgents.DataSource = AgentsList.ToList();
-                    this.materialLabel3.Text = string.Format("Page {0}/{1}", pageNumber, AgentsList.PageCount);
+                    this.materialLabel3.Text = string.Format("Page {0}/{1}", pageNumberAgent, AgentsList.PageCount);
                 }
                 else
                 {
@@ -205,9 +207,9 @@
             {
                 if (AgentsList.HasNextPage)
                 {
-                    AgentsList = await GetPagedAgentsList(++pageNumber);
+                    AgentsList = await GetPagedAgentsList(++pageNumberAgent);
                     this.gridViewAgents.DataSource = AgentsList.ToList();
-                    this.materialLabel3.Text = string.Format("Page {0}/{1}", pageNumber, AgentsList.PageCount);
+                    this.materialLabel3.Text = string.Format("Page {0}/{1}", pageNumberAgent, AgentsList.PageCount);
                 }
                 else
                 {
@@ -219,9 +221,9 @@
             {
                 if (OrdersList.HasPreviousPage)
                 {
-                    OrdersList = await GetPagedOrdersList(--pageNumber);;
+                    OrdersList = await GetPagedOrdersList(--pageNumberOrder);;
                     this.gridViewOrders.DataSource = OrdersList.ToList();
-                    this.labelPageNumberOrders.Text = string.Format("Page {0}/{1}", pageNumber, OrdersList.PageCount);
+                    this.labelPageNumberOrders.Text = string.Format("Page {0}/{1}", pageNumberOrder, OrdersList.PageCount);
                 }
                 else
                 {
@@ -233,9 +235,9 @@
             {
                 if (OrdersList.HasNextPage)
                 {
-                    OrdersList = await GetPagedOrdersList(++pageNumber);
+                    OrdersList = await GetPagedOrdersList(++pageNumberOrder);
                     this.gridViewOrders.DataSource = OrdersList.ToList();
-                    this.labelPageNumberOrders.Text = string.Format("Page {0}/{1}", pageNumber, OrdersList.PageCount);
+                    this.labelPageNumberOrders.Text = string.Format("Page {0}/{1}", pageNumberOrder, OrdersList.PageCount);
                 }
                 else
                 {
@@ -357,7 +359,7 @@
         {
             AgentsList = await GetPagedAgentsList();
             this.gridViewAgents.DataSource = AgentsList.ToList();
-            this.materialLabel3.Text = string.Format("Page {0}/{1}", pageNumber, AgentsList.PageCount);
+            this.materialLabel3.Text = string.Format("Page {0}/{1}", pageNumberAgent, AgentsList.PageCount);
 
 
         }
@@ -367,7 +369,7 @@
            
              OrdersList = await GetPagedOrdersList();
              this.gridViewOrders.DataSource = OrdersList.ToList();
-             this.labelPageNumberOrders.Text = string.Format("Page {0}/{1}", pageNumber, OrdersList.PageCount);
+             this.labelPageNumberOrders.Text = string.Format("Page {0}/{1}", pageNumberOrder, OrdersList.PageCount);
         }        
 
         IEnumerable<object> GetPage(IEnumerable<object> input, int page, int pagesize)
@@ -380,9 +382,9 @@
         {
             if (AgentsList.HasNextPage)
               {
-                  AgentsList = await GetPagedAgentsList(++pageNumber);
+                  AgentsList = await GetPagedAgentsList(++pageNumberAgent);
                   this.gridViewAgents.DataSource = AgentsList.ToList();
-                  this.materialLabel3.Text = string.Format("Page {0}/{1}", pageNumber, AgentsList.PageCount);
+                  this.materialLabel3.Text = string.Format("Page {0}/{1}", pageNumberAgent, AgentsList.PageCount);
               }
         }
 
@@ -390,9 +392,9 @@
         {
             if (AgentsList.HasPreviousPage)
             {
-                AgentsList = await GetPagedAgentsList(--pageNumber);
+                AgentsList = await GetPagedAgentsList(--pageNumberAgent);
                 this.gridViewAgents.DataSource = AgentsList.ToList();
-                this.materialLabel3.Text = string.Format("Page {0}/{1}", pageNumber, AgentsList.PageCount);
+                this.materialLabel3.Text = string.Format("Page {0}/{1}", pageNumberAgent, AgentsList.PageCount);
             }
         }
         private async void ButtonPreviousOrder_Click(object sender, EventArgs e)
@@ -400,9 +402,9 @@
            
             if (OrdersList.HasPreviousPage)
             {
-                OrdersList = await GetPagedOrdersList(--pageNumber);
+                OrdersList = await GetPagedOrdersList(--pageNumberOrder);
                 this.gridViewOrders.DataSource = OrdersList.ToList();
-                this.labelPageNumberOrders.Text = string.Format("Page {0}/{1}", pageNumber, OrdersList.PageCount);
+                this.labelPageNumberOrders.Text = string.Format("Page {0}/{1}", pageNumberOrder, OrdersList.PageCount);
             }
 
         }
@@ -412,9 +414,9 @@
             if (OrdersList.HasNextPage)
              {
 
-                 OrdersList = await GetPagedOrdersList(++pageNumber);
+                 OrdersList = await GetPagedOrdersList(++pageNumberOrder);
                  this.gridViewOrders.DataSource = OrdersList.ToList();
-                 this.labelPageNumberOrders.Text = string.Format("Page {0}/{1}", pageNumber, OrdersList.PageCount);
+                 this.labelPageNumberOrders.Text = string.Format("Page {0}/{1}", pageNumberOrder, OrdersList.PageCount);
              }
         }
 
