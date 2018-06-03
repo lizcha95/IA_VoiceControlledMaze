@@ -19,7 +19,7 @@
             // Generate and save random orders.
             XmlWriter.WriteOrders(DataGenerator.GenerateOrders(Constants.Numbers.QUANTITY_ORDERS, services));
 
-            Console.WriteLine("\n\n" + Constants.Messages.FINISHED);
+            Console.WriteLine("\n\n" + Constants.Reports.FINISHED);
             Console.ReadKey();
         }
     }
