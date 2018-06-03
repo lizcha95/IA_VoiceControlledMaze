@@ -55,19 +55,19 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
-            // materialTabControl1
+            // materialTabControl
             // 
             this.materialTabControl.Controls.Add(this.LoadDataTab);
             this.materialTabControl.Controls.Add(this.AssignOrdersTab);
             this.materialTabControl.Depth = 0;
             this.materialTabControl.Location = new System.Drawing.Point(36, 204);
             this.materialTabControl.MouseState = MaterialSkin.MouseState.HOVER;
-            this.materialTabControl.Name = "materialTabControl1";
+            this.materialTabControl.Name = "materialTabControl";
             this.materialTabControl.SelectedIndex = 0;
             this.materialTabControl.Size = new System.Drawing.Size(1146, 584);
             this.materialTabControl.TabIndex = 0;
             // 
-            // LoadData
+            // LoadDataTab
             // 
             this.LoadDataTab.Controls.Add(this.materialLabel1);
             this.LoadDataTab.Controls.Add(this.labelPageNumberOrders);
@@ -76,7 +76,7 @@
             this.LoadDataTab.Controls.Add(this.materialLabel2);
             this.LoadDataTab.Controls.Add(this.gridViewAgents);
             this.LoadDataTab.Location = new System.Drawing.Point(4, 23);
-            this.LoadDataTab.Name = "LoadData";
+            this.LoadDataTab.Name = "LoadDataTab";
             this.LoadDataTab.Padding = new System.Windows.Forms.Padding(3);
             this.LoadDataTab.Size = new System.Drawing.Size(1138, 557);
             this.LoadDataTab.TabIndex = 0;
@@ -108,14 +108,14 @@
             this.labelPageNumberOrders.Size = new System.Drawing.Size(139, 33);
             this.labelPageNumberOrders.TabIndex = 9;
             // 
-            // materialLabel3
+            // labelPageNumberAgents
             // 
             this.labelPageNumberAgents.Depth = 0;
             this.labelPageNumberAgents.Font = new System.Drawing.Font("Roboto", 11F);
             this.labelPageNumberAgents.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.labelPageNumberAgents.Location = new System.Drawing.Point(166, 494);
             this.labelPageNumberAgents.MouseState = MaterialSkin.MouseState.HOVER;
-            this.labelPageNumberAgents.Name = "materialLabel3";
+            this.labelPageNumberAgents.Name = "labelPageNumberAgents";
             this.labelPageNumberAgents.Size = new System.Drawing.Size(180, 33);
             this.labelPageNumberAgents.TabIndex = 4;
             this.labelPageNumberAgents.Text = "\r\n";
@@ -150,8 +150,9 @@
             this.gridViewAgents.Name = "gridViewAgents";
             this.gridViewAgents.Size = new System.Drawing.Size(480, 396);
             this.gridViewAgents.TabIndex = 1;
+            this.gridViewAgents.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridViewAgents_CellContentClick);
             // 
-            // AssignOrders
+            // AssignOrdersTab
             // 
             this.AssignOrdersTab.Controls.Add(this.labelPageNumberResult);
             this.AssignOrdersTab.Controls.Add(this.materialLabel5);
@@ -159,21 +160,21 @@
             this.AssignOrdersTab.Controls.Add(this.gridViewResults);
             this.AssignOrdersTab.Controls.Add(this.materialLabel4);
             this.AssignOrdersTab.Location = new System.Drawing.Point(4, 23);
-            this.AssignOrdersTab.Name = "AssignOrders";
+            this.AssignOrdersTab.Name = "AssignOrdersTab";
             this.AssignOrdersTab.Padding = new System.Windows.Forms.Padding(3);
             this.AssignOrdersTab.Size = new System.Drawing.Size(1138, 557);
             this.AssignOrdersTab.TabIndex = 1;
             this.AssignOrdersTab.Text = "Assign ";
             this.AssignOrdersTab.UseVisualStyleBackColor = true;
             // 
-            // labelPageNumberOrdersAssignment
+            // labelPageNumberResult
             // 
             this.labelPageNumberResult.Depth = 0;
             this.labelPageNumberResult.Font = new System.Drawing.Font("Roboto", 11F);
             this.labelPageNumberResult.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.labelPageNumberResult.Location = new System.Drawing.Point(184, 484);
             this.labelPageNumberResult.MouseState = MaterialSkin.MouseState.HOVER;
-            this.labelPageNumberResult.Name = "labelPageNumberOrdersAssignment";
+            this.labelPageNumberResult.Name = "labelPageNumberResult";
             this.labelPageNumberResult.Size = new System.Drawing.Size(143, 20);
             this.labelPageNumberResult.TabIndex = 6;
             // 
