@@ -261,7 +261,7 @@
         {
             this.currentIndexResult = 1;
             this.SetResultPage(1);
-            this.gridViewResults.DataSource = this.currentPageResult;
+           // this.gridViewResults.DataSource = this.currentPageResult;
         }
 
         private void InitializeDesignDataGridViews()
@@ -302,7 +302,7 @@
             this.gridViewResults.BorderStyle = BorderStyle.Fixed3D;
             this.gridViewResults.AlternatingRowsDefaultCellStyle.BackColor = Color.FromArgb(238, 239, 249);
             this.gridViewResults.CellBorderStyle = DataGridViewCellBorderStyle.Single;
-            this.gridViewResults.DefaultCellStyle.SelectionBackColor = Color.DarkTurquoise;
+            this.gridViewResults.DefaultCellStyle.SelectionBackColor = Color.SkyBlue;
             this.gridViewResults.DefaultCellStyle.SelectionForeColor = Color.WhiteSmoke;
             this.gridViewResults.BackgroundColor = Color.White;
 
@@ -312,6 +312,11 @@
             this.gridViewResults.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.gridViewResults.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(0, 0, 0);
             this.gridViewResults.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
+        }
+
+        private void gridViewAgents_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }
