@@ -13,7 +13,7 @@
         {
             return Enumerable.Range(1, quantity).Select(i =>
             {
-                Console.WriteLine(string.Format(Constants.Messages.GENERATING_AGENT, i));
+                Console.WriteLine(string.Format(Constants.Reports.GENERATING_AGENT, i));
                 return new Agent(i, Faker.Name.FullName(), availableServices.RandomElements());
             });
         }
@@ -22,7 +22,7 @@
         {
             return Enumerable.Range(1, quantity).Select(i =>
             {
-                Console.WriteLine(string.Format(Constants.Messages.GENERATING_ORDER, i));
+                Console.WriteLine(string.Format(Constants.Reports.GENERATING_ORDER, i));
                 return new Order(i, Faker.Company.Name(), availableServices.ElementAt(random.Next(0, availableServices.Count)));
             });
         }

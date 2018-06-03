@@ -29,16 +29,16 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormMain));
-            this.materialTabControl1 = new MaterialSkin.Controls.MaterialTabControl();
-            this.LoadData = new System.Windows.Forms.TabPage();
+            this.materialTabControl = new MaterialSkin.Controls.MaterialTabControl();
+            this.LoadDataTab = new System.Windows.Forms.TabPage();
             this.materialLabel1 = new MaterialSkin.Controls.MaterialLabel();
             this.labelPageNumberOrders = new MaterialSkin.Controls.MaterialLabel();
-            this.materialLabel3 = new MaterialSkin.Controls.MaterialLabel();
+            this.labelPageNumberAgents = new MaterialSkin.Controls.MaterialLabel();
             this.gridViewOrders = new System.Windows.Forms.DataGridView();
             this.materialLabel2 = new MaterialSkin.Controls.MaterialLabel();
             this.gridViewAgents = new System.Windows.Forms.DataGridView();
-            this.AssignOrders = new System.Windows.Forms.TabPage();
-            this.labelPageNumberOrdersAssignment = new MaterialSkin.Controls.MaterialLabel();
+            this.AssignOrdersTab = new System.Windows.Forms.TabPage();
+            this.labelPageNumberResult = new MaterialSkin.Controls.MaterialLabel();
             this.materialLabel5 = new MaterialSkin.Controls.MaterialLabel();
             this.listBoxLog = new System.Windows.Forms.ListBox();
             this.gridViewResults = new System.Windows.Forms.DataGridView();
@@ -46,42 +46,42 @@
             this.materialTabSelector1 = new MaterialSkin.Controls.MaterialTabSelector();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.materialDivider1 = new MaterialSkin.Controls.MaterialDivider();
-            this.materialTabControl1.SuspendLayout();
-            this.LoadData.SuspendLayout();
+            this.materialTabControl.SuspendLayout();
+            this.LoadDataTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridViewOrders)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridViewAgents)).BeginInit();
-            this.AssignOrders.SuspendLayout();
+            this.AssignOrdersTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridViewResults)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // materialTabControl1
             // 
-            this.materialTabControl1.Controls.Add(this.LoadData);
-            this.materialTabControl1.Controls.Add(this.AssignOrders);
-            this.materialTabControl1.Depth = 0;
-            this.materialTabControl1.Location = new System.Drawing.Point(36, 204);
-            this.materialTabControl1.MouseState = MaterialSkin.MouseState.HOVER;
-            this.materialTabControl1.Name = "materialTabControl1";
-            this.materialTabControl1.SelectedIndex = 0;
-            this.materialTabControl1.Size = new System.Drawing.Size(1146, 584);
-            this.materialTabControl1.TabIndex = 0;
+            this.materialTabControl.Controls.Add(this.LoadDataTab);
+            this.materialTabControl.Controls.Add(this.AssignOrdersTab);
+            this.materialTabControl.Depth = 0;
+            this.materialTabControl.Location = new System.Drawing.Point(36, 204);
+            this.materialTabControl.MouseState = MaterialSkin.MouseState.HOVER;
+            this.materialTabControl.Name = "materialTabControl1";
+            this.materialTabControl.SelectedIndex = 0;
+            this.materialTabControl.Size = new System.Drawing.Size(1146, 584);
+            this.materialTabControl.TabIndex = 0;
             // 
             // LoadData
             // 
-            this.LoadData.Controls.Add(this.materialLabel1);
-            this.LoadData.Controls.Add(this.labelPageNumberOrders);
-            this.LoadData.Controls.Add(this.materialLabel3);
-            this.LoadData.Controls.Add(this.gridViewOrders);
-            this.LoadData.Controls.Add(this.materialLabel2);
-            this.LoadData.Controls.Add(this.gridViewAgents);
-            this.LoadData.Location = new System.Drawing.Point(4, 23);
-            this.LoadData.Name = "LoadData";
-            this.LoadData.Padding = new System.Windows.Forms.Padding(3);
-            this.LoadData.Size = new System.Drawing.Size(1138, 557);
-            this.LoadData.TabIndex = 0;
-            this.LoadData.Text = "Load Data";
-            this.LoadData.UseVisualStyleBackColor = true;
+            this.LoadDataTab.Controls.Add(this.materialLabel1);
+            this.LoadDataTab.Controls.Add(this.labelPageNumberOrders);
+            this.LoadDataTab.Controls.Add(this.labelPageNumberAgents);
+            this.LoadDataTab.Controls.Add(this.gridViewOrders);
+            this.LoadDataTab.Controls.Add(this.materialLabel2);
+            this.LoadDataTab.Controls.Add(this.gridViewAgents);
+            this.LoadDataTab.Location = new System.Drawing.Point(4, 23);
+            this.LoadDataTab.Name = "LoadData";
+            this.LoadDataTab.Padding = new System.Windows.Forms.Padding(3);
+            this.LoadDataTab.Size = new System.Drawing.Size(1138, 557);
+            this.LoadDataTab.TabIndex = 0;
+            this.LoadDataTab.Text = "Load Data";
+            this.LoadDataTab.UseVisualStyleBackColor = true;
             // 
             // materialLabel1
             // 
@@ -110,16 +110,16 @@
             // 
             // materialLabel3
             // 
-            this.materialLabel3.Depth = 0;
-            this.materialLabel3.Font = new System.Drawing.Font("Roboto", 11F);
-            this.materialLabel3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.materialLabel3.Location = new System.Drawing.Point(166, 494);
-            this.materialLabel3.MouseState = MaterialSkin.MouseState.HOVER;
-            this.materialLabel3.Name = "materialLabel3";
-            this.materialLabel3.Size = new System.Drawing.Size(180, 33);
-            this.materialLabel3.TabIndex = 4;
-            this.materialLabel3.Text = "\r\n";
-            this.materialLabel3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.labelPageNumberAgents.Depth = 0;
+            this.labelPageNumberAgents.Font = new System.Drawing.Font("Roboto", 11F);
+            this.labelPageNumberAgents.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.labelPageNumberAgents.Location = new System.Drawing.Point(166, 494);
+            this.labelPageNumberAgents.MouseState = MaterialSkin.MouseState.HOVER;
+            this.labelPageNumberAgents.Name = "materialLabel3";
+            this.labelPageNumberAgents.Size = new System.Drawing.Size(180, 33);
+            this.labelPageNumberAgents.TabIndex = 4;
+            this.labelPageNumberAgents.Text = "\r\n";
+            this.labelPageNumberAgents.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // gridViewOrders
             // 
@@ -153,29 +153,29 @@
             // 
             // AssignOrders
             // 
-            this.AssignOrders.Controls.Add(this.labelPageNumberOrdersAssignment);
-            this.AssignOrders.Controls.Add(this.materialLabel5);
-            this.AssignOrders.Controls.Add(this.listBoxLog);
-            this.AssignOrders.Controls.Add(this.gridViewResults);
-            this.AssignOrders.Controls.Add(this.materialLabel4);
-            this.AssignOrders.Location = new System.Drawing.Point(4, 23);
-            this.AssignOrders.Name = "AssignOrders";
-            this.AssignOrders.Padding = new System.Windows.Forms.Padding(3);
-            this.AssignOrders.Size = new System.Drawing.Size(1138, 557);
-            this.AssignOrders.TabIndex = 1;
-            this.AssignOrders.Text = "Assign ";
-            this.AssignOrders.UseVisualStyleBackColor = true;
+            this.AssignOrdersTab.Controls.Add(this.labelPageNumberResult);
+            this.AssignOrdersTab.Controls.Add(this.materialLabel5);
+            this.AssignOrdersTab.Controls.Add(this.listBoxLog);
+            this.AssignOrdersTab.Controls.Add(this.gridViewResults);
+            this.AssignOrdersTab.Controls.Add(this.materialLabel4);
+            this.AssignOrdersTab.Location = new System.Drawing.Point(4, 23);
+            this.AssignOrdersTab.Name = "AssignOrders";
+            this.AssignOrdersTab.Padding = new System.Windows.Forms.Padding(3);
+            this.AssignOrdersTab.Size = new System.Drawing.Size(1138, 557);
+            this.AssignOrdersTab.TabIndex = 1;
+            this.AssignOrdersTab.Text = "Assign ";
+            this.AssignOrdersTab.UseVisualStyleBackColor = true;
             // 
             // labelPageNumberOrdersAssignment
             // 
-            this.labelPageNumberOrdersAssignment.Depth = 0;
-            this.labelPageNumberOrdersAssignment.Font = new System.Drawing.Font("Roboto", 11F);
-            this.labelPageNumberOrdersAssignment.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.labelPageNumberOrdersAssignment.Location = new System.Drawing.Point(184, 484);
-            this.labelPageNumberOrdersAssignment.MouseState = MaterialSkin.MouseState.HOVER;
-            this.labelPageNumberOrdersAssignment.Name = "labelPageNumberOrdersAssignment";
-            this.labelPageNumberOrdersAssignment.Size = new System.Drawing.Size(143, 20);
-            this.labelPageNumberOrdersAssignment.TabIndex = 6;
+            this.labelPageNumberResult.Depth = 0;
+            this.labelPageNumberResult.Font = new System.Drawing.Font("Roboto", 11F);
+            this.labelPageNumberResult.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.labelPageNumberResult.Location = new System.Drawing.Point(184, 484);
+            this.labelPageNumberResult.MouseState = MaterialSkin.MouseState.HOVER;
+            this.labelPageNumberResult.Name = "labelPageNumberOrdersAssignment";
+            this.labelPageNumberResult.Size = new System.Drawing.Size(143, 20);
+            this.labelPageNumberResult.TabIndex = 6;
             // 
             // materialLabel5
             // 
@@ -226,7 +226,7 @@
             // materialTabSelector1
             // 
             this.materialTabSelector1.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
-            this.materialTabSelector1.BaseTabControl = this.materialTabControl1;
+            this.materialTabSelector1.BaseTabControl = this.materialTabControl;
             this.materialTabSelector1.CausesValidation = false;
             this.materialTabSelector1.Depth = 0;
             this.materialTabSelector1.Location = new System.Drawing.Point(0, 89);
@@ -267,7 +267,7 @@
             this.Controls.Add(this.materialDivider1);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.materialTabSelector1);
-            this.Controls.Add(this.materialTabControl1);
+            this.Controls.Add(this.materialTabControl);
             this.Font = new System.Drawing.Font("Cambria", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(2);
@@ -276,11 +276,11 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "General Electric Services";
             this.Load += new System.EventHandler(this.FormMain_Load);
-            this.materialTabControl1.ResumeLayout(false);
-            this.LoadData.ResumeLayout(false);
+            this.materialTabControl.ResumeLayout(false);
+            this.LoadDataTab.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gridViewOrders)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridViewAgents)).EndInit();
-            this.AssignOrders.ResumeLayout(false);
+            this.AssignOrdersTab.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.gridViewResults)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
@@ -289,20 +289,20 @@
 
         #endregion
 
-        private MaterialSkin.Controls.MaterialTabControl materialTabControl1;
-        private System.Windows.Forms.TabPage LoadData;
-        private System.Windows.Forms.TabPage AssignOrders;
+        private MaterialSkin.Controls.MaterialTabControl materialTabControl;
+        private System.Windows.Forms.TabPage LoadDataTab;
+        private System.Windows.Forms.TabPage AssignOrdersTab;
         private MaterialSkin.Controls.MaterialTabSelector materialTabSelector1;
         private System.Windows.Forms.DataGridView gridViewAgents;
         private MaterialSkin.Controls.MaterialLabel materialLabel2;
         private System.Windows.Forms.DataGridView gridViewOrders;
-        private MaterialSkin.Controls.MaterialLabel materialLabel3;
+        private MaterialSkin.Controls.MaterialLabel labelPageNumberAgents;
         private MaterialSkin.Controls.MaterialLabel labelPageNumberOrders;
         private MaterialSkin.Controls.MaterialLabel materialLabel4;
         private System.Windows.Forms.DataGridView gridViewResults;
         private System.Windows.Forms.ListBox listBoxLog;
         private MaterialSkin.Controls.MaterialLabel materialLabel5;
-        private MaterialSkin.Controls.MaterialLabel labelPageNumberOrdersAssignment;
+        private MaterialSkin.Controls.MaterialLabel labelPageNumberResult;
         private MaterialSkin.Controls.MaterialLabel materialLabel1;
         private System.Windows.Forms.PictureBox pictureBox1;
         private MaterialSkin.Controls.MaterialDivider materialDivider1;

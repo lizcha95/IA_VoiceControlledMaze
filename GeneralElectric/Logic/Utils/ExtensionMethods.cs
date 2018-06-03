@@ -3,6 +3,8 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Windows.Forms;
+    using PagedList;
 
     public static class ExtensionMethods
     {
@@ -136,5 +138,29 @@
         /// <returns>A collection using the <see cref="KeyValuePair{TKey, int}"/>.</returns>
         public static IEnumerable<TKey> ToCollection<TKey>(this KeyValuePair<TKey, int> keyValuePair) =>
             Enumerable.Repeat(keyValuePair.Key, keyValuePair.Value);
+
+        /// <summary>
+        /// Performs a safe thread invoke of a <see cref="Control"/>.
+        /// </summary>
+        /// <param name="control">The <see cref="Control"/> to invoke.</param>
+        /// <param name="action">The action to perform in the invoke.</param>
+        public static void SafeInvoke(this Control control, Action action)
+        {
+            if (control.InvokeRequired)
+                control.Invoke(action);
+            else
+                action();
+        }
+
+        /// <summary>
+        /// Gets a text that represents the page position regarding the page number.
+        /// </summary>
+        /// <typeparam name="T">The type of the <see cref="IPagedList"/>.</typeparam>
+        /// <param name="pagedList">A <see cref="IPagedList{T}"/> to get its guide text.</param>
+        /// <returns>A guide text that represents the page position regarding the page number.</returns>
+        public static string GuideText<T>(this IPagedList<T> pagedList)
+        {
+            return string.Format(Constants.Miscellaneous.FORMAT_PAGE_COUNT, pagedList.PageNumber, pagedList.PageCount);
+        }
     }
 }

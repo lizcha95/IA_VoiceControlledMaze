@@ -11,7 +11,7 @@
     using Utils.Xml;
     using Individual = System.Collections.Generic.IEnumerable<Classes.Assignment>; // An alias for the Individual.
 
-    public class GeneticAllocator : BackgroundWorker
+    internal class GeneticAllocator : BackgroundWorker
     {
         private IEnumerable<Agent> agents;
         private IEnumerable<Service> services;
@@ -77,15 +77,12 @@
         /// </summary>
         public void Stop()
         {
-            if (this.IsBusy)
+            if (this.IsBusy && this.workerThread != null)
             {
-                if (this.workerThread != null)
-                {
-                    this.workerThread.Abort();
-                    this.workerThread = null;
-                    this.ReportProgress(0, Constants.Reports.PROCESS_STOP);
-                    this.Stopped?.Invoke(this, EventArgs.Empty);
-                }
+                this.workerThread.Abort();
+                this.workerThread = null;
+                this.ReportProgress(0, Constants.Reports.PROCESS_STOP);
+                this.Stopped?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -114,7 +111,7 @@
                     break; // Found result.
                 }
                 else
-                    this.ReportProgress(3, Constants.Reports.INDIVIDUAL_DOESNT_MEETS + bestCurrentIndividualFitness.Item2.ToString());
+                    this.ReportProgress(3, Constants.Reports.INDIVIDUAL_DOESNT_MEETS);
 
                 // Selection and crossover.
                 this.currentPopulation = this.CrossPopulation(this.Selection(populationFitness)).ToList();
