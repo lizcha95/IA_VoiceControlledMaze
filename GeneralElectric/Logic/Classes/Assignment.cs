@@ -16,13 +16,13 @@
             this.orders = new List<Order>();
         }
         
-        [DisplayName("Nombre agente")]
+        [DisplayName("Agent Name")]
         public string AgentName { get { return this.agent.Name; } }
-        [DisplayName("Pago")]
+        [DisplayName("Payment")]
         public int Payment { get { return this.orders.Sum(order => order.Service.Payment); } }
-        [DisplayName("Horas")]
+        [DisplayName("Hours")]
         public int Hours { get { return this.orders.Sum(order => order.Service.Hours); } }
-        [DisplayName("Órdenes asignadas")]
+        [DisplayName("Assigned orders")]
         public string OrdersValue { get { return string.Join(", ", this.orders.Select(order => order.ID).OrderByDescending(id => id)) + "."; } }
         internal List<Order> Orders { get { return this.orders; } }
         internal Agent Agent { get { return this.agent; } }

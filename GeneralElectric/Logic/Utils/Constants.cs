@@ -7,9 +7,9 @@
     {
         public static class Messages
         {
-            public const string FINISHED = "Listo!";
-            public const string GENERATING_AGENT = "Generando agente número {0}.";
-            public const string GENERATING_ORDER = "Generando orden número {0}.";
+            public const string FINISHED = "Ready!";
+            public const string GENERATING_AGENT = "Generating agent number {0}.";
+            public const string GENERATING_ORDER = "Generating order number {0}.";
         }
 
         public static class Numbers
@@ -43,20 +43,20 @@
 
         public static class Reports
         {
-            public const string CROSSING_COUPLE = "Cruzando pareja número: {0}, hijos: {1}";
-            public const string CURRENT_GENERATION = "Evaluando generación número: {0}";
-            public const string FITNESS_GENERATION = "Obteniendo el valor fitness de cada individuo.";
-            public const string FITNESS_BEST = "Obteniendo el mejor individuo de la generación.";
-            public const string GENETIC_CROSSOVER = "Aplicando cruces.";
-            public const string GENETIC_INITIALIZE_POPULATION = "Generando población inicial de individuos.";
-            public const string GENETIC_MUTATION = "Mutaciones aplicadas: {0}";
-            public const string GENETIC_SELECTION = "Aplicando selección.";
-            public const string INDIVIDUAL_DOESNT_MEETS = "El individuo no es lo suficientemente bueno.";
-            public const string INDIVIDUAL_GENERATION = "Generando individuo de la población número: {0}";
-            public const string INDIVIDUAL_MEETS = "El individuo cumple con los requisitos.";
-            public const string PROCESS_BEGIN = "El proceso ha comenzado.";
-            public const string PROCESS_END = "Fin del proceso.";
-            public const string PROCESS_STOP = "El proceso ha sido detenido.";
+            public const string CROSSING_COUPLE = "Crossing couple number: {0}, children: {1}";
+            public const string CURRENT_GENERATION = "Evaluating number generation: {0}";
+            public const string FITNESS_GENERATION = "Obtaining the fitness value of each individual.";
+            public const string FITNESS_BEST = "Obtaining the best individual of the generation.";
+            public const string GENETIC_CROSSOVER = "Applying crosses.";
+            public const string GENETIC_INITIALIZE_POPULATION = "Generating initial population of individuals.";
+            public const string GENETIC_MUTATION = "Applied mutations: {0}";
+            public const string GENETIC_SELECTION = "Applying selection";
+            public const string INDIVIDUAL_DOESNT_MEETS = "The individual is not good enough.";
+            public const string INDIVIDUAL_GENERATION = "Generating individual from population number: {0}";
+            public const string INDIVIDUAL_MEETS = "The individual meets the requirements.";
+            public const string PROCESS_BEGIN = "The process has begun.";
+            public const string PROCESS_END = "End of the process.";
+            public const string PROCESS_STOP = "The process has been stopped.";
         }
     }
 }
