@@ -38,14 +38,15 @@
             this.materialLabel2 = new MaterialSkin.Controls.MaterialLabel();
             this.gridViewAgents = new System.Windows.Forms.DataGridView();
             this.AssignOrdersTab = new System.Windows.Forms.TabPage();
+            this.labelGenerationLimit = new System.Windows.Forms.Label();
             this.labelPageNumberResult = new MaterialSkin.Controls.MaterialLabel();
             this.materialLabel5 = new MaterialSkin.Controls.MaterialLabel();
             this.listBoxLog = new System.Windows.Forms.ListBox();
             this.gridViewResults = new System.Windows.Forms.DataGridView();
             this.materialLabel4 = new MaterialSkin.Controls.MaterialLabel();
             this.materialTabSelector1 = new MaterialSkin.Controls.MaterialTabSelector();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.materialDivider1 = new MaterialSkin.Controls.MaterialDivider();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.materialTabControl.SuspendLayout();
             this.LoadDataTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridViewOrders)).BeginInit();
@@ -60,11 +61,11 @@
             this.materialTabControl.Controls.Add(this.LoadDataTab);
             this.materialTabControl.Controls.Add(this.AssignOrdersTab);
             this.materialTabControl.Depth = 0;
-            this.materialTabControl.Location = new System.Drawing.Point(36, 204);
+            this.materialTabControl.Location = new System.Drawing.Point(12, 135);
             this.materialTabControl.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialTabControl.Name = "materialTabControl";
             this.materialTabControl.SelectedIndex = 0;
-            this.materialTabControl.Size = new System.Drawing.Size(1146, 584);
+            this.materialTabControl.Size = new System.Drawing.Size(1146, 624);
             this.materialTabControl.TabIndex = 0;
             // 
             // LoadDataTab
@@ -75,10 +76,10 @@
             this.LoadDataTab.Controls.Add(this.gridViewOrders);
             this.LoadDataTab.Controls.Add(this.materialLabel2);
             this.LoadDataTab.Controls.Add(this.gridViewAgents);
-            this.LoadDataTab.Location = new System.Drawing.Point(4, 23);
+            this.LoadDataTab.Location = new System.Drawing.Point(4, 26);
             this.LoadDataTab.Name = "LoadDataTab";
             this.LoadDataTab.Padding = new System.Windows.Forms.Padding(3);
-            this.LoadDataTab.Size = new System.Drawing.Size(1138, 557);
+            this.LoadDataTab.Size = new System.Drawing.Size(1138, 594);
             this.LoadDataTab.TabIndex = 0;
             this.LoadDataTab.Text = "Load Data";
             this.LoadDataTab.UseVisualStyleBackColor = true;
@@ -89,7 +90,7 @@
             this.materialLabel1.Depth = 0;
             this.materialLabel1.Font = new System.Drawing.Font("Roboto", 11F);
             this.materialLabel1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.materialLabel1.Location = new System.Drawing.Point(28, 18);
+            this.materialLabel1.Location = new System.Drawing.Point(28, 28);
             this.materialLabel1.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialLabel1.Name = "materialLabel1";
             this.materialLabel1.Size = new System.Drawing.Size(480, 39);
@@ -102,21 +103,22 @@
             this.labelPageNumberOrders.Depth = 0;
             this.labelPageNumberOrders.Font = new System.Drawing.Font("Roboto", 11F);
             this.labelPageNumberOrders.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.labelPageNumberOrders.Location = new System.Drawing.Point(818, 492);
+            this.labelPageNumberOrders.Location = new System.Drawing.Point(808, 554);
             this.labelPageNumberOrders.MouseState = MaterialSkin.MouseState.HOVER;
             this.labelPageNumberOrders.Name = "labelPageNumberOrders";
-            this.labelPageNumberOrders.Size = new System.Drawing.Size(139, 33);
+            this.labelPageNumberOrders.Size = new System.Drawing.Size(140, 34);
             this.labelPageNumberOrders.TabIndex = 9;
+            this.labelPageNumberOrders.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // labelPageNumberAgents
             // 
             this.labelPageNumberAgents.Depth = 0;
             this.labelPageNumberAgents.Font = new System.Drawing.Font("Roboto", 11F);
             this.labelPageNumberAgents.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.labelPageNumberAgents.Location = new System.Drawing.Point(166, 494);
+            this.labelPageNumberAgents.Location = new System.Drawing.Point(195, 554);
             this.labelPageNumberAgents.MouseState = MaterialSkin.MouseState.HOVER;
             this.labelPageNumberAgents.Name = "labelPageNumberAgents";
-            this.labelPageNumberAgents.Size = new System.Drawing.Size(180, 33);
+            this.labelPageNumberAgents.Size = new System.Drawing.Size(140, 34);
             this.labelPageNumberAgents.TabIndex = 4;
             this.labelPageNumberAgents.Text = "\r\n";
             this.labelPageNumberAgents.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -124,9 +126,9 @@
             // gridViewOrders
             // 
             this.gridViewOrders.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.gridViewOrders.Location = new System.Drawing.Point(631, 59);
+            this.gridViewOrders.Location = new System.Drawing.Point(631, 67);
             this.gridViewOrders.Name = "gridViewOrders";
-            this.gridViewOrders.Size = new System.Drawing.Size(477, 394);
+            this.gridViewOrders.Size = new System.Drawing.Size(477, 480);
             this.gridViewOrders.TabIndex = 3;
             // 
             // materialLabel2
@@ -135,7 +137,7 @@
             this.materialLabel2.Depth = 0;
             this.materialLabel2.Font = new System.Drawing.Font("Roboto", 11F);
             this.materialLabel2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.materialLabel2.Location = new System.Drawing.Point(631, 16);
+            this.materialLabel2.Location = new System.Drawing.Point(631, 28);
             this.materialLabel2.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialLabel2.Name = "materialLabel2";
             this.materialLabel2.Size = new System.Drawing.Size(477, 45);
@@ -146,37 +148,48 @@
             // gridViewAgents
             // 
             this.gridViewAgents.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.gridViewAgents.Location = new System.Drawing.Point(28, 57);
+            this.gridViewAgents.Location = new System.Drawing.Point(28, 67);
             this.gridViewAgents.Name = "gridViewAgents";
-            this.gridViewAgents.Size = new System.Drawing.Size(480, 396);
+            this.gridViewAgents.Size = new System.Drawing.Size(480, 480);
             this.gridViewAgents.TabIndex = 1;
-            this.gridViewAgents.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.gridViewAgents_CellContentClick);
             // 
             // AssignOrdersTab
             // 
+            this.AssignOrdersTab.Controls.Add(this.labelGenerationLimit);
             this.AssignOrdersTab.Controls.Add(this.labelPageNumberResult);
             this.AssignOrdersTab.Controls.Add(this.materialLabel5);
             this.AssignOrdersTab.Controls.Add(this.listBoxLog);
             this.AssignOrdersTab.Controls.Add(this.gridViewResults);
             this.AssignOrdersTab.Controls.Add(this.materialLabel4);
-            this.AssignOrdersTab.Location = new System.Drawing.Point(4, 23);
+            this.AssignOrdersTab.Location = new System.Drawing.Point(4, 26);
             this.AssignOrdersTab.Name = "AssignOrdersTab";
             this.AssignOrdersTab.Padding = new System.Windows.Forms.Padding(3);
-            this.AssignOrdersTab.Size = new System.Drawing.Size(1138, 557);
+            this.AssignOrdersTab.Size = new System.Drawing.Size(1138, 594);
             this.AssignOrdersTab.TabIndex = 1;
             this.AssignOrdersTab.Text = "Assign ";
             this.AssignOrdersTab.UseVisualStyleBackColor = true;
+            // 
+            // labelGenerationLimit
+            // 
+            this.labelGenerationLimit.AutoSize = true;
+            this.labelGenerationLimit.Font = new System.Drawing.Font("Roboto", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelGenerationLimit.Location = new System.Drawing.Point(859, 561);
+            this.labelGenerationLimit.Name = "labelGenerationLimit";
+            this.labelGenerationLimit.Size = new System.Drawing.Size(134, 22);
+            this.labelGenerationLimit.TabIndex = 7;
+            this.labelGenerationLimit.Text = "Generation limit:";
             // 
             // labelPageNumberResult
             // 
             this.labelPageNumberResult.Depth = 0;
             this.labelPageNumberResult.Font = new System.Drawing.Font("Roboto", 11F);
             this.labelPageNumberResult.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.labelPageNumberResult.Location = new System.Drawing.Point(184, 484);
+            this.labelPageNumberResult.Location = new System.Drawing.Point(320, 554);
             this.labelPageNumberResult.MouseState = MaterialSkin.MouseState.HOVER;
             this.labelPageNumberResult.Name = "labelPageNumberResult";
-            this.labelPageNumberResult.Size = new System.Drawing.Size(143, 20);
+            this.labelPageNumberResult.Size = new System.Drawing.Size(140, 34);
             this.labelPageNumberResult.TabIndex = 6;
+            this.labelPageNumberResult.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // materialLabel5
             // 
@@ -184,10 +197,10 @@
             this.materialLabel5.Depth = 0;
             this.materialLabel5.Font = new System.Drawing.Font("Roboto", 11F);
             this.materialLabel5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.materialLabel5.Location = new System.Drawing.Point(754, 33);
+            this.materialLabel5.Location = new System.Drawing.Point(770, 28);
             this.materialLabel5.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialLabel5.Name = "materialLabel5";
-            this.materialLabel5.Size = new System.Drawing.Size(334, 35);
+            this.materialLabel5.Size = new System.Drawing.Size(334, 39);
             this.materialLabel5.TabIndex = 3;
             this.materialLabel5.Text = "Process";
             this.materialLabel5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -196,18 +209,18 @@
             // 
             this.listBoxLog.Font = new System.Drawing.Font("Roboto", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.listBoxLog.FormattingEnabled = true;
-            this.listBoxLog.ItemHeight = 15;
-            this.listBoxLog.Location = new System.Drawing.Point(754, 68);
+            this.listBoxLog.ItemHeight = 19;
+            this.listBoxLog.Location = new System.Drawing.Point(770, 67);
             this.listBoxLog.Name = "listBoxLog";
-            this.listBoxLog.Size = new System.Drawing.Size(334, 409);
+            this.listBoxLog.Size = new System.Drawing.Size(334, 479);
             this.listBoxLog.TabIndex = 2;
             // 
             // gridViewResults
             // 
             this.gridViewResults.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.gridViewResults.Location = new System.Drawing.Point(6, 68);
+            this.gridViewResults.Location = new System.Drawing.Point(28, 67);
             this.gridViewResults.Name = "gridViewResults";
-            this.gridViewResults.Size = new System.Drawing.Size(529, 402);
+            this.gridViewResults.Size = new System.Drawing.Size(705, 480);
             this.gridViewResults.TabIndex = 1;
             // 
             // materialLabel4
@@ -216,10 +229,10 @@
             this.materialLabel4.Depth = 0;
             this.materialLabel4.Font = new System.Drawing.Font("Roboto", 11F);
             this.materialLabel4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(222)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            this.materialLabel4.Location = new System.Drawing.Point(6, 33);
+            this.materialLabel4.Location = new System.Drawing.Point(28, 28);
             this.materialLabel4.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialLabel4.Name = "materialLabel4";
-            this.materialLabel4.Size = new System.Drawing.Size(529, 35);
+            this.materialLabel4.Size = new System.Drawing.Size(705, 39);
             this.materialLabel4.TabIndex = 0;
             this.materialLabel4.Text = "Orders Assignment";
             this.materialLabel4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -234,18 +247,9 @@
             this.materialTabSelector1.MaximumSize = new System.Drawing.Size(1256, 40);
             this.materialTabSelector1.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialTabSelector1.Name = "materialTabSelector1";
-            this.materialTabSelector1.Size = new System.Drawing.Size(1214, 40);
+            this.materialTabSelector1.Size = new System.Drawing.Size(1174, 40);
             this.materialTabSelector1.TabIndex = 1;
             this.materialTabSelector1.Text = "materialTabSelector1";
-            // 
-            // pictureBox1
-            // 
-            this.pictureBox1.Image = global::Gui.Properties.Resources.general_electric1;
-            this.pictureBox1.Location = new System.Drawing.Point(567, 132);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(94, 92);
-            this.pictureBox1.TabIndex = 11;
-            this.pictureBox1.TabStop = false;
             // 
             // materialDivider1
             // 
@@ -254,19 +258,31 @@
             this.materialDivider1.Location = new System.Drawing.Point(1, 65);
             this.materialDivider1.MouseState = MaterialSkin.MouseState.HOVER;
             this.materialDivider1.Name = "materialDivider1";
-            this.materialDivider1.Size = new System.Drawing.Size(1214, 23);
+            this.materialDivider1.Size = new System.Drawing.Size(1173, 23);
             this.materialDivider1.TabIndex = 12;
             this.materialDivider1.Text = "materialDivider1";
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
+            this.pictureBox1.Image = global::Gui.Properties.Resources.general_electric;
+            this.pictureBox1.InitialImage = null;
+            this.pictureBox1.Location = new System.Drawing.Point(1135, 25);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(39, 39);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox1.TabIndex = 13;
+            this.pictureBox1.TabStop = false;
+            // 
             // FormMain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 14F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(1213, 800);
-            this.Controls.Add(this.materialDivider1);
+            this.ClientSize = new System.Drawing.Size(1174, 771);
             this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.materialDivider1);
             this.Controls.Add(this.materialTabSelector1);
             this.Controls.Add(this.materialTabControl);
             this.Font = new System.Drawing.Font("Cambria", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -282,6 +298,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.gridViewOrders)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridViewAgents)).EndInit();
             this.AssignOrdersTab.ResumeLayout(false);
+            this.AssignOrdersTab.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.gridViewResults)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
@@ -305,8 +322,9 @@
         private MaterialSkin.Controls.MaterialLabel materialLabel5;
         private MaterialSkin.Controls.MaterialLabel labelPageNumberResult;
         private MaterialSkin.Controls.MaterialLabel materialLabel1;
-        private System.Windows.Forms.PictureBox pictureBox1;
         private MaterialSkin.Controls.MaterialDivider materialDivider1;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Label labelGenerationLimit;
     }
 }
 

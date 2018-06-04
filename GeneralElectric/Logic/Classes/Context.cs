@@ -19,7 +19,7 @@
 
         private Context()
         {
-            this.Initialize();
+            this.services = XmlReader.ReadServices();
         }
 
         public static Context Current
@@ -32,14 +32,8 @@
             }
         }
 
+        public bool CanExecute { get { return this.agents != null && this.orders != null; } }
         public bool ResultAvailable { get { return this.geneticAllocator.BestIndividual != null; } }
-
-        private void Initialize()
-        {
-            this.services = XmlReader.ReadServices();
-            this.LoadAgents();
-            this.LoadOrders();
-        }
 
         public void LoadAgents()
         {
@@ -49,6 +43,12 @@
         public void LoadOrders()
         {
             this.orders = XmlReader.ReadOrders(this.services);
+        }
+
+        public void LoadData()
+        {
+            this.LoadAgents();
+            this.LoadOrders();
         }
 
         public IPagedList<Agent> GetAgentsPage(int number = 1)
@@ -81,6 +81,11 @@
         {
             if (this.geneticAllocator != null)
                 this.geneticAllocator.Execute(generationLimit);
+        }
+
+        public void StopAllocator()
+        {
+            this.geneticAllocator.Stop();
         }
     }
 }

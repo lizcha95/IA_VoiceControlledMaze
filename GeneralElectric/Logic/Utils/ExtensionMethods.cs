@@ -20,6 +20,19 @@
             elements.ElementAt(random.Next(0, elements.Count()));
 
         /// <summary>
+        /// Selects a random element of a sequence.
+        /// </summary>
+        /// <typeparam name="T">The type of the sequence.</typeparam>
+        /// <param name="elements">The sequence.</param>
+        /// <param name="selectedElementIndex">Out parameter which retrieves the index of the selected elements.</param>
+        /// <returns>A randomly selected element of the sequence.</returns>
+        public static T RandomElement<T>(this IEnumerable<T> elements, out int selectedElementIndex)
+        {
+            selectedElementIndex = random.Next(0, elements.Count());
+            return elements.ElementAt(selectedElementIndex);
+        }
+
+        /// <summary>
         /// Selects a random collection of elements of a sequence.
         /// </summary>
         /// <typeparam name="T">The type of the sequence.</typeparam>
@@ -122,6 +135,18 @@
         }
 
         /// <summary>
+        /// Replaces a element on a certain index of a <see cref="List{T}"/>.
+        /// </summary>
+        /// <typeparam name="T">The of the <see cref="List{T}"/>.</typeparam>
+        /// <param name="list">The <see cref="List{T}"/> to replace its element.</param>
+        /// <param name="index">The index of the element to replace.</param>
+        /// <param name="newElement">The new element for the selected index of the <see cref="List{T}"/>.</param>
+        public static void ReplaceAt<T>(this List<T> list, int index, T newElement)
+        {
+            list[index] = newElement;
+        }
+
+        /// <summary>
         /// Rounds the multiplication of the given numbers.
         /// </summary>
         /// <param name="base">The base double for the operation.</param>
@@ -153,6 +178,16 @@
         }
 
         /// <summary>
+        /// Gets the maximum possible value of the <see cref="ListBox.TopIndex"/> property.
+        /// </summary>
+        /// <param name="listBox">The <see cref="ListBox"/> to get its maximum possible top index value.</param>
+        /// <returns>The maximum possible value of the <see cref="ListBox.TopIndex"/> property.</returns>
+        public static int TopIndex(this ListBox listBox)
+        {
+            return listBox.Items.Count - 1;
+        }
+
+        /// <summary>
         /// Gets a text that represents the page position regarding the page number.
         /// </summary>
         /// <typeparam name="T">The type of the <see cref="IPagedList"/>.</typeparam>
@@ -160,7 +195,7 @@
         /// <returns>A guide text that represents the page position regarding the page number.</returns>
         public static string GuideText<T>(this IPagedList<T> pagedList)
         {
-            return string.Format(Constants.Miscellaneous.FORMAT_PAGE_COUNT, pagedList.PageNumber, pagedList.PageCount);
+            return string.Format(Constants.Formats.PAGE_COUNT, pagedList.PageNumber, pagedList.PageCount);
         }
     }
 }

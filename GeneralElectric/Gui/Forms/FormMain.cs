@@ -7,6 +7,7 @@
     using System.Linq;
     using System.Speech.Recognition;
     using System.Speech.Synthesis;
+    using System.Text.RegularExpressions;
     using System.Windows.Forms;
     using Logic.Classes;
     using Logic.Utils;
@@ -37,15 +38,13 @@
             this.InitializeComponent();
 
             this.currentContext = Context.Current;
-
-            this.generationLimit = 10; // Hay que poner una opción para modificar esto.
+            this.SetGenerationLimit(Constants.Numbers.GENERATION_LIMIT);
 
             this.cultureInfo = new CultureInfo("en-US");
             this.recorder = new SpeechRecognitionEngine(this.cultureInfo);
             this.speaker = new SpeechSynthesizer();
 
             this.CreateGrammar();
-
         }
 
         private void FormMain_Load(object sender, EventArgs e)
@@ -64,14 +63,15 @@
                 ((Timer)sender).Stop();
                 try
                 {
-                    Choices commands = new Choices(Constants.Commands.COLLECTION);
-                    GrammarBuilder grammarBuilder = new GrammarBuilder();
-                    grammarBuilder.Culture = this.cultureInfo; // English language.
-                    grammarBuilder.Append(commands);
-                    Grammar grammar = new Grammar(grammarBuilder);
+                    GrammarBuilder grammarBuilderCommands = new GrammarBuilder(new Choices(Constants.Commands.COLLECTION)) { Culture = this.cultureInfo },
+                        grammarBuilderRange = new GrammarBuilder(Constants.Commands.RANGE_BASE) { Culture = this.cultureInfo };
+                    grammarBuilderRange.Append(new Choices(Constants.Commands.RANGE_NUMBERS));
+                    Grammar grammarCommands = new Grammar(grammarBuilderCommands),
+                        grammarRange = new Grammar(grammarBuilderRange);
 
-                    this.recorder.LoadGrammar(grammar); // Add grammar to the recognizer.
-                    this.recorder.SetInputToDefaultAudioDevice(); // Use the microphone.
+                    this.recorder.LoadGrammar(grammarCommands);
+                    this.recorder.LoadGrammar(grammarRange);
+                    this.recorder.SetInputToDefaultAudioDevice();
                     this.recorder.RecognizeAsync(RecognizeMode.Multiple);
 
                     this.speaker.SelectVoiceByHints(VoiceGender.Male, VoiceAge.Senior, 0, this.cultureInfo);
@@ -115,14 +115,25 @@
                         this.speaker.SpeakAsync(Constants.Messages.HINT_LOAD_ORDERS);
                     }
                     break;
+                case Constants.Commands.DATA_LOAD:
+                    this.materialTabControl.SelectedTab = this.LoadDataTab;
+                    this.currentContext.LoadData();
+                    this.currentIndexAgents = 1;
+                    this.SetAgentsPage(1);
+                    this.currentIndexOrders = 1;
+                    this.SetOrdersPage(1);
+                    this.speaker.SpeakAsync(Constants.Messages.LOAD_DATA);
+                    break;
                 case Constants.Commands.AGENTS_LOAD:
                     this.materialTabControl.SelectedTab = this.LoadDataTab;
+                    this.currentContext.LoadAgents();
                     this.currentIndexAgents = 1;
                     this.SetAgentsPage(1);
                     this.speaker.SpeakAsync(Constants.Messages.HINT_PAGE_AGENTS);
                     break;
                 case Constants.Commands.ORDERS_LOAD:
                     this.materialTabControl.SelectedTab = this.LoadDataTab;
+                    this.currentContext.LoadOrders();
                     this.currentIndexOrders = 1;
                     this.SetOrdersPage(1);
                     this.speaker.SpeakAsync(Constants.Messages.HINT_PAGE_ORDERS);
@@ -193,25 +204,56 @@
                     else
                         this.speaker.SpeakAsync(Constants.Messages.PROCESS_RUN_FIRST);
                     break;
-                case Constants.Commands.ASSIGN:
-                    this.gridViewResults.DataSource = null;
-                    this.currentIndexResult = 1;
+                case Constants.Commands.EXECUTE:
+                    if (this.currentContext.CanExecute)
+                    {
+                        this.gridViewResults.DataSource = null;
+                        this.currentIndexResult = 1;
 
-                    this.materialTabControl.SelectedTab = this.AssignOrdersTab;
-                    this.currentContext.CreateAllocator(
-                        new ProgressChangedEventHandler(this.Allocator_ProgressChanged),
-                        new RunWorkerCompletedEventHandler(this.Allocator_RunWorkerCompleted),
-                        new EventHandler<EventArgs>(this.Allocator_Stopped)
-                    );
-                    this.currentContext.ExecuteAllocator(this.generationLimit);
-                    speaker.SpeakAsync(Constants.Messages.PROCESS_WAIT);
+                        this.materialTabControl.SelectedTab = this.AssignOrdersTab;
+                        this.currentContext.CreateAllocator(
+                            new ProgressChangedEventHandler(this.Allocator_ProgressChanged),
+                            new RunWorkerCompletedEventHandler(this.Allocator_RunWorkerCompleted),
+                            new EventHandler<EventArgs>(this.Allocator_Stopped)
+                        );
+                        this.currentContext.ExecuteAllocator(this.generationLimit);
+                        speaker.SpeakAsync(Constants.Messages.PROCESS_WAIT);
+                    }
+                    else
+                        this.speaker.SpeakAsync(Constants.Messages.CANT_EXECUTE);
                     break;
-                case Constants.Commands.SKIP:
+                case Constants.Commands.UP:
+                    if (this.listBoxLog.TopIndex >= Constants.Numbers.LOG_CHUNKS)
+                        this.listBoxLog.TopIndex -= Constants.Numbers.LOG_CHUNKS;
+                    else
+                        this.listBoxLog.TopIndex = 0;
+                    break;
+                case Constants.Commands.DOWN:
+                    if (this.listBoxLog.TopIndex + Constants.Numbers.LOG_CHUNKS <= this.listBoxLog.TopIndex())
+                        this.listBoxLog.TopIndex += Constants.Numbers.LOG_CHUNKS;
+                    else
+                        this.listBoxLog.TopIndex = this.listBoxLog.TopIndex();
+                    break;
+                case Constants.Commands.UPPER:
+                    this.listBoxLog.TopIndex = 0;
+                    break;
+                case Constants.Commands.LOWER:
+                    this.listBoxLog.TopIndex = this.listBoxLog.TopIndex();
+                    break;
+                case Constants.Commands.STOP:
+                    this.currentContext.StopAllocator();
+                    break;
+                case Constants.Commands.SILENCE:
                     this.speaker.SpeakAsyncCancelAll();
                     break;
                 case Constants.Commands.CLOSE:
+                    this.speaker.SpeakAsyncCancelAll();
                     this.speaker.Speak(Constants.Messages.GOOD_BYE);
                     Application.Exit();
+                    break;
+                default:
+                    this.materialTabControl.SelectedTab = this.AssignOrdersTab;
+                    this.SetGenerationLimit(Convert.ToInt32(Regex.Match(e.Result.Text, Constants.Formats.DIGIT).Value));
                     break;
             }
         }
@@ -237,31 +279,41 @@
             this.labelPageNumberResult.Text = this.currentPageResult.GuideText();
         }
 
+        private void SetGenerationLimit(int generationLimit)
+        {
+            this.generationLimit = generationLimit;
+            this.labelGenerationLimit.Text = string.Format(Constants.Formats.GENERATION_LIMIT, generationLimit);
+        }
+
         private void Allocator_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            this.listBoxLog.SafeInvoke(new Action(() =>
+            this.listBoxLog.SafeInvoke(() =>
             {
                 this.listBoxLog.Items.Add(e.UserState);
-                this.listBoxLog.TopIndex = this.listBoxLog.Items.Count - 1;
-            }));
+                this.listBoxLog.TopIndex = this.listBoxLog.TopIndex();
+            });
         }
 
         private void Allocator_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            this.speaker.SpeakAsync(Constants.Messages.RESULT_FOUND);
             this.PrintResult();
         }
 
         private void Allocator_Stopped(object sender, EventArgs e)
         {
+            this.speaker.SpeakAsync(Constants.Messages.PROCESS_STOP);
             if (this.currentContext.ResultAvailable)
+            {
+                this.speaker.SpeakAsync(Constants.Messages.PROCESS_POSSIBLE_RESULT);
                 this.PrintResult();
+            }
         }
 
         private void PrintResult()
         {
             this.currentIndexResult = 1;
             this.SetResultPage(1);
-           // this.gridViewResults.DataSource = this.currentPageResult;
         }
 
         private void InitializeDesignDataGridViews()
@@ -312,11 +364,6 @@
             this.gridViewResults.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.gridViewResults.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(0, 0, 0);
             this.gridViewResults.ColumnHeadersDefaultCellStyle.ForeColor = Color.White;
-        }
-
-        private void gridViewAgents_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
         }
     }
 }
