@@ -23,7 +23,7 @@
         [DisplayName("Hours")]
         public int Hours { get { return this.orders.Sum(order => order.Service.Hours); } }
         [DisplayName("Assigned orders")]
-        public string OrdersValue { get { return string.Join(", ", this.orders.Select(order => order.ID).OrderByDescending(id => id)) + "."; } }
+        public string OrdersValue { get { return string.Join(", ", this.orders.Select(order => order.ID).OrderBy(id => id)) + "."; } }
         internal List<Order> Orders { get { return this.orders; } }
         internal Agent Agent { get { return this.agent; } }
         internal bool Exceeded { get { return this.Hours > Constants.Numbers.MAX_HOURS; } }

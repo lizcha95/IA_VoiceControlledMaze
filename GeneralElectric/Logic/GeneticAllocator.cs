@@ -17,8 +17,8 @@
         private IEnumerable<Service> services;
         private IEnumerable<Order> orders;
         private IEnumerable<IGrouping<string, Order>> groupedOrders;
-        
-        private Individual bestIndividual;
+
+        private Tuple<Individual, int> bestIndividualFitness;
         private List<Individual> currentPopulation;
 
         private IEnumerable<int> siblingsRandomizer;
@@ -59,7 +59,7 @@
 
         public event EventHandler<EventArgs> Stopped;
 
-        public Individual BestIndividual { get { return this.bestIndividual; } }
+        public Individual BestIndividual { get { return this.bestIndividualFitness.Item1; } }
 
         /// <summary>
         /// Executes the async process.
@@ -102,10 +102,9 @@
             {
                 this.ReportProgress(1, string.Format(Constants.Reports.CURRENT_GENERATION, generationCount));
                 var populationFitness = this.LinkFitness();
-                var bestCurrentIndividualFitness = this.BestByFitness(populationFitness);
-                this.bestIndividual = bestCurrentIndividualFitness.Item1; // Best individual of each generation.
+                this.bestIndividualFitness = this.BestByFitness(populationFitness); // Best individual of each generation.
                 // Evaluation.
-                if (bestCurrentIndividualFitness.Item2 >= this.minExpectedFitness)
+                if (this.bestIndividualFitness.Item2 >= this.minExpectedFitness)
                 {
                     this.ReportProgress(3, Constants.Reports.INDIVIDUAL_MEETS);
                     break; // Found result.
@@ -115,6 +114,8 @@
 
                 // Selection and crossover.
                 this.currentPopulation = this.CrossPopulation(this.Selection(populationFitness)).ToList();
+                // Elitist strategy.
+                this.BestSurvives();
                 // Mutation with probability.
                 int mutationCount = this.currentPopulation.Sum(individual =>
                 {
@@ -350,6 +351,20 @@
                 parent2 = listPopulation.RandomPop();
                 for (int i = 0; i < coupleChildrenCount; i++)
                     yield return this.Crossover(parent1, parent2);
+            }
+        }
+
+        /// <summary>
+        /// Elitist strategy, the best individual of each generation survives if is better than a randomly selected individual of the new generation.
+        /// </summary>
+        private void BestSurvives()
+        {
+            // Evaluate the current best individual with a randomly selected individual of the next generation.
+            if (this.bestIndividualFitness.Item2 > this.Evaluation(this.currentPopulation.RandomElement(out int selectedIndividualIndex)))
+            {
+                // The randomly selected individual of the next generation is sacrified by the best individual of the current generation..
+                this.currentPopulation.ReplaceAt(selectedIndividualIndex, this.BestIndividual);
+                this.ReportProgress(2, Constants.Reports.INDIVIDUAL_BEST_SURVIVES);
             }
         }
     }
